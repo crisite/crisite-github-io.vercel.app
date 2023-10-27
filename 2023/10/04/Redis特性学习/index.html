@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Redis特性学习 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Redis特性学习</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Redis/" style="color: #ff7d73">Redis</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>跟着<a target="_blank" rel="noopener" href="https://liziba.blog.csdn.net/?type=blog">李子捌</a> 和 Redis 官网学习 Redis</p>
+<span id="more"></span>
+
+<h2 id="1-事务"><a href="#1-事务" class="headerlink" title="1. 事务"></a>1. 事务</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Redis 类似大多数成熟的数据库系统一样，提供了事务机制。Redis 的事务机制非常简单，它没有严格的事务模型，无法像关系型数据库一样保证操作的原子性。<br>Redis 事务最大的作用是保证多个指令的串行执行，它可以借助于 Redis 单线程读写的特性，保证 Redis 事务中的指令不会被事务外的指令打搅，不过要注意它不是原子性的。</p>
+<pre><code class="bash">127.0.0.1:6379&gt; multi
+OK
+127.0.0.1:6379(TX)&gt; set number 1
+QUEUED
+127.0.0.1:6379(TX)&gt; incr number
+QUEUED
+127.0.0.1:6379(TX)&gt; exec
+1) OK
+2) (integer) 2
+</code></pre>
+<p>multi 开启一个事务之后，所有指令都不执行，而是缓存到事务队列中，直到服务器接收到 exec 指令，才开始执行整个事务中的指令。事务全部指令执行完毕后，一次性返回全部的结果。<img src="https://img-blog.csdnimg.cn/img_convert/58a7e78eb85ca3fce4bf14e2f1b7da68.png" alt="事务指令执行.png"></p>
+<p>使用 Redis 事务，一个最需要注意的问题是，指令多，网络开销高；<strong>因此我们一定要结合管道 pipeline 一起使用，这样可以将多次网络 io 操作压缩成单次。</strong></p>
+<h3 id="事务指令"><a href="#事务指令" class="headerlink" title="事务指令"></a>事务指令</h3><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>指令作用</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>multi</td>
+<td>标记一个事务块的开始</td>
+<td>总是返回 OK</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>执行所有事务块内的命令</td>
+<td>事务块内所有命令的返回值，按命令执行的先后顺序排列。当操作被打断时，返回空值 nil</td>
+</tr>
+<tr>
+<td>discard</td>
+<td>取消事务，放弃执行事务块内的所有命令，如果正在使用 WATCH 命令监视某个(或某些) key，那么取消所有监视，等同于执行命令 UNWATCH</td>
+<td>总是返回 OK</td>
+</tr>
+<tr>
+<td>watch</td>
+<td>监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断</td>
+<td>总是返回 OK</td>
+</tr>
+<tr>
+<td>unwatch</td>
+<td>因为 EXEC 命令会执行事务，因此 WATCH 命令的效果已经产生了；而 DISCARD 命令在取消事务的同时也会取消所有对 key 的监视，因此这两个命令执行之后，就没有必要执行 UNWATCH 了</td>
+<td>总是返回 OK</td>
+</tr>
+</tbody></table>
+<ul>
+<li>MULTI（开启事务）</li>
+</ul>
+<p>MULTI 用于标记一个事务的开始，事务块内的多条命令会按照先后顺序被放进一个队列当中，最后由 EXEC 命令原子性(atomic)地执行。MULTI 指令总是返回 OK。</p>
+<ul>
+<li>EXEC（执行事务）</li>
+</ul>
+<p>EXEC 用于执行所有事务块内的命令，假如<strong>某个(或某些) key 正处于 WATCH 命令的监视之下，且事务块中有和这个(或这些) key 相关的命令，那么 EXEC 命令只在这个(或这些) key 没有被其他命令所改动的情况下执行并生效，否则该事务被打断(abort)。</strong> <em>在 watch</em></p>
+<ul>
+<li>DISCARD（取消事务）</li>
+</ul>
+<p>DISCARD 用于取消事务，放弃执行事务块内的所有命令。如果正在使用 WATCH 命令监视某个(或某些) key，那么取消所有监视，等同于执行命令 UNWATCH 。DISCARD 指令总是返回 OK。</p>
+<ul>
+<li>WATCH（监视）</li>
+</ul>
+<p>WATCH 用于监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。这个实现方式也很简单，WATCH 是在事务之间发送的指令，Redis 服务在接收到指令时，会记录下该 key 对应的值，当 Redis 服务接收到 EXEC 指令，需要执行事务时，Redis 服务首先会检查 WATCH 的 key 的值，从 WATCH 之后是否发生改变即可。</p>
+<ul>
+<li>UNWATCH（取消监视）</li>
+</ul>
+<p>UNWATCH 用于取消 WATCH 命令对所有 key 的监视。如果在执行 WATCH 命令之后， EXEC 命令或 DISCARD 命令先被执行了的话，那么就不需要再执行 UNWATCH 了。因为 EXEC 命令会执行事务，因此 WATCH 命令的效果已经产生了；而 DISCARD 命令在取消事务的同时也会取消所有对 key 的监视，因此这两个命令执行之后，就没有必要执行 UNWATCH 了。</p>
+<h3 id="关于-Redis-事务原子性"><a href="#关于-Redis-事务原子性" class="headerlink" title="关于 Redis 事务原子性"></a>关于 Redis 事务原子性</h3><h4 id="为什么说-Redis-不支持原子性："><a href="#为什么说-Redis-不支持原子性：" class="headerlink" title="为什么说 Redis 不支持原子性："></a>为什么说 Redis 不支持原子性：</h4><ul>
+<li>Redis 事务不支持事务回滚机制</li>
+</ul>
+<p>Redis 事务执行过程中，如果一个命令执行出错，那么就返回错误，然后还是会接着继续执行下面的命令。</p>
+<p>正是因为 Redis 事务不支持事务回滚机制，如果事务执行中出现了命令执行错误（例如对 String 类型的数据库键执行 LPUSH 操作），只会返回当前命令执行的错误给客户端，并不会影响下面的命令的执行。所以很多人觉得和关系型数据库（MySQL） 不一样，而 MySQL 的事务是具有原子性的，所以大家都认为 Redis 事务不支持原子性。</p>
+<ul>
+<li>但其实 Redis 意义上是支持原子性的</li>
+</ul>
+<p>在命令加入事务队列前，会对命令进行检查，如果命令不存在或者是命令参数不对，则会将错误返回给客户端，并且修改客户端状态，当后面客户端执行<em>EXEC</em>命令时，服务器就会直接拒接执行此事务了。所以说，Redis 事务其实是支持原子性的！及时 Redis 不支持事务回滚机制，但是它会检查每一个事务中的命令是否错误。（如命令 hasdhahsd，则会返回 err 并修改客户端状态）</p>
+<p><em>但是我们要注意一个点就是：Redis 事务不支持检查那些程序员自己逻辑错误。例如对 String 类型的数据库键执行对 HashMap 类型的操作！</em></p>
+<blockquote>
+<p><strong>我很赞同 Redis 作者的想法</strong>：</p>
+<p>首先，MySQL 和 Redis 的定位不一样，一个是关系型数据库，一个是 NoSQL。</p>
+<p>MySQL 的 SQL 查询是可以相当复杂的，而且 MySQL 没有事务队列这种说法，SQL 真正开始执行才会进行分析和检查，MySQL 不可能提前知道下一条 SQL 是否正确。所以支持事务回滚是非常有必要的~</p>
+<p>但是，Redis 使用了事务队列来预先将执行命令存储起来，并且会对其进行格式检查的，提前就知道命令是否可执行了。所以如果只要有一个命令是错误的，那么这个事务是不能执行的。</p>
+<p><strong>Redis 作者认为基本只会出现在开发环境的编程错误其实在生产环境基本是不可能出现的（例如对 String 类型的数据库键执行 LPUSH 操作），所以他觉得没必要为了这事务回滚机制而改变 Redis 追求简单高效的设计主旨</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/144268090">Redis 事务原子性</a></p>
+</blockquote>
+<h2 id="2-Pub-Sub"><a href="#2-Pub-Sub" class="headerlink" title="2. Pub&#x2F;Sub"></a>2. Pub&#x2F;Sub</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>如果你是面试或者为了了解知识来学习这一知识点，我觉得是有必要的；但是如果你是作为公司的技术负责人或者项目技术选型来使用 Redis 的 Pub&#x2F;Sub 做消息的发布订阅，如果你不是走投无路了，那么你可能值得斟酌一下。Redis 的 Pub&#x2F;Sub 发布订阅，是 Redis 一步步完善消息队列功能的一个进步点，虽然现在没人用 Pub&#x2F;Sub 做消息队列，但是它的思想和功能也是值得玩一下的。</p>
+<p>Redis 客户端订阅一个频道非常简单，它可以订阅任意数量的频道。<br>如下图，Redis 客户端订阅（subscriber）频道（channel）</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/f38790a25a977ee3da98b1fcc2d5bd06.png" alt="subscriber.png"></p>
+<p>如下图，当消息发送到客户端订阅的频道（channel）时，这个消息就会被订阅的所有未故障的客户端接接收到</p>
+<h3 id="Pub-Sub-为什么被抛弃"><a href="#Pub-Sub-为什么被抛弃" class="headerlink" title=" Pub&#x2F;Sub 为什么被抛弃"></a><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/52481eb856f0f65d8c266bf241d3a43a.png" alt="publisher.png"> Pub&#x2F;Sub 为什么被抛弃</h3><p>关于 Redis 的 Pub&#x2F;Sub 为什么被抛弃，最主要的原因是它无法持久化，没有实现持久化机制的 Pub&#x2F;Sub，无法做到消息的不丢失，在客户端宕机或者 Redis 服务宕机的情况下，都会导致消息丢失。</p>
+<p>客户端宕机，客户端无法接收消息<br>Redis 服务宕机，没有客户端能连接上，肯定也无法接收到消息<br>大部分情况下，我们都不会用到 Redis 去做消息中间件，市面上成熟且好用的消息中间件非常多，如果真的需要使用 Redis 来做消息中间件，可以考虑 Redis 5.0 的新数据结构 Stream，这个功能在 Pub&#x2F;Sub 的基础上，实现了持久化机制，并且大力借鉴了 kafka 的设计原理，完善了 Redis 用于实现消息队列的不足之处。</p>
+<h2 id="3-Stream"><a href="#3-Stream" class="headerlink" title="3. Stream"></a>3. Stream</h2><p>Stream 弥补了 Redis 作为 MQ（message queue）技术选型上的不足之处；Redis 5.0 发布的 Stream 相比 Pub&#x2F;Sub 模块，Stream 支持消息持久化，结合 sentinel 或 cluster 使其成为了一个比较可靠的消息队列。尽管我认为它很难成为公司 MQ 的技术选型产品，但是关于 Stream 的使用和特性（消费组），仍值得一探究竟。</p>
+<p>Stream 对标消息队列，因此几乎具备了 MQ 所有的特性，以下列出 Stream 所具有的部分特性：</p>
+<ul>
+<li>消息顺序存储</li>
+<li>消息 ID 序列化规则生成</li>
+<li>消息的遍历</li>
+<li>消息阻塞&#x2F;非阻塞式获取</li>
+<li>客户端分组消费消息</li>
+<li>消息确认机制</li>
+<li>消息异常机制</li>
+<li>消息队列监控</li>
+</ul>
+<h3 id="Stream-内部结构"><a href="#Stream-内部结构" class="headerlink" title="Stream 内部结构"></a>Stream 内部结构</h3><p>在探索 Stream 的内部结构之前，先看一张清晰的 Stream 结构图：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/569332aeb18a1558a0d4aa3fa48e13cb.png" alt="stream.png"></p>
+<ul>
+<li>如下是关于上图的名词解析：</li>
+</ul>
+<p>Message Content：消息内容<br>Consumer group：消费组，通过 XGROUP CREATE 命令创建，一个消费组可以有多个消费者<br>Last_delivered_id：游标，每个消费组有一个游标，任意消费者读取消息后，游标都会向前移动<br>Consumer：消费者，消费组中的消费者<br>Pending_ids：状态变量，每个消费者会有一个状态变量，用于记录被当前消费者读取，但是并未 ack 的消息 id</p>
+<ul>
+<li>四个唯一</li>
+</ul>
+<p>Stream 内部维护了一个消息链表，以此使得消息能够具有队列的特性。在 Stream 中有四个唯一需要了解：</p>
+<p>每个 Stream 都具有唯一的名称<br>每个消息（Message）都具有一个由系统分配或者客户端指定唯一 ID<br>每个 Stream 中的消费组（Consumer_Group）具有唯一名称<br>每个消费组（Consumer_Group）中的消费者（Consumer）具有唯一名称&#96;&#96;</p>
+<ul>
+<li>消息 ID</li>
+</ul>
+<p>Stream 的消息 ID 可以由服务端自动生成，也可以由客户端传入，如下图是自动生成的结构：</p>
+<pre><code class="bash">127.0.0.1:6379&gt; xadd mystream * name puff
+&quot;1695048899544-0&quot;
+</code></pre>
+<p><strong>系统自动生成的规则</strong></p>
+<blockquote>
+<p>&lt; millisecondsTime&gt;-&lt; sequenceNumber&gt;</p>
+</blockquote>
+<p>millisecondsTime 指的是 Redis 节点服务器的本地时间，如果存在当前的毫秒时间戳比以前已经存在的数据的时间戳小的话（本地时间钟后跳），那么系统将会采用以前相同的毫秒创建新的 ID。<br>sequenceNumber 指的是序列号，在相同的 millisecondsTime 毫秒下，序列号从 0 开始递增，序列号是 64 位长度，理论上在统一毫秒内生成的数据量无法到达这个级别，因此不用担心 sequenceNumber 会不够用。</p>
+<p><strong>客户端显示传入规则</strong><br>Redis 对于 ID 有强制要求，格式必须是**-**，最小 ID 为 0-1，并且后续 ID 不能小于前一个 ID</p>
+<ul>
+<li>消息内容</li>
+</ul>
+<p>Stream 的消息内容，也就是图中的 Message Content 它的结构类似 Hash 结构，以 key-value 的形式存在。</p>
+<h3 id="Stream-操作指令"><a href="#Stream-操作指令" class="headerlink" title="Stream 操作指令"></a>Stream 操作指令</h3><p>消息队列相关指令：</p>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>指令作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>XADD</td>
+<td>添加消息到队列末尾</td>
+</tr>
+<tr>
+<td>XTRIM</td>
+<td>限制 Stream 的长度，如果已经超长会进行截取</td>
+</tr>
+<tr>
+<td>XDEL</td>
+<td>删除消息</td>
+</tr>
+<tr>
+<td>XLEN</td>
+<td>获取 Stream 中的消息长度</td>
+</tr>
+<tr>
+<td>XRANGE</td>
+<td>获取消息列表（可以指定范围），忽略删除的消息</td>
+</tr>
+<tr>
+<td>XREVRANGE</td>
+<td>和 XRANGE 相比区别在于反向获取，ID 从大到小</td>
+</tr>
+<tr>
+<td>XREAD</td>
+<td>获取消息（阻塞&#x2F;非阻塞），返回大于指定 ID 的消息</td>
+</tr>
+</tbody></table>
+<p>消费组相关指令：</p>
+<table>
+<thead>
+<tr>
+<th>指令名称</th>
+<th>指令作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>XGROUP CREATE</td>
+<td>创建消费者组</td>
+</tr>
+<tr>
+<td>XREADGROUP GROUP</td>
+<td>读取消费者组中的消息</td>
+</tr>
+<tr>
+<td>XACK</td>
+<td>ack 消息，消息被标记为“已处理”</td>
+</tr>
+<tr>
+<td>XGROUP SETID</td>
+<td>设置消费者组最后递送消息的 ID</td>
+</tr>
+<tr>
+<td>XGROUP DELCONSUMER</td>
+<td>删除消费者组</td>
+</tr>
+<tr>
+<td>XPENDING</td>
+<td>打印待处理消息的详细信息</td>
+</tr>
+<tr>
+<td>XCLAIM</td>
+<td>转移消息的归属权（长期未被处理&#x2F;无法处理的消息，转交给其他消费者组进行处理）</td>
+</tr>
+<tr>
+<td>XINFO</td>
+<td>打印 Stream\Consumer\Group 的详细信息</td>
+</tr>
+<tr>
+<td>XINFO GROUPS</td>
+<td>打印消费者组的详细信息</td>
+</tr>
+<tr>
+<td>XINFO STREAM</td>
+<td>打印 Stream 的详细信息</td>
+</tr>
+</tbody></table>
+<ul>
+<li>XADD</li>
+</ul>
+<pre><code class="bash">
+</code></pre>
+<h3 id="关于-Stream-优化内存"><a href="#关于-Stream-优化内存" class="headerlink" title="关于 Stream 优化内存"></a>关于 Stream 优化内存</h3><p>使用 Stream 有两个点需要注意，如果使用不当都会导致内存消耗增大。</p>
+<ul>
+<li>待处理消息过多，消息未及时 ack</li>
+<li>Stream 消息持续持久化，使用 XDEL 删除消息</li>
+</ul>
+<p>关于第一点，待处理消息过多，消息未及时 ack，其导致内存增加的原因是，Stream 会为每个消费者维护一个 PEL 列表，PEL 列表用于存储处理完但未及时 ack 的消息 ID。我们在实际使用过程中，处理完的消息一定要及时 ack，也有定时检查是否有消费者不可用导致消息堆积的情况。<br>XPENDING 能查询出消费者中待处理的消息，就是因为有 PEL 的存在。</p>
+<p>关于第二点，使用 XDEL 删除 Stream 中不在需要的消息，其导致内存增加的原因是，Stream 的 XDEL 删除消息的指令，并不会从内存上删除消息，它只是给消息打上标记位，下次通过 XRANGE 指令忽略这些消息而已。因此我们可以设置 Stream 的最大长度，来解决这个问题，在 XADD 中使用 MAXLEN 指定 Stream 队列的长度，当消息超出长度就会将队列头消息清除掉。（不过这种处理方式一定要做到及时处理消息，避免消息的丢失。）</p>
+<h2 id="4-Pipeline"><a href="#4-Pipeline" class="headerlink" title="4.Pipeline"></a>4.Pipeline</h2><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><p>使用 pipeline（管道）后，多个连续的指令只会花费一次网络来回开销，这个开销会随着次数 n 数值的增大，大幅减少网络 io 开销，从而提升整体服务的性能。</p>
+<h3 id="RedisTemplate-使用-Pipeline"><a href="#RedisTemplate-使用-Pipeline" class="headerlink" title="RedisTemplate 使用 Pipeline"></a>RedisTemplate 使用 Pipeline</h3><pre><code class="java">// 想要使用原生的redis api则使用RedisCallback
+// 想要使用spring封装的api则使用SessionCallback
+redisTemplate.executePipelined(
+                new RedisCallback&lt;Object&gt;() &#123;
+                    @Override
+                    public Object doInRedis(RedisConnection connection) throws DataAccessException &#123;
+                        StringRedisConnection stringRedisConn = (StringRedisConnection)connection;
+                        for (int i = 0; i &lt; 10000; i++) &#123;
+                            stringRedisConn.rPop(&quot;sss&quot;);
+                        &#125;
+                        return null;
+                    &#125;
+                &#125;);
+
+redisTemplate.executePipelined(
+                new SessionCallback&lt;Object&gt;() &#123;
+                    @Override
+                    public &lt;K, V&gt; Object execute(RedisOperations&lt;K, V&gt; operations) throws DataAccessException &#123;
+                        for (int i = 0; i &lt; 10000; i++) &#123;
+                            // 转为你 RedisTemplate 即可
+                            RedisTemplate&lt;String, Object&gt; ops = (RedisTemplate&lt;String, Object&gt;) operations;
+                            ops.opsForValue().set(&quot;pipeline ops &quot;+ i, i + &quot; &quot;);
+                        &#125;
+                        return null;
+                    &#125;
+                &#125;
+        );
+</code></pre>
+<pre><code class="bash">## 5万次花费时间
+pipeline cost time : 2138ms
+normal cost time : 3579ms
+</code></pre>
+<h2 id="5-持久化"><a href="#5-持久化" class="headerlink" title="5. 持久化"></a>5. 持久化</h2><p>Redis 的非常快，很大一部分原因是因为 Redis 的数据存储在内存中，既然在内存中，那么当服务器宕机或者断电的时候，数据就会全部丢失了，所以 Redis 提供了两种机制来保证 Redis 数据不会因为故障而全部丢失，这种机制称为 Redis 的持久化机制。<br>Redis 的持久化机制有两种：</p>
+<p>RDB(Redis Data Base) 内存快照<br>AOF(Append Only File) 增量日志<br>**RDB(Redis DataBase) **指的是在指定的时间间隔内将内存中的数据集快照写入磁盘，RDB 是内存快照（内存数据的二进制序列化形式）的方式持久化，每次都是从 Redis 中生成一个快照进行数据的全量备份。<br>优点：</p>
+<p>存储紧凑，节省内存空间<br>恢复速度非常快<br>适合全量备份、全量复制的场景，经常用于灾难恢复（对数据的完整性和一致性要求相对较低的场合）<br>缺点：</p>
+<p>容易丢失数据，容易丢失两次快照之间 Redis 服务器中变化的数据。<br>RDB 通过 fork 子进程对内存快照进行全量备份，是一个重量级操作，频繁执行成本高。<br>fork 子进程，虽然共享内存，但是如果备份时内存被修改，最大可能膨胀到 2 倍大小。<br>**AOF(Append Only File)**是把所有对内存进行修改的指令（写操作）以独立日志文件的方式进行记录，重启时通过执行 AOF 文件中的 Redis 命令来恢复数据。AOF 能够解决数据持久化实时性问题，是现在 Redis 持久化机制中主流的持久化方案（后续会谈到 4.0 以后的混合持久化）。<br>优点：</p>
+<p>数据的备份更加完整，丢失数据的概率更低，适合对数据完整性要求高的场景<br>日志文件可读，AOF 可操作性更强，可通过操作日志文件进行修复<br>缺点：</p>
+<p>AOF 日志记录在长期运行中逐渐庞大，恢复起来非常耗时，需要定期对 AOF 日志进行瘦身处理（后续详述）<br>恢复备份速度比较慢<br>同步写操作频繁会带来性能压力</p>
+<h3 id="RDB-持久化方式"><a href="#RDB-持久化方式" class="headerlink" title="RDB 持久化方式"></a>RDB 持久化方式</h3><h4 id="自动触发"><a href="#自动触发" class="headerlink" title="自动触发"></a>自动触发</h4><ul>
+<li><strong>配置触发规则</strong></li>
+</ul>
+<p>在 Redis 安装目录下的 redis.conf 配置文件中搜索 &#x2F;snapshot 即可快速定位，配置文件默认注释了下面三行数据，通过配置规则来触发 RDB 的持久化，需要开启或者根据自己的需求按照规则来配置。</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/d561078991d43f57405f5a08821b54ae.png" alt="image.png"></p>
+<p>下面对配置规则进行解释，实际使用过程中可以根据需求进行合理的配置</p>
+<blockquote>
+<p>save 3600 1 -&gt; 3600 秒内有 1 个 key 被修改，触发 RDB<br>save 300 100 -&gt; 300 秒内有 100 个 key 被修改，触发 RDB<br>save 60 10000 -&gt; 60 秒内有 10000 个 key 被修改，触发 RDB</p>
+</blockquote>
+<p>配置文件中的一些参数</p>
+<blockquote>
+<ul>
+<li><p>RDB 文件存储路径：搜索 &#x2F;directorydir</p>
+<p>&#x2F;var&#x2F;lib&#x2F;redis</p>
+</li>
+<li><p>RDB 文件名称：</p>
+<p>dbfilename dump.rdb</p>
+</li>
+<li><p>RDB 文件压缩：Redis 默认会使用 LZF 算法对 Redis 的 RDB 文件进行压缩，这会消耗一定的 CPU 计算资源，但是会带来空间上的节省</p>
+<p>dbcompression yes</p>
+</li>
+<li><p>配置 RDB 文件完整性校验: Redis 默认使用 CRC64 的算法，对 RDB 文件完整性进行校验，以此来保证 RDB 文件的完整<br>dbchecksum yes</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>shutdown 触发</strong></li>
+</ul>
+<p>shutdown 触发 Redis 的 RDB 持久化机制非常简单，我们在客户端执行 shutdown 即可。</p>
+<ul>
+<li><strong>flushall 触发</strong></li>
+</ul>
+<p><strong>flushall 是为了清空 Redis 数据的同时清空 dump.rdb 文件</strong></p>
+<h4 id="手动触发"><a href="#手动触发" class="headerlink" title="手动触发"></a>手动触发</h4><p>手动触发 RDB 持久化的方式可以使用 save 命令和 bgsave 命令，这两个命令的区别如下。<br>save：执行 save 指令，阻塞 Redis 的其他操作，会导致 Redis 无法响应客户端请求，不建议使用。<br>bgsave：执行 bgsave 指令，Redis 后台异步进行快照的保存操作，此时 Redis 仍然能响应客户端的请求。</p>
+<h4 id="RDB-持久化文件的备份"><a href="#RDB-持久化文件的备份" class="headerlink" title="RDB 持久化文件的备份"></a>RDB 持久化文件的备份</h4><p>在实际的生产环境中，我们一般不会使用主节点 Master 来进行持久化备份，我们会通过在 Redis 的多个从服务器上进行 RDB 持久化备份，这样是为了对 Redis 数据的多次备份，防止出现网络分区或者部分节点宕机甚至是硬件损坏的情况发生。</p>
+<p>作为运维或者架构师，应该要定时定期的通过脚本对 Redis 持久化文件进行转移备份，这样双重保险，更加可靠，万一遇到突发情况，也是多一手解决方案。</p>
+<hr>
+<h3 id="AOF-持久化方式"><a href="#AOF-持久化方式" class="headerlink" title="AOF 持久化方式"></a>AOF 持久化方式</h3><h4 id="简介-3"><a href="#简介-3" class="headerlink" title="简介"></a>简介</h4><p>Redis 配置文件中开启，AOF 持久化方案进行备份时，客户端所有请求的写命令都会被追加到 AOF 缓冲区中，缓冲区中的数据会根据 Redis 配置文件中配置的同步策略来同步到磁盘上的 AOF 文件中，同时当 AOF 的文件达到重写策略配置的阈值时，Redis 会对 AOF 日志文件进行重写，给 AOF 日志文件瘦身。Redis 服务重启的时候，通过加载 AOF 日志文件来恢复数据。</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/a2bd9ae133cad87898c6494410ecd9f0.png" alt="Redis-AOF持久化流程 (2).png"></p>
+<h4 id="AOF-配置信息"><a href="#AOF-配置信息" class="headerlink" title="AOF 配置信息"></a>AOF 配置信息</h4><blockquote>
+<p><strong>AOF 默认不开启，默认为 appendonly no，开启则需要修改为 appendonly yes</strong></p>
+<p>appendonly no</p>
+<p><strong>AOF 配置文件的名称默认为 appendonly.aof</strong></p>
+<p>appendfilename “appendonly.aof”</p>
+</blockquote>
+<p><strong>配置文件的地址可以通过在 redis 客户端执行 config get dir 获取，其保存路径与 RDB 一致</strong></p>
+<pre><code class="bash">127.0.0.1:6379&gt; config get dir
+1) &quot;dir&quot;
+2) &quot;/etc/redis&quot;
+</code></pre>
+<hr>
+<ul>
+<li><strong>同步频率配置</strong></li>
+</ul>
+<blockquote>
+<p>OF 日志是以文件的形式存在的，当程序对 AOF 日志文件进行写操作时，实际上将内容写到了内核为文件描述符分配的一个内存缓冲区中，随后内核会异步的将缓冲区中的数据刷新到磁盘中。如果缓冲区中的数据没来得及刷回磁盘时，服务器宕机了，这些数据就会丢失。<br>因此 Redis 通过调用 Linux 操作系统的 glibc 提供的 fsync(int fid)来将指定文件的内容强制从内核缓冲区刷回磁盘，以此来保证缓冲区中的数据不会丢失。不过这是一个 IO 操作，相比 Redis 的性能来说它是非常慢的，所以不能频繁的执行。<br>Redis 配置文件中有三种刷新缓冲区的配置：</p>
+<p>appendfsync always</p>
+<p>每次 Redis 写操作，都写入 AOF 日志，这种配置理论上 Linux 操作系统扛不住，因为 Redis 的并发远远超过了 Linux 操作系统提供的最大刷新频率，就算 Redis 写操作比较少的情况，这种配置也是非常耗性能的，因为涉及到 IO 操作，所以这个配置基本上不会用</p>
+<ul>
+<li>appendfsync everysec</li>
+</ul>
+<p>每秒刷新一次缓冲区中的数据到 AOF 文件，这个 Redis 配置文件中默认的策略，兼容了性能和数据完整性的折中方案，这种配置，理论上丢失的数据在一秒钟左右</p>
+<ul>
+<li>appendfsync no</li>
+</ul>
+<p>Redis 进程不会主动的去刷新缓冲区中的数据到 AOF 文件中，而是直接交给操作系统去判断，这种操作也是不推荐的，丢失数据的可能性非常大。</p>
+</blockquote>
+<p><strong>注意要刷新缓冲区的数据到磁盘需要将如下配置，配置为 no，不是 yes</strong></p>
+<pre><code class="bash">no-appendfsync-on-rewrite no
+</code></pre>
+<hr>
+<ul>
+<li><strong>AOF 修复功能</strong></li>
+</ul>
+<p>AOF 持久化机制正常恢复与 RDB 持久化机制的恢复是一样的，都只需要将备份文件放置到 Redis 的工作目录下，Redis 启动时就会自动的加载。AOF 持久化机制提供了 AOF 文件异常时恢复的功能，这个功能在 AOF 文件损坏的场景中经常被使用到。</p>
+<p><strong>执行 redis-check-aof –fix ..&#x2F;appendonly.aof 对 AOF 日志文件进行修复</strong></p>
+<ul>
+<li><strong>AOF 重写</strong></li>
+</ul>
+<p>前面提到 AOF 的缺点时，说过 AOF 属于日志追加的形式来存储 Redis 的写指令，这会导致大量冗余的指令存储，从而使得 AOF 日志文件非常庞大，比如同一个 key 被写了 10000 次，最后却被删除了，这种情况不仅占内存，也会导致恢复的时候非常缓慢，因此 Redis 提供重写机制来解决这个问题。Redis 的 AOF 持久化机制执行重写后，保存的只是恢复数据的最小指令集，我们如果想手动触发可以使用如下指令：</p>
+<p>bgrewriteaof<br>Redis4.0 后的重写使用的是 RDB 快照和 AOF 指令拼接的方式，在 AOF 文件的头部是 RDB 快照的二进制形式的数据，尾部是快照产生后发生的写入操作的指令。<br>由于重写 AOF 文件时，会对 Redis 的性能带来一定的影响，因此也不能随便的进行自动重写，Redis 提供两个配置用于自动进行 AOF 重写的指标，只有这两个指标同时满足的时候才会发生重写：</p>
+<pre><code class="bash">auto-aof-rewrite-percentage 100：指的是当文件的内存达到原先内存的两倍
+auto-aof-rewrite-min-size 64mb：指的是文件重写的最小内存大小
+</code></pre>
+<h3 id="混合持久化"><a href="#混合持久化" class="headerlink" title="混合持久化"></a>混合持久化</h3><p>Redis4.0 后大部分的使用场景都不会单独使用 RDB 或者 AOF 来做持久化机制，而是兼顾二者的优势混合使用。其原因是 RDB 虽然快，但是会丢失比较多的数据，不能保证数据完整性；AOF 虽然能尽可能保证数据完整性，但是性能确实是一个诟病，比如重放恢复数据。<br>其日志文件结构如下：<img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/aa9e1ef80a9e5af8046010436c8ae878.png" alt="Redis-4.0 混合持久化.png"></p>
+<p>在 reids4.0 以后混合持久化方式默认开启</p>
+<pre><code class="bash">aof-use-rdb-preamble yes
+</code></pre>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://redis.cn/topics/persistence.html">Redis 中文网关于持久化方式选择的介绍</a></p>
+</blockquote>
+<hr>
+<h2 id="6-布隆过滤器"><a href="#6-布隆过滤器" class="headerlink" title="6. 布隆过滤器"></a>6. 布隆过滤器</h2><p>布隆过滤器（Bloom Filter）是 1970 年由布隆提出的。它实际上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都比一般的算法要好的多，缺点是有一定的误识别率和删除困难。</p>
+<p>上面这句介绍比较全面的描述了什么是布隆过滤器，如果还是不太好理解的话，就可以把布隆过滤器理解为一个 set 集合，我们可以通过 add 往里面添加元素，通过 contains 来判断是否包含某个元素。由于本文讲述布隆过滤器时会结合 Redis 来讲解，因此类比为 Redis 中的 Set 数据结构会比较好理解，而且 Redis 中的布隆过滤器使用的指令与 Set 集合非常类似（后续会讲到）。</p>
+<ul>
+<li><strong>布隆过滤器的优点：</strong></li>
+</ul>
+<p>时间复杂度低，增加和查询元素的时间复杂为 O(N)，（N 为哈希函数的个数，通常情况比较小）<br>保密性强，布隆过滤器不存储元素本身<br>存储空间小，如果允许存在一定的误判，布隆过滤器是非常节省空间的（相比其他数据结构如 Set 集合）</p>
+<ul>
+<li><strong>布隆过滤器的缺点：</strong></li>
+</ul>
+<p>有点一定的误判率，但是可以通过调整参数来降低<br>无法获取元素本身<br>很难删除元素</p>
+<ul>
+<li>布隆过滤器的使用场景</li>
+</ul>
+<p>布隆过滤器可以告诉我们<strong>“某样东西一定不存在或者可能存在，也就是说布隆过滤器说这个数不存在则一定不存，布隆过滤器说这个数存在可能不存在</strong>利用这个判断是否存在的特点可以做很多有趣的事情。</p>
+<blockquote>
+<p>解决 Redis 缓存穿透问题（面试重点）<br>邮件过滤，使用布隆过滤器来做邮件黑名单过滤<br>对爬虫网址进行过滤，爬过的不再爬<br>解决新闻推荐过的不再推荐(类似抖音刷过的往下滑动不再刷到)<br>HBase\RocksDB\LevelDB 等数据库内置布隆过滤器，用于判断数据是否存在，可以减少数据库的 IO 请求</p>
+</blockquote>
+<ul>
+<li><strong>布隆过滤器的原理</strong></li>
+</ul>
+<p>布隆过滤器它实际上是一个很长的二进制向量和一系列随机映射函数。以 Redis 中的布隆过滤器实现为例，Redis 中的布隆过滤器底层是一个大型位数组（二进制数组）+多个无偏 hash 函数。<br>一个大型位数组（二进制数组）：</p>
+<p>多个无偏 hash 函数：<br>无偏 hash 函数就是能把元素的 hash 值计算的比较均匀的 hash 函数，能使得计算后的元素下标比较均匀的映射到位数组中。</p>
+<p>如下就是一个简单的布隆过滤器示意图，其中 k1、k2 代表增加的元素，a、b、c 即为无偏 hash 函数，最下层则为二进制数组。</p>
+<blockquote>
+<ul>
+<li><strong>布隆过滤器添加元素</strong></li>
+</ul>
+<p><strong>1 将要添加的元素通过 K 个散列函数进行映射，得到一个位数组中的 K 个点；</strong></p>
+<p><strong>2 将位数组中的 K 个点的值置成1。</strong></p>
+<ul>
+<li><strong>布隆过滤器检索元素</strong></li>
+</ul>
+<p><strong>1 将要查询的元素通过 K 个散列函数进行映射，得到一个位数组中的 K 个点；</strong></p>
+<p><strong>2 判断位数组中的 K 个点对应的值。</strong></p>
+<p><strong>3 如果 K 个点对应的值有一个为0，则一定不在集合中。</strong></p>
+<p><strong>4 如果 K 个点对应的值全部为1，则可能存在集合中。</strong></p>
+</blockquote>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/9ebde5c11ad69447314c216acf188fc8.png" alt="布隆过滤器.png"></p>
+<ul>
+<li><strong>空间计算</strong></li>
+</ul>
+<p>在布隆过滤器增加元素之前，首先需要初始化布隆过滤器的空间，也就是上面说的二进制数组，除此之外还需要计算无偏 hash 函数的个数。布隆过滤器提供了两个参数，分别是预计加入元素的大小 n，运行的错误率 f。布隆过滤器中有算法根据这两个参数会计算出二进制数组的大小 l，以及无偏 hash 函数的个数 k。<br>它们之间的关系比较简单：</p>
+<p>错误率越低，位数组越长，控件占用较大<br>错误率越低，无偏 hash 函数越多，计算耗时较长</p>
+<h3 id="Rebloom-操作"><a href="#Rebloom-操作" class="headerlink" title="Rebloom 操作"></a>Rebloom 操作</h3><ul>
+<li>增加元素</li>
+</ul>
+<p>往布隆过滤器增加元素，添加的 key 需要根据 k 个无偏 hash 函数计算得到多个 hash 值，然后对数组长度进行取模得到数组下标的位置，然后将对应数组下标的位置的值置为 1</p>
+<p>通过 k 个无偏 hash 函数计算得到 k 个 hash 值<br>依次取模数组长度，得到数组索引<br>将计算得到的数组索引下标位置数据修改为 1<br>例如，key &#x3D; Liziba，无偏 hash 函数的个数 k&#x3D;3，分别为 hash1、hash2、hash3。三个 hash 函数计算后得到三个数组下标值，并将其值修改为 1.<br>如图所示：</p>
+<ul>
+<li>查询元素</li>
+</ul>
+<p>布隆过滤器最大的用处就在于判断某样东西一定不存在或者可能存在，而这个就是查询元素的结果。其查询元素的过程如下：</p>
+<p>通过 k 个无偏 hash 函数计算得到 k 个 hash 值<br>依次取模数组长度，得到数组索引<br>判断索引处的值是否全部为 1，如果全部为 1 则存在（这种存在可能是误判），如果存在一个 0 则必定不存在<br>关于误判，其实非常好理解，hash 函数在怎么好，也无法完全避免 hash 冲突，也就是说可能会存在多个元素计算的 hash 值是相同的，那么它们取模数组长度后的到的数组索引也是相同的，这就是误判的原因。例如李子捌和李子柒的 hash 值取模后得到的数组索引都是 1，但其实这里只有李子捌，如果此时判断李子柒在不在这里，误判就出现啦！因此布隆过滤器最大的缺点误判只要知道其判断元素是否存在的原理就很容易明白了！</p>
+<ul>
+<li><p>修改元素</p>
+</li>
+<li><p>删除元素</p>
+</li>
+</ul>
+<p>布隆过滤器对元素的删除不太支持，目前有一些变形的特定布隆过滤器支持元素的删除！关于为什么对删除不太支持，其实也非常好理解，hash 冲突必然存在，删除肯定是很苦难的！</p>
+<blockquote>
+<p>[布隆过滤器][<a target="_blank" rel="noopener" href="https://www.cnblogs.com/z941030/p/9218356.html]">https://www.cnblogs.com/z941030/p/9218356.html]</a></p>
+</blockquote>
+<h3 id="使用Guava中的Rebloom"><a href="#使用Guava中的Rebloom" class="headerlink" title="使用Guava中的Rebloom"></a>使用Guava中的Rebloom</h3><pre><code class="java">package com.puff;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
+
+public class redis &#123;
+
+    /** 预计插入的数据 */
+    private static Integer expectedInsertions = 10000000;
+    /** 误判率 */
+    private static Double fpp = 0.01;
+    /** 布隆过滤器 */
+    private static BloomFilter&lt;Integer&gt; bloomFilter = BloomFilter.create(Funnels.integerFunnel(), expectedInsertions, fpp);
+
+    public static void main(String[] args) &#123;
+        // 插入 1千万数据
+        for (int i = 0; i &lt; expectedInsertions; i++) &#123;
+            bloomFilter.put(i);
+        &#125;
+
+        // 用1千万数据测试误判率
+        int count = 0;
+        for (int i = expectedInsertions; i &lt; expectedInsertions *2; i++) &#123;
+            if (bloomFilter.mightContain(i)) &#123;
+                count++;
+            &#125;
+        &#125;
+
+        System.out.println(&quot;一共误判了：&quot; + count);
+
+    &#125;
+&#125;
+</code></pre>
+<p>结果 </p>
+<pre><code class="java">一共误判了：100075
+
+进程已结束，退出代码为 0
+</code></pre>
+<p>在<code>BloomFilter</code>中</p>
+<pre><code class="java">static &lt;T&gt; BloomFilter&lt;T&gt; create(
+      Funnel&lt;? super T&gt; funnel, long expectedInsertions, double fpp, Strategy strategy) &#123;&#125;;
+/**
+* 参数说明
+* Funnel funnel：数据类型，由Funnels类指定即可
+* long expectedInsertions：预期插入的值的数量
+* fpp：错误率
+* BloomFilter.Strategy：hash算法
+*
+*/
+</code></pre>
+<h3 id="Rebloom解决缓存击穿问题"><a href="#Rebloom解决缓存击穿问题" class="headerlink" title="Rebloom解决缓存击穿问题"></a>Rebloom解决缓存击穿问题</h3><p>先把数据库的数据都加载到我们的 BloomFilter 中，业务 id 如果不存在 BloomFilter 直接异常返回，如下图所示：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231006204543188.png" alt="image-20231006204543188"></p>
+<h2 id="7-过期策略"><a href="#7-过期策略" class="headerlink" title="7. 过期策略"></a>7. 过期策略</h2><p>Redis的数据结构均可以通过EXPIRE key seconds 的方式设置key的过期时间（TTL），当Redis的key过期时间到了，就会按照一定策略删除key，主要过期方式有两种：主动删除、被动删除</p>
+<ul>
+<li>主动删除</li>
+</ul>
+<p>当key被访问的时候，先校验key是否过期，如果过期了则主动删除。</p>
+<ul>
+<li>被动删除</li>
+</ul>
+<p>Redis服务器定时随机的测试key的过期时间，如果过期了则被动删除。被动删除的存在必不可少，因为存在一些过期且永久不在访问的key，如果都依赖主动删除，那么它们将会永久占用内存。<br>Redis为了保证提供高性能服务，被动删除过期的key，采用了贪心策略&#x2F;概率算法，默认每隔10秒扫描一次，具体策略如下：</p>
+<ol>
+<li>从过期字典（设置了过期时间的key的集合）中随机选择20个key，检查其是否过期</li>
+<li>删除其中已经过期的key</li>
+<li>如果删除的过期key数量大于25%，则重复步骤1</li>
+</ol>
+<h3 id="如何设置正确的过期时间"><a href="#如何设置正确的过期时间" class="headerlink" title="如何设置正确的过期时间"></a>如何设置正确的过期时间</h3><p>开发在设计Redis缓存架构时，一定要注意要尽可能的避免（禁止）将大量的key设置为同一过期时间，因为结合被动删除的过程可知，Redis被动删除过期key时，会导致服务短暂的不可用；如果存在大量key同时过期，这会导致被动删除key的三个步骤循环多次，从而导致Redis服务出现卡顿情况，这种情况在大型流量项目是无法接受的。<br>因此为了避免这种情况出现，一定要将一些允许过期时间不需要非常精确的key，设置较为随机的过期时间，这样就可以将卡顿时间缩小。</p>
+<p> 从节点存在的问题<br>在主从模式下，Redis是AP架构，它具有高可用性，但是无法保证主从节点的强一致性。在Redis主从架构中，从节点不会直接发生数据的写入，过期key删除也不会在从节点直接发生，它只能被动地依靠主从同步来完成这一步骤。<br>当主节点中key到期时，会在AOF文件中增加DEL指令，在这个指令未同步到从节点这段时间内，从节点中的key仍然是未删除的。只有当指令同步过来之后，从节点才会删除这个key。通常情况下，这并不带来什么太大的问题，但是确实存在主从数据不一致的情况。</p>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>后面的限流，分布式，分布式锁等内容都较为复杂，都分开来学习吧….</p>
+<p><strong>未完待续</strong></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

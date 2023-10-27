@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>聚合搜索平台 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>聚合搜索平台</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/11
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #03a9f4">项目</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>记录一些puff-Search的笔记</p>
+<span id="more"></span>
+
+
+
+<p>目前的问题：前端目前只能一次搜索出所有数据，无法单独获取某一类数据。接入新的数据源时，都需要在前端增加对应的 axios 调用，后端同事也要增加 service，controller，以及在 facade 中需要增加许多控制调用的代码，重复代码多，系统十分冗余。</p>
+<p>解决方案：</p>
+<ol>
+<li>新增一个type字段：</li>
+</ol>
+<ul>
+<li>前端传入type<ul>
+<li>如果type为空，搜索出所有数据</li>
+<li>如果type不为空：<ul>
+<li>如果type合法，查出对应数据</li>
+<li>如果type不合法，报错</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><p>为了更轻松地接入更多数据源，考虑使用适配器模式</p>
+<p><strong>适配器模式</strong></p>
+<ol>
+<li>定制统一的数据源接入规范（标准接口）：</li>
+</ol>
+<ul>
+<li>什么数据允许接入？</li>
+<li>数据源接入时需要满足什么要求？</li>
+</ul>
+<ol start="2">
+<li>当数据源已经支持了搜索，但是原有方法参数和我们规范不一致时，使用适配器模式：通过适配器转换，让两个系统完成对接。</li>
+</ol>
+</li>
+</ol>
+<p>系统中使用到的其他设计模式：</p>
+<p><strong>门面模式</strong></p>
+<p>在原本系统中，AggregateSearchController类中的代码抽象出来一个新的类facade类，该类就是门面类（controller中不宜堆积太多代码），只需要在controller中调用抽象出来的facade类中的方法即可。（原本AggregateSearchController类实现的就是门面类的功能，但是没有将其中代码抽象成一个类）</p>
+<p><em>当调用你系统（接口）的客户端觉得麻烦的时候，就应该思考，是不是可以抽象一个门面了</em></p>
+<p><strong>注册器模式</strong></p>
+<p>提前通过一个map或者其他类型存储好后面需要调用的对象。</p>
+<p>效果：替代了if…else…，代码量大幅度减少，可维护可扩展            </p>
+<h3 id="高亮显示"><a href="#高亮显示" class="headerlink" title="高亮显示"></a>高亮显示</h3><pre><code class="java">String contentHighLight = postIdContentHighLight.get(postId);
+if (StrUtil.isNotBlank(contentHighLight)) &#123;
+    post.setContent(contentHighLight);
+&#125;
+</code></pre>
+<p>在高亮显示时能直接替换掉原有content是因为原本需要高亮展示的就不是完整的正文内容，而是只需要匹配到searchText的关系字段（只需要部分内容就好）</p>
+<h3 id="Java操作Es的几种方式"><a href="#Java操作Es的几种方式" class="headerlink" title="Java操作Es的几种方式"></a>Java操作Es的几种方式</h3><ul>
+<li><p>使用ES提供的java操作ES的<code>java-api-client</code> <a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/7.17/connecting.html">官网</a></p>
+</li>
+<li><p>使用ES提供的<code>highLevelRestClient</code></p>
+</li>
+<li><p>使用<code>Spring Data Rlasticsearch</code></p>
+<ul>
+<li><p>第一种方式: 使用继承ElasticsearchRepository&lt;PostEsDTO, Long&gt;，默认提供了简单的增删改查，多用于可预期的、相对没那么复杂的查询、自定义查询，返回结果相对简单直接。</p>
+</li>
+<li><p>第二种方式: Spring 默认给我们提供的操作es的客户端对象 ，ElasticsearchRestTemplate，也提供了增删改查，它的增删改查更灵活，适用于更复杂的操作，返回结果更完整，但需要自己解析。对于复杂的查询，建议用第二种方式。<br>三个步骤:<br>1．取参数</p>
+<p>2．把参数组合为ES支持的搜索条件</p>
+<p>3.从返回值中取结果</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="一些报错"><a href="#一些报错" class="headerlink" title="一些报错"></a>一些报错</h3><ul>
+<li><p>elasticSearch启动报错</p>
+<pre><code class="shell">[ERROR][o.e.i.g.GeoIpDownloader  ] [06A8DD4C-A847-4] exception during geoip databases update
+org.elasticsearch.ElasticsearchException: not all primary shards of [.geoip_databases] index are active
+</code></pre>
+<p>因为他启动时会去更新地图的一些数据库，这里直接禁掉即可，用到时再说，在配置文件conf&#x2F;elasticsearch.yml，增加配置</p>
+<pre><code>ingest.geoip.downloader.enabled: false
+</code></pre>
+</li>
+</ul>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

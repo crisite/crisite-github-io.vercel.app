@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Jedis和RedisTemplate | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Jedis和RedisTemplate</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Redis/" style="color: #ffa2c4">Redis</a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Java/" style="color: #ff7d73">Java</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>Jedis和RedisTemplate的使用方法</p>
+<span id="more"></span>
+
+<p>1、redisTemplate是基于某个具体实现的再封装，比如说springBoot1.x时，具体实现是jedis；而到了springBoot2.x时，具体实现变成了lettuce。封装的好处就是隐藏了具体的实现，使调用更简单，但是有人测试过jedis效率要10-30倍的高于redisTemplate的执行效率，所以单从执行效率上来讲，jedis完爆redisTemplate。redisTemplate的好处就是基于springBoot自动装配的原理，使得整合redis时比较简单。</p>
+<p>2、jedis作为老牌的redis客户端，采用同步阻塞式IO，采用线程池时是线程安全的。优点是简单、灵活、api全面，缺点是某些redis高级功能需要自己封装。</p>
+<p>3、lettuce作为新式的redis客户端，基于netty采用异步非阻塞式IO，是线程安全的，优点是提供了很多redis高级功能，例如集群、哨兵、管道等，缺点是api抽象，学习成本高。lettuce好是好，但是jedis比他生得早。</p>
+<p>4、redission作为redis的分布式客户端，同样基于netty采用异步非阻塞式IO，是线程安全的，优点是提供了很多redis的分布式操作和高级功能，缺点是api抽象，学习成本高。</p>
+<h2 id="Jedis使用"><a href="#Jedis使用" class="headerlink" title="Jedis使用"></a>Jedis使用</h2><pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;redis.clients&lt;/groupId&gt;
+    &lt;artifactId&gt;jedis&lt;/artifactId&gt;
+    &lt;version&gt;5.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<pre><code class="java">// best way -&gt; JedisPool
+JedisPool pool = new JedisPool(&quot;localhost&quot;, 6379);  
+try (Jedis jedis = pool.getResource()) &#123;
+  jedis.set(&quot;clientName&quot;, &quot;Jedis&quot;);
+&#125;
+
+// easier way -&gt; JedisPooled
+JedisPooled jedis = new JedisPooled(&quot;localhost&quot;, 6379);
+jedis.sadd(&quot;planets&quot;, &quot;Venus&quot;);
+</code></pre>
+<ul>
+<li>连接redis集群</li>
+</ul>
+<pre><code class="java">Set&lt;HostAndPort&gt; jedisClusterNodes = new HashSet&lt;HostAndPort&gt;();
+jedisClusterNodes.add(new HostAndPort(&quot;127.0.0.1&quot;, 7379));
+jedisClusterNodes.add(new HostAndPort(&quot;127.0.0.1&quot;, 7380));
+JedisCluster jedis = new JedisCluster(jedisClusterNodes);
+jedis.sadd(&quot;planets&quot;, &quot;Mars&quot;);
+</code></pre>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://kgithub.com/redis/jedis/wiki">Jedis-wiki</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.javadoc.io/doc/redis.clients/jedis/latest/index.html">Jedis-JavaDoc</a></p>
+</blockquote>
+<h2 id="RedisTemplate"><a href="#RedisTemplate" class="headerlink" title="RedisTemplate"></a>RedisTemplate</h2><p>Spring-data-redis是spring大家族的一部分，提供了在srping应用中通过简单的配置访问redis服务，对reids底层开发包(Jedis,  JRedis, and RJC)进行了高度封装，RedisTemplate提供了redis各种操作、异常处理及序列化，支持发布订阅，并对spring 3.1 cache进行了实现。 <strong>spring-data-redis针对jedis提供了如下功能：</strong></p>
+<ol>
+<li>连接池自动管理，提供了一个高度封装的“RedisTemplate”类</li>
+<li>针对jedis客户端中大量api进行了归类封装,将同一类型操作封装为operation接口</li>
+</ol>
+<ul>
+<li>ValueOperations：简单K-V操作</li>
+<li>SetOperations：set类型数据操作</li>
+<li>ZSetOperations：zset类型数据操作</li>
+<li>HashOperations：针对map类型的数据操作</li>
+<li>ListOperations：针对list类型的数据操作</li>
+</ul>
+<ol>
+<li>提供了对key的“bound”(绑定)便捷化操作API，可以通过bound封装指定的key，然后进行一系列的操作而无须“显式”的再次指定Key，即BoundKeyOperations：</li>
+</ol>
+<ul>
+<li>BoundValueOperations</li>
+<li>BoundSetOperations</li>
+<li>BoundListOperations</li>
+<li>BoundSetOperations</li>
+<li>BoundHashOperations</li>
+</ul>
+<ol>
+<li>将事务操作封装，有容器控制。</li>
+<li>针对数据的“序列化&#x2F;反序列化”，提供了多种可选择策略(RedisSerializer)</li>
+</ol>
+<p>JdkSerializationRedisSerializer：POJO对象的存取场景，使用JDK本身序列化机制，将pojo类通过ObjectInputStream&#x2F;ObjectOutputStream进行序列化操作，最终redis-server中将存储字节序列。是目前最常用的序列化策略。</p>
+<p>StringRedisSerializer：Key或者value为字符串的场景，根据指定的charset对数据的字节序列编码成string，是“new String(bytes, charset)”和“string.getBytes(charset)”的直接封装。是最轻量级和高效的策略。</p>
+<p>JacksonJsonRedisSerializer：jackson-json工具提供了javabean与json之间的转换能力，可以将pojo实例序列化成json格式存储在redis中，也可以将json格式的数据转换成pojo实例。因为jackson工具在序列化和反序列化时，需要明确指定Class类型，因此此策略封装起来稍微复杂。【需要jackson-mapper-asl工具支持】</p>
+<ul>
+<li>使用redisTemplate</li>
+</ul>
+<pre><code class="xml">&lt;!--Redis--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<pre><code class="yaml"># Redis服务器连接端口
+spring.redis.port=6379
+# Redis服务器地址
+spring.redis.host=127.0.0.1
+# Redis数据库索引（默认为0）
+spring.redis.database=0
+# Redis服务器连接密码（默认为空）
+spring.redis.password=
+# 连接池最大连接数（使用负值表示没有限制）
+spring.redis.jedis.pool.max-active=8
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+spring.redis.jedis.pool.max-wait=-1ms
+# 连接池中的最大空闲连接
+spring.redis.jedis.pool.max-idle=8
+# 连接池中的最小空闲连接
+spring.redis.jedis.pool.min-idle=0
+# 连接超时时间（毫秒）
+spring.redis.timeout=5000ms
+</code></pre>
+<pre><code class="java">// 注入redisTemplate
+@Autowired
+private RedisTemplate redisTemplate;
+</code></pre>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7175756564752990267">redisTemplate使用</a></p>
+</blockquote>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

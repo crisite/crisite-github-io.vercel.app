@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>手撕LRU | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>手撕LRU</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/7
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #00bdc4">算法</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>时间复杂度为O(1)的LRU算法</p>
+<span id="more"></span>
+
+<h2 id="思考流程"><a href="#思考流程" class="headerlink" title="思考流程"></a>思考流程</h2><p>LRU需要再指定的空间存满数据时，移除最久为访问的元素。 —-&gt;</p>
+<p>需要一个数据结构对数据进行按访问顺序排序，因为需要频繁插入元素 ，故而需要一个能快速增删改查的数据结构  ——-&gt;</p>
+<p>增删改最快无疑是链表，时间复杂度O(1)，查询HashMap时间复杂度O(1) ——&gt;</p>
+<p>当一个已经存在链表中的元素被访问到时，需要将其移到链表头部，因此要能快速访问该元素的前驱节点 —–&gt;</p>
+<p>故而选择：双向链表+HashMap</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231007005843620.png" alt="image-20231007005843620"></p>
+<ul>
+<li><p><strong>为什么需要hashmap呢?</strong></p>
+<p>因为我们需要能快速的定位到一个元素（节点）在doubleLinkedList中的位置，但是doubleLinkedList是无法快速定位到元素的，他的查找效率是O(N)，</p>
+<p>但是如果在hashmap的 value中缓存Node的话(实际存的是指针,指向双向链表的Node)，就可以通过hashmap快速定位到doubleLinkedList的每一个节点。这样查找效率就是O(1)。同时通过hashmap也可以通过<code>map.containsKey</code>来判断元素是否存在。</p>
+</li>
+</ul>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231007223948693.png" alt="image-20231007223948693"></p>
+<ul>
+<li><strong>源码</strong></li>
+</ul>
+<pre><code class="java">/**
+ * 1. 定义一个Node节点
+ * 2. 要建立双向链表，链表节点需要有前驱和后继节点
+ *
+ */
+class Node&#123;
+    Integer key;
+    Integer value;
+    Node next;
+    Node prev;
+
+    Node() &#123;
+        this.next = this.prev = null;
+    &#125;
+
+    Node(Integer key, Integer value) &#123;
+        this.key = key;
+        this.value = value;
+        this.next =  this.prev = null;
+    &#125;
+&#125;
+
+/**
+ * 2. 定义一个双向链表 (这个双向链表就只是个双向链表)
+ * LRUCache将使用这个链表来实现需要的功能
+ */
+class DoubleLinkedList &#123;
+    Node head;
+    Node tail;
+
+    // 初始化
+    DoubleLinkedList() &#123;
+        head = new Node();
+        tail = new Node();
+        head.next = tail;
+        tail.prev = head;
+    &#125;
+
+    // 存放节点
+    void addHead(Node node) &#123;
+        if (node != null) &#123;
+            node.next = head.next;
+            node.prev = head;
+            head.next.prev = node;
+            head.next = node;
+        &#125;
+    &#125;
+
+    // 删除节点
+    public void removeNode(Node node) &#123;
+        node.next.prev = node.prev;
+        node.prev.next = node.next;
+        node.next = null;
+        node.prev = null;
+    &#125;
+
+    // 获得最后一个节点
+    public Node getLastNode() &#123;
+        return tail.prev;
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="java">public class LRUCacheDemo &#123;
+
+    // 容量大小
+    private int capacity;
+    // 构建一个Hashmap
+    Map&lt;Integer, Node&gt; map;
+    // 构建一个双向链表
+    DoubleLinkedList doubleLinkedList;
+
+    /** 初始化LRU容器
+     *  容器操作双向链表实现LRU的功能
+     *  双向链表快速增删，哈希表快速查询
+     */
+    public LRUCacheDemo(int capacity) &#123;
+        this.capacity = capacity;
+        map = new HashMap&lt;&gt;();
+        doubleLinkedList = new DoubleLinkedList();
+    &#125;
+
+    // 将访问的元素加入到容器
+    public void put(int key, int value) &#123;
+        // 容器中原本就存储了该元素则将该元素在双向链表的位置移动到头部
+        if (map.containsKey(key)) &#123;
+            Node node = map.get(key);
+            doubleLinkedList.removeNode(node);
+            doubleLinkedList.addHead(node);
+            return;
+        &#125;
+        // 如果容量已满则移除末尾元素，再添加元素到头部
+        // 如果容量未满则直接添加元素到头部
+        Node node = new Node(key, value);
+        if (map.size() &gt;= capacity) &#123;
+            Node lastNode = doubleLinkedList.getLastNode();
+            map.remove(lastNode.key);
+            doubleLinkedList.removeNode(lastNode);
+        &#125;
+        map.put(key, node);
+        doubleLinkedList.addHead(node);
+    &#125;
+
+    public static void main(String[] args) &#123;
+        // 创建一个容量大小为3的LRU容器
+        LRUCacheDemo lruCacheDemo = new LRUCacheDemo(3);
+        lruCacheDemo.put(1,1);
+        lruCacheDemo.put(2,2);
+        lruCacheDemo.put(3,3);
+        lruCacheDemo.put(4,4);
+        lruCacheDemo.put(5,5);
+        lruCacheDemo.put(1,1);
+        lruCacheDemo.put(2,2);
+        System.out.println(lruCacheDemo.map.keySet());
+    &#125;
+
+&#125;
+</code></pre>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

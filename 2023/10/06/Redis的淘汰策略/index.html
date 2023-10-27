@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Redis的淘汰策略 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Redis的淘汰策略</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/6
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Redis/" style="color: #ff7d73">Redis</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p><strong>面试必考点</strong></p>
+<p>同样，主要是向<a target="_blank" rel="noopener" href="https://liziba.blog.csdn.net/?type=blog">李子捌</a> 学习</p>
+<span id="more"></span>
+
+<h2 id="淘汰策略简介"><a href="#淘汰策略简介" class="headerlink" title="淘汰策略简介"></a>淘汰策略简介</h2><p>Redis是基于内存存储的key-value数据库，我们知道内存虽然快但空间小，当物理内存达到上限时，系统就会跑的很慢，这是因为swap机制会将部分内存的数据转移到swap分区中，通过与swap的交换保证系统继续运行；但是swap属于硬盘存储，速度远远比不上内存，尤其是对于Redis这种QPS非常高的服务，发生这种情况是无法接收的。（注意如果swap分区内存也满了，系统就会发生错误！）</p>
+<h3 id="maxmemory配置"><a href="#maxmemory配置" class="headerlink" title="maxmemory配置"></a>maxmemory配置</h3><p>Redis针对上述问题提供了maxmemory配置，这个配置可以指定Redis存储器的最大数据集，通常情况都是在redis.conf文件中进行配置，也可以运行时使用CONFIG SET命令进行一次性配置。<br><strong>redis.conf文件中的配置项示意图：</strong></p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231006213419534.png" alt="image-20231006213419534"></p>
+<p>默认情况maxmemory配置项并未启用，Redis官方介绍64位操作系统默认无内存限制，32位操作系统默认3GB隐式内存配置，如果maxmemory 为0，代表内存不受限。</p>
+<p>因此我们在做缓存架构时，要根据硬件资源+业务需求做合适的maxmemory配置。</p>
+<h3 id="内存达到maxmemory怎么办"><a href="#内存达到maxmemory怎么办" class="headerlink" title="内存达到maxmemory怎么办"></a>内存达到maxmemory怎么办</h3><p>很显然配置了最大内存，当maxmemory达到了最大上限之后Redis不可能不干活了，那么Redis是怎么来处理这个问题的呢？这就是本文的重点，Redis 提供了maxmemory-policy淘汰策略（本文只讲述LRU不涉及LFU，LFU在下一篇文章讲述），对满足条件的key进行删除，辞旧迎新。</p>
+<ul>
+<li><p>maxmemory-policy淘汰策略：</p>
+</li>
+<li><p>noeviction：当达到内存限制并且客户端尝试执行可能导致使用更多内存的命令时返回错误，简单来说读操作仍然允许，但是不准写入新的数据，del（删除）请求可以。</p>
+</li>
+<li><p>allkeys-lru：从全体key中，通过lru（Least Recently Used - 最近最少使用）算法进行淘汰</p>
+</li>
+<li><p>allkeys-random：从全体key中，随机进行淘汰</p>
+</li>
+<li><p>volatile-lru：从设置了过期时间的全部key中，通过lru（Least Recently Used - 最近最少使用）算法进行淘汰，这样可以保证未设置过期时间需要被持久化数据，不会被选中淘汰</p>
+</li>
+<li><p>volatile-random：从设置了过期时间的全部key中，随机进行淘汰</p>
+</li>
+<li><p>volatile-ttl：从设置了过期时间的全部key中，通过比较key的剩余过期时间TTL的值，TTL越小越先被淘汰</p>
+</li>
+</ul>
+<h2 id="LRU算法"><a href="#LRU算法" class="headerlink" title="LRU算法"></a>LRU算法</h2><p>举个栗子，代码就不贴了。选择一个队列，按访问顺序进行排序排序入队，如果包含则移除元素，移除后再重新加入元素，保证新访问的元素在队列最前面，当到达最大内存时，淘汰最近最少使用的key（队列先进先出）</p>
+<p>通过这种方案，可以很简单的实现LRU算法；但缺点也十分明显，方案需要使用额外的数据结构来保存key的访问顺序，这样会使Redis内存消耗增加，本身用来优化内存的方案，却要消耗不少内存，显然是不行的。</p>
+<h3 id="Redis的近似LRU"><a href="#Redis的近似LRU" class="headerlink" title="Redis的近似LRU"></a>Redis的近似LRU</h3><p>针对这种情况，Redis使用了近似LRU算法，并不是完完全全准确的淘汰掉最近最不经常使用的key，但是总体的准确度也可以得到保证。<br>近似LRU算法非常简单，在Redis的key对象中，增加24bit用于存储最近一次访问的系统时间戳，当客户端对Redis服务端发送key的写入相关请求时，发现内存达到maxmemory，此时触发惰性删除；Redis服务通过随机采样，选择5个满足条件的key（注意这个随机采样allkeys-lru是从所有的key中随机采样，volatile-lru是从设置了过期时间的所有key中随机采样），通过key对象中记录的最近访问时间戳进行比较，淘汰掉这5个key中最旧的key；如果内存仍然不够，就继续重复这个步骤。</p>
+<p>注意，5是Redis默认的随机采样数值大小，它可以通过redis.conf中的maxmemory_samples进行配置：<br><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231006222448587.png" alt="image-20231006222448587"></p>
+<p><strong>针对上述的随机LRU算法，Redis官方给出了一张测试准确性的数据图：</strong></p>
+<ul>
+<li>最上层浅灰色表示被淘汰的key，图一是标准的LRU算法淘汰的示意图</li>
+<li>中间深灰色层表示未被淘汰的旧key</li>
+<li>最下层浅绿色表示最近被访问的key</li>
+</ul>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231006222527754.png" alt="image-20231006222527754"></p>
+<p>在Redis 3.0 maxmemory_samples设置为10的时候，Redis的近似LRU算法已经非常的接近真实LRU算法了，但是显然maxmemory_samples设置为10比maxmemory_samples 设置为5要更加消耗CPU计算时间，因为每次采样的样本数据增大，计算时间也会增加。<br>Redis3.0的LRU比Redis2.8的LRU算法更加准确，是因为Redis3.0增加了一个与maxmemory_samples相同大小的淘汰池，每次淘汰key的时候，先与淘汰池中等待被淘汰的key进行比较，最后淘汰掉最老旧的key，其实就是被选中淘汰的key放到一起再比较一下，淘汰其中最旧的。</p>
+<h3 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h3><p>LRU算法看似比较好用，但是也存在不合理的地方，比如A和B两个key，在发生淘汰时的前一个小时前同一时刻添加到Redis，A在前49分钟被访问了1000次，但是后11分钟没有被访问；B在这一个小时内仅仅第59分钟被访问了1次；此时如果使用LRU算法，如果A、B均被Redis采样选中，A将会被淘汰很显然这个是不合理的。</p>
+<p>针对这种情况Redis 4.0添加了LFU算法，(Least frequently used) 最不经常使用，这种算法比LRU更加合理</p>
+<h2 id="LRU算法-1"><a href="#LRU算法-1" class="headerlink" title="LRU算法"></a>LRU算法</h2><p><strong>LRU与LFU的区别：</strong></p>
+<ul>
+<li>LRU -&gt; Recently Used，根据最近一次访问的时间比较</li>
+<li>LFU -&gt; Frequently Used，根据key的访问频率比较</li>
+</ul>
+<p><strong>Redis4.0之后为maxmemory_policy淘汰策略添加了两个LFU模式</strong>：</p>
+<ul>
+<li>volatile-lfu：对有过期时间的key采用LFU淘汰算法</li>
+<li>allkeys-lfu：对全部key采用LFU淘汰算法</li>
+</ul>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><p>Redis分配一个字符串的最小空间占用是19字节，16字节（对象头）+3字节（SDS基本字段）。Redis的内存淘汰算法LRU&#x2F;LFU均依靠其中的对象头中的lru来实现。<br>Redis对象头的内存结构：</p>
+<pre><code class="c">typedef struct redisObject &#123;
+    unsigned type:4;        // 4 bits 对象的类型（zset、set、hash等）
+    unsigned encoding:4;    // 4 bits 对象的存储方式（ziplist、intset等）
+    unsigned lru:24;        // 24bits 记录对象的访问信息
+    int refcount;            // 4 bytes 引用计数
+    void *ptr;                // 8 bytes （64位操作系统），指向对象具体的存储地址/对象body
+&#125;
+</code></pre>
+<p>Redis对象头中的lru字段，在LRU模式下和LFU模式下使用方式并不相同。</p>
+<ul>
+<li><strong>LRU实现方式</strong></li>
+</ul>
+<p>在LRU模式，lru字段存储的是key被访问时Redis的时钟server.lrulock（Redis为了保证核心单线程服务性能，缓存了Unix操作系统时钟，默认每毫秒更新一次，缓存的值是Unix时间戳取模2^24）。当key被访问的时候，Redis会更新这个key的对象头中lru字段的值。<br>因此在LRU模式下，Redis可以根据对象头中的lru字段记录的值，来比较最后一次key的访问时间。</p>
+<ul>
+<li><strong>LFU实现方式</strong></li>
+</ul>
+<p>在LFU模式下，Redis对象头的24bit lru字段被分成两段来存储，高16bit存储ldt(Last Decrement Time)，低8bit存储logc(Logistic Counter)。</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231006224550389.png" alt="image-20231006224550389"></p>
+<p>高16bit用来记录最近一次计数器降低的时间，由于只有8bit，<strong>存储的是Unix分钟时间戳取模2^16</strong>，16bit能表示的最大值为65535（65535&#x2F;24&#x2F;60≈45.5），大概45.5天会折返（折返指的是取模后的值重新从0开始）。</p>
+<ul>
+<li><strong>Redis的LRU算法和常规LRU算法的区别</strong></li>
+</ul>
+<p>redis采用的是近似LRU算法，常规LRU是通过双向链表+HashMap实现，而Redis的实现方式是通过在对象头中添加一个24位的时间戳，然后在内存达到<code>maxmemoy</code>时，随机选取5个对象比较其时间戳，淘汰时间戳最小的对象。其中，选取数量通过<code>maxmemory-sample</code>控制，数量越大越接近真实的LRU算法，但同时计算成本也越大</p>
+<h2 id="源码剖析"><a href="#源码剖析" class="headerlink" title="源码剖析"></a>源码剖析</h2><blockquote>
+<p>先挖坑</p>
+</blockquote>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

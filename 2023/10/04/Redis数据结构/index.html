@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Redis数据结构 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Redis数据结构</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Redis/" style="color: #03a9f4">Redis</a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>Redis5中基本数据类型String、List、Hash、Set、Zset，几种特殊数据类型HyperLogLogs、Bitmaps、Stream、Bitfiled</p>
+<span id="more"></span>
+
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">简介</th>
+<th align="left">特性</th>
+<th align="left">场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">String(字符串)</td>
+<td align="left">二进制安全</td>
+<td align="left">可以包含任何数据,比如jpg图片或者序列化的对象,一个键最大能存储512M</td>
+<td align="left">1、热点数据及其对象缓存 <br/> 2 、分布式Session共享<br/>3、分布式锁(利用setnx命令)<br/>4、Redis独立部署，可以用来作为全局唯一ID<br/>5、利用其原子性递增命令，可以作为计数器或者限流等</td>
+</tr>
+<tr>
+<td align="left">List(列表)</td>
+<td align="left">链表(双向链表)</td>
+<td align="left">增删快,提供了操作某一段元素的API</td>
+<td align="left">1,最新消息排行等功能(比如朋友圈的时间线) 2,消息队列</td>
+</tr>
+<tr>
+<td align="left">Hash(字典)</td>
+<td align="left">键值对集合,即编程语言中的Map类型</td>
+<td align="left">适合存储对象,并且可以像数据库中update一个属性一样只修改某一项属性值(Memcached中需要取出整个字符串反序列化成对象修改完再序列化存回去)</td>
+<td align="left">存储、读取、修改用户属性</td>
+</tr>
+<tr>
+<td align="left">Set(集合)</td>
+<td align="left">哈希表实现,元素不重复</td>
+<td align="left">1、添加、删除,查找的复杂度都是O(1) 2、为集合提供了求交集、并集、差集等操作</td>
+<td align="left">1、共同好友 <br/>2、利用唯一性,统计访问网站的所有独立ip<br/> 3、好友推荐时,根据tag求交集,大于某个阈值就可以推荐</td>
+</tr>
+<tr>
+<td align="left">Sorted Set(有序集合)</td>
+<td align="left">将Set中的元素增加一个权重参数score,元素按score有序排列</td>
+<td align="left">数据插入集合时,已经进行天然排序</td>
+<td align="left">1、排行榜 <br/>2、带权重的消息队列</td>
+</tr>
+<tr>
+<td align="left">Bitmaps（位图）</td>
+<td align="left">Bitmaps 是Redis提供给使用者用于操作位的“数据类型”</td>
+<td align="left">Bitmaps底层就是字符串（key-value），byte数组。Bitmaps底层就是字符串（key-value），byte数组。Bitmaps设置时key不存在会自动生成一个新的字符串，如果设置的偏移量超出了现有内容的范围，就会自动将位数组进行零扩充</td>
+<td align="left">是否登录，用户是否留存，是否收藏商品，是否点赞等等</td>
+</tr>
+<tr>
+<td align="left">geospatial(地理位置)</td>
+<td align="left"></td>
+<td align="left">没用过</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">hyperloglogs（基数统计）</td>
+<td align="left"></td>
+<td align="left">没用过</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><blockquote>
+<p>Redis中string(字符串)是动态字符串，允许修改；它在结构上的实现类似于Java中的ArrayList（默认构造一个大小为10的初始数组），这是冗余分配内存的思想，也称为预分配；这种思想可以减少扩容带来的性能消耗。</p>
+</blockquote>
+<h3 id="String的扩容"><a href="#String的扩容" class="headerlink" title="String的扩容"></a>String的扩容</h3><p>当string(字符串)的大小达到扩容阈值时，将会对string(字符串)进行扩容，string(字符串)的扩容主要有以下几个点：</p>
+<p>长度小于1MB，扩容后为原先的两倍; length &#x3D; length * 2<br>长度大于1MB，扩容后增加1MB; length &#x3D; length + 1MB<br>字符串的长度最大值为 512MB</p>
+<h3 id="String操作指令"><a href="#String操作指令" class="headerlink" title="String操作指令"></a>String操作指令</h3><pre><code class="bash">set key vvalue
+get key
+del key [key ...]
+
+127.0.0.1:6379&gt; set name puffstring
+OK
+127.0.0.1:6379&gt; get name
+&quot;puffstring&quot;
+127.0.0.1:6379&gt; del name
+(integer) 1
+127.0.0.1:6379&gt; get name
+(nil)
+</code></pre>
+<ul>
+<li>批量插入</li>
+</ul>
+<pre><code class="bash">mset key value [key value …]
+mget key [key …]
+
+127.0.0.1:6379&gt; mset name puff1 name2 puff2
+OK
+127.0.0.1:6379&gt; mget name name2
+1) &quot;puff1&quot;
+2) &quot;puff2&quot;
+</code></pre>
+<ul>
+<li>过期set命令</li>
+</ul>
+<p>过期set是通过设置一个缓存key的过期时间，使得缓存到期后自动删除从而失效的机制。</p>
+<p>expire &#x2F; setex</p>
+<pre><code class="bash">expire key seconds
+setex key seconds value
+
+127.0.0.1:6379&gt; set name puff
+OK
+127.0.0.1:6379&gt; get name
+&quot;puff&quot;
+127.0.0.1:6379&gt; expire name 10
+(integer) 1
+127.0.0.1:6379&gt; get name
+(nil)
+
+127.0.0.1:6379&gt; setex name 10 puff
+OK
+127.0.0.1:6379&gt; get name
+&quot;puff&quot;
+127.0.0.1:6379&gt; get name
+(nil)
+p[]
+</code></pre>
+<ul>
+<li>setnx -&gt; 不存在创建存在不更新</li>
+</ul>
+<pre><code class="bash">setnx key value
+
+127.0.0.1:6379&gt; setnx name puff
+(integer) 1
+127.0.0.1:6379&gt; get name
+&quot;puff&quot;
+127.0.0.1:6379&gt; setnx name puff2
+(integer) 0
+127.0.0.1:6379&gt; get name
+&quot;puff&quot;
+</code></pre>
+<ul>
+<li>计数，当v阿鲁是整数时，可以对value进行自增的操作，自增的范围必须在signed long的区间访问内</li>
+</ul>
+<p>incr- &gt; 自增1</p>
+<p>incrby -&gt; 自定义累加值</p>
+<pre><code class="bash">incr key
+incr key increment
+
+127.0.0.1:6379&gt; set fans 1000
+OK
+127.0.0.1:6379&gt; incr fans # 自增1
+(integer) 1001
+
+127.0.0.1:6379&gt; set fans 1000
+OK
+127.0.0.1:6379&gt; incr fans
+(integer) 1001
+127.0.0.1:6379&gt; incrby fans 999
+(integer) 2000
+</code></pre>
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><p>list、set、<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=hash&spm=1001.2101.3001.7020">hash</a>、zset这四种数据结构是容器型数据结构，它们共享下面两条通用规则：</p>
+<ul>
+<li>create if not exists：容器不存在则创建</li>
+<li>drop if no elements：如果容器中没有元素，则立即删除容器，释放内存</li>
+</ul>
+<blockquote>
+<p> Redis的列表相当于Java语言中的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=LinkedList&spm=1001.2101.3001.7020">LinkedList</a>，它是一个双向链表数据结构（但是这个结构设计比较巧妙），支持前后顺序遍历。链表结构插入和删除操作快，时间复杂度O(1)，查询慢，时间复杂度O(n)。</p>
+</blockquote>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>根据Redis双向列表的特性，因此其也被用于异步队列的使用。实际开发中将需要延后处理的任务结构体序列化成<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2&spm=1001.2101.3001.7020">字符串</a>，放入Redis的队列中，另一个线程从这个列表中获取数据进行后续处理。其流程类似如下的图：<img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/20210705000426791.png" alt="在这里插入图片描述"></p>
+<h3 id="List操作指令"><a href="#List操作指令" class="headerlink" title="List操作指令"></a>List操作指令</h3><ul>
+<li><p>右进左出-队列</p>
+</li>
+<li><p>右进右出-栈</p>
+</li>
+</ul>
+<p>lpush -&gt; 从左边边添加元素</p>
+<blockquote>
+<p> lpush key value [value …]</p>
+</blockquote>
+<p> rpush -&gt; 从右边添加元素</p>
+<blockquote>
+<p> rpush key value [value …]</p>
+</blockquote>
+<p>llen -&gt; 获取列表的长度</p>
+<blockquote>
+<p> llen key</p>
+</blockquote>
+<p>lpop -&gt; 从左边弹出元素</p>
+<blockquote>
+<p> lpop key</p>
+</blockquote>
+<p>rpop -&gt; 从左边弹出元素</p>
+<blockquote>
+<p>rpop key</p>
+</blockquote>
+<ul>
+<li>慢操作</li>
+</ul>
+<p>lindex -&gt; 遍历获取列表指定索引处的值</p>
+<blockquote>
+<p>lindex key ind</p>
+</blockquote>
+<p>lrange -&gt; 获取从索引start到stop处的全部值</p>
+<blockquote>
+<p>lrange key start stop</p>
+</blockquote>
+<p>ltrim -&gt; 截取索引start到stop处的全部值，其它将会被删除</p>
+<blockquote>
+<p>ltrim key start stop\</p>
+</blockquote>
+<pre><code class="bash">127.0.0.1:6379&gt; rpush code java c python
+(integer) 3
+127.0.0.1:6379&gt; lindex code 0		# 获取索引为0的数据
+&quot;java&quot;
+127.0.0.1:6379&gt; lindex code 1   # 获取索引为1的数据
+&quot;c&quot;
+127.0.0.1:6379&gt; lindex code 2		# 获取索引为2的数据
+&quot;python&quot;
+127.0.0.1:6379&gt; lrange code 0 -1	# 获取全部 0 到倒数第一个数据  == 获取全部数据
+1) &quot;java&quot;
+2) &quot;c&quot;
+3) &quot;python&quot;
+127.0.0.1:6379&gt; ltrim code 0 -1	# 截取并保理 0 到 -1 的数据 == 保理全部
+OK
+127.0.0.1:6379&gt; lrange code 0 -1
+1) &quot;java&quot;
+2) &quot;c&quot;
+3) &quot;python&quot;
+127.0.0.1:6379&gt; ltrim code 1 -1	# 截取并保理 1 到 -1 的数据 == 移除了索引为0的数据 java
+OK
+127.0.0.1:6379&gt; lrange code 0 -1
+1) &quot;c&quot;
+2) &quot;python&quot;
+</code></pre>
+<h3 id="list-列表-深入理解"><a href="#list-列表-深入理解" class="headerlink" title="list(列表)深入理解"></a>list(列表)深入理解</h3><p>Redis底层存储list(列表)不是一个简单的LinkedList，而是quicklist ——“快速列表”。<br>quicklist是多个ziplist(压缩列表)组成的双向列表；而这个ziplist(压缩列表)又是什么呢？ziplist指的是一块连续的内存存储空间，Redis底层对于list(列表)的存储，当元素个数少的时候，它会使用一块连续的内存空间来存储，这样可以减少每个元素增加prev和next指针带来的内存消耗，最重要的是可以减少内存碎片化问题。</p>
+<h4 id="ziplist示意图"><a href="#ziplist示意图" class="headerlink" title="ziplist示意图"></a>ziplist示意图</h4><p>ziplist是一块连续的内存地址，他们之间无需持有prev和next指针，能通过地址顺序寻址访问。<br><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/20210705000507302.png" alt="在这里插入图片描述"></p>
+<h4 id="quicklist示意图"><a href="#quicklist示意图" class="headerlink" title="quicklist示意图"></a>quicklist示意图</h4><p>quicklist是由多个ziplist组成的双向链表。<br><img src="/" alt="在这里插入图片描述"></p>
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><p>hash(字典)的实现与Java中的HashMap（JDK1.7）的结构也是一致的，它的数据结构也是数组+链表组成的二维结构，节点元素散列在数组上，如果发生hash碰撞则使用链表串联在数组节点上。</p>
+<h3 id="hash-字典-扩容"><a href="#hash-字典-扩容" class="headerlink" title="hash(字典)扩容"></a>hash(字典)扩容</h3><p>Redis中的hash(字典)存储的value只能是字符串值，此外扩容与Java中的HashMap也不同。Java中的HashMap在扩容的时候是一次性完成的，而Redis考虑到其核心存取是单线程的性能问题，为了追求高性能，因而采取了渐进式rehash策略。<img src="https://img-blog.csdnimg.cn/20210705223235919.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTI1MjE5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>渐进式rehash指的是并非一次性完成，它是多次完成的，因此需要保理旧的hash结构，所以Redis中的hash(字典)会存在新旧两个hash结构，在rehash结束后也就是旧hash的值全部搬迁到新hash之后，新的hash在功能上才会完全替代以前的hash。<img src="https://img-blog.csdnimg.cn/2021070522325938.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTI1MjE5,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="hash-字典-的相关使用场景"><a href="#hash-字典-的相关使用场景" class="headerlink" title="hash(字典)的相关使用场景"></a>hash(字典)的相关使用场景</h3><p>hash(字典)可以用来存储对象的相关信息，一个hash(字典)代表一个对象，hash的一个key代表对象的一个属性，key的值代表属性的值。hash(字典)结构相比字符串来说，它无需将整个对象进行序列化后进行存储。这样在获取的时候可以进行部分获取。所以相比之下hash(字典)具有如下的优缺点：</p>
+<ul>
+<li>读取可以部分读取，节省网络流量</li>
+<li>存储消耗的高于单个字符串的存储</li>
+</ul>
+<h3 id="hash操作指令"><a href="#hash操作指令" class="headerlink" title="hash操作指令"></a>hash操作指令</h3><p>hset -&gt; hash(字典)插入值，字典不存在则创建 key代表字典名称，field 相当于 key，value是key的值</p>
+<blockquote>
+<p>hset key field value</p>
+</blockquote>
+<p>hmset -&gt; 批量设值</p>
+<blockquote>
+<p>hmset key field value [field value …]</p>
+</blockquote>
+<p>hget -&gt; 获取字典中的指定key的value</p>
+<blockquote>
+<p>** hget key field**</p>
+</blockquote>
+<p>hgetall -&gt; 获取字典中所有的key和value，换行输出</p>
+<blockquote>
+<p>hgetall key</p>
+</blockquote>
+<p>hlen -&gt; 获取指定字典的key的个数</p>
+<blockquote>
+<p>hlen key</p>
+</blockquote>
+<pre><code class="bash">7.0.0.1:6379&gt; hset book java &quot;Thinking in Java&quot;		# 字符串包含空格需要&quot;&quot;包裹
+(integer) 1
+127.0.0.1:6379&gt; hset book python &quot;Python code&quot;
+(integer) 1
+127.0.0.1:6379&gt; hset book c &quot;The best of c&quot;
+(integer) 1
+127.0.0.1:6379&gt; hmset book go &quot;concurrency in go&quot; mysql &quot;high-performance MySQL&quot; # 批量设值
+OK
+127.0.0.1:6379&gt; hget book java
+&quot;Thinking in Java&quot;
+127.0.0.1:6379&gt; hgetall book
+1) &quot;java&quot;
+2) &quot;Thinking in Java&quot;
+3) &quot;python&quot;
+4) &quot;Python code&quot;
+5) &quot;c&quot;
+6) &quot;The best of c&quot;
+127.0.0.1:6379&gt; hlen book
+(integer) 5
+</code></pre>
+<p>hincrby -&gt; 增对hash(字典)中的某个key的整数value进行自加操作，如果不是整数则会报错</p>
+<blockquote>
+<p>hincrby key field increment</p>
+</blockquote>
+<pre><code class="bash">127.0.0.1:6379&gt; hset puffhash money 10
+(integer) 1
+127.0.0.1:6379&gt; hincrby puffhash money 100
+(integer) 110
+127.0.0.1:6379&gt; hget puffhash money
+&quot;110&quot;
+</code></pre>
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>Redis的set(集合)相当于Java语言里的HashSet，它内部的键值对是无序的、唯一的。它的内部实现了一个所有value为null的特殊字典。<br>集合中的最后一个元素被移除之后，数据结构被自动删除，内存被回收。</p>
+<h3 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h3><p>set(集合)由于其特殊去重复的功能，我们可以用来存储活动中中奖的用户的ID，这样可以保证一个用户不会中奖两次。</p>
+<h3 id="操作指令"><a href="#操作指令" class="headerlink" title="操作指令"></a>操作指令</h3><p>sadd -&gt; 添加集合成员，key值集合名称，member值集合元素，元素不能重复</p>
+<blockquote>
+<p>sadd key member [member …]</p>
+</blockquote>
+<p>smembers -&gt; 查看集合中所有的元素，注意是无序的</p>
+<blockquote>
+<p>smembers key</p>
+</blockquote>
+<p>sismember -&gt; 查询集合中是否包含某个元素</p>
+<blockquote>
+<p>sismember key member</p>
+</blockquote>
+<p>scard -&gt; 获取集合的长度</p>
+<blockquote>
+<p>scard key</p>
+</blockquote>
+<p>spop -&gt; 弹出元素，count指弹出元素的个数</p>
+<blockquote>
+<p>spop key [count] </p>
+</blockquote>
+<h2 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h2><p>zset(有序集合)是Redis中最常问的数据结构。它类似于Java语言中的SortedSet和HashMap的结合体，它一方面通过set来保证内部value值的唯一性，另一方面通过value的score（权重）来进行排序。这个排序的功能是通过Skip List（跳跃列表）来实现的。<br>zset(有序集合)的最后一个元素value被移除后，数据结构被自动删除，内存被回收。</p>
+<h3 id="zset-有序集合-的使用场景"><a href="#zset-有序集合-的使用场景" class="headerlink" title="zset(有序集合)的使用场景"></a>zset(有序集合)的使用场景</h3><p>利用zset的去重和有序的效果可以由很多使用场景，举两个例子：</p>
+<ul>
+<li>存储粉丝列表，value是粉丝的ID，score是关注时间戳，这样可以对粉丝关注进行排序</li>
+<li>存储学生成绩，value使学生的ID，score是学生的成绩，这样可以对学生的成绩排名</li>
+</ul>
+<h3 id="操作指令-1"><a href="#操作指令-1" class="headerlink" title="操作指令"></a>操作指令</h3><p>zadd -&gt; 向集合中添加元素，集合不存在则新建，key代表zset集合名称，score代表元素的权重，member代表元素 </p>
+<blockquote>
+<p>zadd key [NX|XX] [CH] [INCR] score member [score member …]</p>
+</blockquote>
+<p>zrange -&gt; 按照score权重从小到大排序输出集合中的元素，权重相同则按照value的字典顺序排序([lexicographical order]) （返回索引区间的元素）</p>
+<p>超出范围的下标并不会引起错误。 比如说，当 start 的值比有序集的最大下标还要大，或是 start &gt; stop 时， zrange 命令只是简单地返回一个空列表。 另一方面，假如 stop 参数的值比有序集的最大下标还要大，那么 Redis 将 stop 当作最大下标来处理。<br>可以通过使用 WITHSCORES 选项，来让成员和它的 score 值一并返回，返回列表以 value1,score1, …, valueN,scoreN 的格式表示。 客户端库可能会返回一些更复杂的数据类型，比如数组、元组等。</p>
+<blockquote>
+<p>zrange key start stop [WITHSCORES]</p>
+</blockquote>
+<p>zrevrange -&gt; 按照score权重从大到小输出集合中的元素，权重相同则按照value的字典逆序排序 （逆序返回索引区间的元素）<br>其中成员的位置按 score 值递减(从大到小)来排列。 具有相同 score 值的成员按字典序的逆序(reverse lexicographical order)排列。 除了成员按 score 值递减的次序排列这一点外， ZREVRANGE 命令的其他方面和 ZRANGE key start stop [WITHSCORES] 命令一样。</p>
+<blockquote>
+<p>zrevrange key start stop [WITHSCORES]</p>
+</blockquote>
+<p>zcard -&gt; 当 key 存在且是有序集类型时，返回有序集的基数。 当 key 不存在时，返回 0 </p>
+<blockquote>
+<p>zcard key</p>
+</blockquote>
+<p>zscore -&gt; 返回有序集 key 中，成员 member 的 score 值，如果 member 元素不是有序集 key 的成员，或 key 不存在，返回 nil</p>
+<blockquote>
+<p>zscore key member</p>
+</blockquote>
+<p>zrank -&gt; 返回有序集 key 中成员 member 的排名。其中有序集成员按 score 值递增(从小到大)顺序排列。 （返回元素的排名）<br>排名以 0 为底，也就是说， score 值最小的成员排名为 0</p>
+<blockquote>
+<p>zrank key member</p>
+</blockquote>
+<p>zrangebyscore -&gt; 返回有序集 key 中，所有 score 值介于 min 和 max 之间(包括等于 min 或 max )的成员。有序集成员按 score 值递增(从小到大)次序排列。<br>min 和 max 可以是 -inf 和 +inf ，这样一来，你就可以在不知道有序集的最低和最高 score 值的情况下，使用[ZRANGEBYSCORE]这类命令<br>默认情况下，区间的取值使用闭区间](小于等于或大于等于)，你也可以通过给参数前增加(符号来使用可选的开区间</p>
+<blockquote>
+<p>zrangebyscore key min max [WITHSCORES] [LIMIT offset count]</p>
+</blockquote>
+<p>zrem -&gt; 移除有序集 key 中的一个或多个成员，不存在的成员将被忽略</p>
+<blockquote>
+<p>zrem key member [member …]</p>
+</blockquote>
+<h2 id="Bitmaps"><a href="#Bitmaps" class="headerlink" title="Bitmaps"></a>Bitmaps</h2><p>Bitmaps 称为位图，它不是一种数据类型。网上很多视频教程把Bitmaps称为数据类型，应该是不正确的。Bitmaps 是Redis提供给使用者用于操作位的“数据类型”。它主要有如下的基本特性：</p>
+<ul>
+<li><p>Bitmaps 不是数据类型，底层就是字符串（key-value），byte数组。我们可以使用普通的get&#x2F;set直接获取和设值位图的内容，也可以通过Redis提供的位图操作getbit&#x2F;setbit等将byte数组看成“位数组”来处理</p>
+</li>
+<li><p>Bitmaps 的“位数组”每个单元格只能存储0和1，数组的下标在Bitmaps中称为偏移量</p>
+</li>
+<li><p>Bitmaps设置时key不存在会自动生成一个新的字符串，如果设置的偏移量超出了现有内容的范围，就会自动将位数组进行零扩充</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20210808160835480.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQxMTI1MjE5,size_16,color_FFFFFF,t_70" alt="img"></p>
+<h3 id="操作指令-2"><a href="#操作指令-2" class="headerlink" title="操作指令"></a>操作指令</h3><p>setbit -&gt; 对key存储的字符串，设置或者清除指定偏移量上的位（bit），位的设置或者清除取决于value参数，0&#x2F;1；当key不存在时，自动生成一个新的字符串。字符串会进行伸展确保value保存在指定的偏移量上。字符串进行伸展时，空白位置以0填充。</p>
+<p>时间复杂度：O(1)</p>
+<p>offset范围：0~2^32</p>
+<p>返回值：指定偏移量原来存储的位值</p>
+<blockquote>
+<p>setbit key offset value</p>
+</blockquote>
+<p>getbit -&gt; 获取字符串指定偏移量</p>
+<p>时间复杂度：O（1）</p>
+<blockquote>
+<p>getbit key offset</p>
+</blockquote>
+<p>bitcount -&gt; 计算给定字符串中，被设置为1的bit位的数量。start和end参数可以指定查询的范围，可以使用负数值。-1代表最后一个字节，-2代表倒数第二个字节。</p>
+<p><strong>注意：start和end是字节索引，因此每增加1 代表的是增加一个字符（一个字符存储8个bit），也就是8位，所以位的查询范围必须是8的倍数。</strong></p>
+<p>时间复杂度：O（N）</p>
+<p>bitpos -&gt; 返回第一个置为bit的二进制位的位置，默认检测整个Bitmaps，也可以通过start和end参数指定查询范围</p>
+<p>时间复杂度：O(N)</p>
+<blockquote>
+<p>bittpos key bit [start] [end]</p>
+<p>bitpos clock:20210806 0 表示第一个0的位置</p>
+<p>bitpos clock:20210806 1 表示第一个1的位置</p>
+<p>bitpos clock:20210806 1 0 0 表示第一个字符中，第一个1的位置</p>
+<p>bitpos clock:20210806 1 1 1 表示第二个字符中，第一个1的位置</p>
+<p>bitpos clock:20210806 1 0 1 表示第一个和第二个字符中，第一个1的位置 </p>
+</blockquote>
+<p>bitop -&gt; Redis的Bitmaps提供BITOP指令来对一个或多个（NOT操作只对一个key进行操作）二进制位的字符串key进行位元操作，操作的结果保存到destkey上，operation是操作类型，有四种分别是：AND（逻辑并）、OR（逻辑或）、NOT（逻辑非）、XOR（逻辑异或），tips：当字符串长度不一致是，较短的那个字符串所缺失的部分会被看作0，空的key也会被看作是包含0的字符串序列</p>
+<p>时间复杂度：O(N)</p>
+<pre><code class="bash"># key1：1001 key2：10111
+
+bitop and and-result key1 key2
+
+# and-result 10010
+</code></pre>
+<p><em>bitfield -&gt; 对多个位同时操作</em>（还不明白）</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
