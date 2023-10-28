@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>ArchLinux+dwm | Crisite の博客</title>
+    <title>windows激活 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -150,14 +150,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>ArchLinux+dwm</h1>
+        <h1>windows激活</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2023/10/6
+            2023/10/28
         </span>
         
         
@@ -169,7 +169,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/linux/" style="color: #03a9f4">linux</a>
+                <a href="/tags/windows/" style="color: #ffa2c4">windows</a>
             </span>
             
         </span>
@@ -177,44 +177,13 @@
     </div>
     
     <div class="content" v-pre>
-        <p>之前装arch和dwm的时候都没有记录，现在慢慢更新对dwm的定制优化吧</p>
+        <p>超简便的激活方式</p>
 <span id="more"></span>
-
-<h2 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h2><p><code>yarn</code> <code>npm</code> <code>yay</code>都要记得换源</p>
-<pre><code class="bash"># yarn
-yarn config set registry https://registry.npm.taobao.org
+<p>包括激活windows和office都可以</p>
+<p>在<code>powershell</code>中输入</p>
+<pre><code class="bash">irm https://massgrave.dev/get | iex
 </code></pre>
-<h2 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h2><h3 id="截图"><a href="#截图" class="headerlink" title="截图"></a>截图</h3><pre><code class="shell">yay -S flameshot
-vim /opt/dwm6.4/config.h
-</code></pre>
-<pre><code class="c">static const char *flame[] = &#123; &quot;flameshot&quot;, &quot;gui&quot;, NULL &#125;;  //flameshot 截图工具
-static const key keys[] = &#123;
-    .....
-    &#123; MODKEY|ShiftMask,             XK_a,      spawn,          &#123;.v = flame &#125; &#125;,
-    ......
-&#125;
-</code></pre>
-<p><code>flameshot</code>命令</p>
-<pre><code class="bash">Arguments:
-  gui            Start a manual capture in GUI mode.
-  screen         Capture a single screen.
-  full           Capture the entire desktop.
-  launcher       Open the capture launcher.
-  config         Configure flameshot.
-</code></pre>
-<h2 id="软件报错"><a href="#软件报错" class="headerlink" title="软件报错"></a>软件报错</h2><p><code>WPS</code>正常启动并使用，但是<code>wpspdf</code>无法使用报错，找不到库文件</p>
-<pre><code class="bash">dlopen /usr/lib/office6/libpdfmain.so failed , error: libtiff.so.5: 无法打开共享对象文件: 没有那个文件或目录
-</code></pre>
-<p>解决方式</p>
-<pre><code class="bash"># 先找到系统内的libtiff.so文件 arch将libtiff更新到了6.0.2
-sudo find / -name &#39;*libtiff*&#39;  
-# 创建软连接
-sudo ln -s /usr/lib/libtiff.so.6.0.2 /usr/lib/libtiff.so.5
-</code></pre>
-<p>ok之后就可以正常使用了</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.reddit.com/register">https://www.reddit.com/register</a></p>
-</blockquote>
+<p>项目地址 <a target="_blank" rel="noopener" href="https://github.com/massgravel/Microsoft-Activation-Scripts">https://github.com/massgravel/Microsoft-Activation-Scripts</a></p>
 
     </div>
     
