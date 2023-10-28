@@ -187,7 +187,7 @@ hexo start
 <p>常用命令</p>
 <p>hexo new “postName” #新建文章<br>hexo new page “pageName” # 新建页面<br>hexo generate # 生成静态页面至 public 目录<br>hexo server # 启动服务器(默认端口 4000，’ctrl+c’关闭 server)<br>hexo deploy # 项目部署<br>hexo help # 查看帮助<br>hexo version # 查看 Hexo 的版本<br>hexo clean # 清除 Hexo 的缓存</p>
 </blockquote>
-<p>注：在使用部署命令时，需要先用 npm 安装 hexo-deployer-git 插件：</p>
+<p><strong>注：在使用部署命令时，需要先用 npm 安装 hexo-deployer-git 插件：</strong></p>
 <pre><code class="bash">npm install hexo-deployer-git --save
 </code></pre>
 <ol start="2">
@@ -272,6 +272,9 @@ Host github.com
     IdentityFile ~/.ssh/id_rsa
 </code></pre>
 <p>保存退出后测试hexo d可以正常提交。</p>
+<blockquote>
+<p>另外，中途我有试过将ssh提交方式更换为http方式提交，但是提交的时候一直鉴权失败。（？）</p>
+</blockquote>
 
     </div>
     
