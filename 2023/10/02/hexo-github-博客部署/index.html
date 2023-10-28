@@ -244,6 +244,34 @@ tags:
 hexo g
 hexo s --debug
 </code></pre>
+<h2 id="BUG解决"><a href="#BUG解决" class="headerlink" title="BUG解决"></a>BUG解决</h2><pre><code class="bash">[master 1ac2467] Site updated: 2023-10-28 19:35:48
+ 36 files changed, 198 insertions(+), 198 deletions(-)
+ssh: connect to host github.com port 22: Connection timed out
+致命错误：无法读取远程仓库。
+
+请确认您有正确的访问权限并且仓库存在。
+FATAL Something&#39;s wrong. Maybe you can find the solution here: https://hexo.io/docs/troubleshooting.html
+Error: Spawn failed
+    at ChildProcess.&lt;anonymous&gt; (/home/crisite/IdeaProjects/crisite.github.io/node_modules/hexo-util/lib/spawn.js:51:21)
+    at ChildProcess.emit (node:events:513:28)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+</code></pre>
+<p><code>hexo d</code>时无法将本地代码提交到远程 ， 解决方法：根据报错信息 port 22 链接超时</p>
+<pre><code class="bash">~: ssh -T git@github.com                            
+ssh: connect to host github.com port 22: Connection timed out
+~: telnet 20.205.243.166 22
+Trying 20.205.243.166...
+telnet: Unable to connect to remote host: 连接超时
+</code></pre>
+<p>通过<code>ssh -T git@github.com  </code> <code>telnet 20.205.243.166 22</code>确认确实是github的22端口无法访问，测试一下443接口，测试443接口可用，更改一下ssh配置：</p>
+<p>在<code>~/.ssh</code>下新建<code>config</code>文件 添加如下内容:</p>
+<pre><code class="bash"># 22端口连接超时，切换为443端口
+Host github.com
+    port 443 # 默认是22端口
+    HostName ssh.github.com
+    IdentityFile ~/.ssh/id_rsa
+</code></pre>
+<p>保存退出后测试hexo d可以正常提交。</p>
 
     </div>
     
