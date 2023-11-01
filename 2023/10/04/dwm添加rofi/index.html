@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>dwm添加rofi</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BDrofi"><span class="toc-number">1.</span> <span class="toc-text">下载rofi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rofi%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">rofi启动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dwm%E4%B8%AD%E6%B7%BB%E5%8A%A0rofi%E5%BF%AB%E6%8D%B7%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">dwm中添加rofi快捷启动方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6%E6%B7%BB%E5%8A%A0%E6%A1%8C%E9%9D%A2%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">下载软件添加桌面快捷方式</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/4
-        </span>
+  </aside>
+  <div>
+    <h1>dwm添加rofi</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/4
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/linux/" style="color: #00bdc4">linux</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/linux/" style="color: #ffa2c4"
+          >linux</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>在dwm窗口管理器添加一个rofi启动器，dwm下原来用的是dmenu，优点快速、简洁，缺点也是太简洁了，外观就是传统的命令行界面，而且不支持.desktop启动。后来rofi出现，开始取代dmenu，功能上强化，支持command启动、desktop启动、窗口切换还有ssh之类的其他功能；界面支持主题自定义，也积累了很多的主题。</p>
+  </div>
+  
+  <div class="content" v-pre><p>在dwm窗口管理器添加一个rofi启动器，dwm下原来用的是dmenu，优点快速、简洁，缺点也是太简洁了，外观就是传统的命令行界面，而且不支持.desktop启动。后来rofi出现，开始取代dmenu，功能上强化，支持command启动、desktop启动、窗口切换还有ssh之类的其他功能；界面支持主题自定义，也积累了很多的主题。</p>
 <span id="more"></span>
 
 <h3 id="下载rofi"><a href="#下载rofi" class="headerlink" title="下载rofi"></a>下载rofi</h3><pre><code class="shell">yay -S rofi
@@ -214,15 +220,8 @@ Type=Application
 StartupNotify=false
 </code></pre>
 <p>保存退出之后即可在rofi中通过软件名快速启动手动下载的的软件</p>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

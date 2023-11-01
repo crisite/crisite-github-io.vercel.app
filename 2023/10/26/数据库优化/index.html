@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>数据库优化</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/26
-        </span>
+  </aside>
+  <div>
+    <h1>数据库优化</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/26
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Mysql/" style="color: #00bdc4">Mysql</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Mysql/" style="color: #03a9f4"
+          >Mysql</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>几种数据库优化方式</p>
+  </div>
+  
+  <div class="content" v-pre><p>几种数据库优化方式</p>
 <span id="more"></span>
 
 <ol>
@@ -189,15 +195,8 @@
 <li>使用索引，尽量不要对数据库中存在大量重复的值的字段建立索引</li>
 <li>优化查询语句</li>
 </ol>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

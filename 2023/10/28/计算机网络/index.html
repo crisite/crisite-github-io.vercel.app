@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>计算机网络</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OSI%E4%B8%83%E5%B1%82%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">OSI七层模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-IP-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">TCP&#x2F;IP 网络模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">应用层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">2.2.</span> <span class="toc-text">传输层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text"></span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/28
-        </span>
+  </aside>
+  <div>
+    <h1>计算机网络</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/28
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="color: #03a9f4">计算机网络</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="color: #03a9f4"
+          >计算机网络</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>跟了小林coding 的 [图解计算机网络][<a target="_blank" rel="noopener" href="https://www.xiaolincoding.com/network]">https://www.xiaolincoding.com/network]</a> 学习的计网（学过一遍忘了）</p>
+  </div>
+  
+  <div class="content" v-pre><p>跟了小林coding 的 [图解计算机网络][<a target="_blank" rel="noopener" href="https://www.xiaolincoding.com/network]">https://www.xiaolincoding.com/network]</a> 学习的计网（学过一遍忘了）</p>
 <span id="more"></span>
 
 <h2 id="OSI七层模型"><a href="#OSI七层模型" class="headerlink" title="OSI七层模型"></a>OSI七层模型</h2><p>OSI 和TCP&#x2F;IP 的对应关系和协议</p>
@@ -198,15 +204,8 @@
 <p>当设备作为接收方时，传输层则要负责把数据包传给应用，但是一台设备上可能会有很多应用在接收或者传输数据，因此需要用一个编号将应用区分开来，这个编号就是<strong>端口</strong>。</p>
 <p>比如 80 端口通常是 Web 服务器用的，22 端口通常是远程登录服务器用的。而对于浏览器（客户端）中的每个标签栏都是一个独立的进程，操作系统会为这些进程分配临时的端口号。</p>
 <p>由于传输层的报文中会携带端口号，因此接收方可以识别出该报文是发送给哪个应用。</p>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
-    </div>
-    
-    
-    
-    
-    
-    
-    
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2></div>
+        
 </div>
 
             <footer id="footer">

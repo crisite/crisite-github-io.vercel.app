@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Redis数据结构</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String"><span class="toc-number">2.</span> <span class="toc-text">String</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String%E7%9A%84%E6%89%A9%E5%AE%B9"><span class="toc-number">2.1.</span> <span class="toc-text">String的扩容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="toc-number">2.2.</span> <span class="toc-text">String操作指令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#List"><span class="toc-number">3.</span> <span class="toc-text">List</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="toc-number">3.2.</span> <span class="toc-text">List操作指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list-%E5%88%97%E8%A1%A8-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">list(列表)深入理解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ziplist%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="toc-number">3.3.1.</span> <span class="toc-text">ziplist示意图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#quicklist%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="toc-number">3.3.2.</span> <span class="toc-text">quicklist示意图</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash"><span class="toc-number">4.</span> <span class="toc-text">Hash</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hash-%E5%AD%97%E5%85%B8-%E6%89%A9%E5%AE%B9"><span class="toc-number">4.1.</span> <span class="toc-text">hash(字典)扩容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hash-%E5%AD%97%E5%85%B8-%E7%9A%84%E7%9B%B8%E5%85%B3%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.2.</span> <span class="toc-text">hash(字典)的相关使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hash%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="toc-number">4.3.</span> <span class="toc-text">hash操作指令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Set"><span class="toc-number">5.</span> <span class="toc-text">Set</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="toc-number">5.1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="toc-number">5.2.</span> <span class="toc-text">操作指令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zset"><span class="toc-number">6.</span> <span class="toc-text">Zset</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zset-%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">6.1.</span> <span class="toc-text">zset(有序集合)的使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4-1"><span class="toc-number">6.2.</span> <span class="toc-text">操作指令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bitmaps"><span class="toc-number">7.</span> <span class="toc-text">Bitmaps</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4-2"><span class="toc-number">7.1.</span> <span class="toc-text">操作指令</span></a></li></ol></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/4
-        </span>
+  </aside>
+  <div>
+    <h1>Redis数据结构</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/4
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Redis/" style="color: #00bdc4">Redis</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Redis/" style="color: #03a9f4"
+          >Redis</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>Redis5中基本数据类型String、List、Hash、Set、Zset，几种特殊数据类型HyperLogLogs、Bitmaps、Stream、Bitfiled</p>
+  </div>
+  
+  <div class="content" v-pre><p>Redis5中基本数据类型String、List、Hash、Set、Zset，几种特殊数据类型HyperLogLogs、Bitmaps、Stream、Bitfiled</p>
 <span id="more"></span>
 
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><table>
@@ -567,15 +573,8 @@ bitop and and-result key1 key2
 # and-result 10010
 </code></pre>
 <p><em>bitfield -&gt; 对多个位同时操作</em>（还不明白）</p>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>ArchLinux+dwm</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E6%BA%90"><span class="toc-number">1.</span> <span class="toc-text">换源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">软件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%AA%E5%9B%BE"><span class="toc-number">2.1.</span> <span class="toc-text">截图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%8A%A5%E9%94%99"><span class="toc-number">3.</span> <span class="toc-text">软件报错</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/6
-        </span>
+  </aside>
+  <div>
+    <h1>ArchLinux+dwm</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/6
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/linux/" style="color: #03a9f4">linux</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/linux/" style="color: #03a9f4"
+          >linux</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>之前装arch和dwm的时候都没有记录，现在慢慢更新对dwm的定制优化吧</p>
+  </div>
+  
+  <div class="content" v-pre><p>之前装arch和dwm的时候都没有记录，现在慢慢更新对dwm的定制优化吧</p>
 <span id="more"></span>
 
 <h2 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h2><p><code>yarn</code> <code>npm</code> <code>yay</code>都要记得换源</p>
@@ -215,15 +221,8 @@ sudo ln -s /usr/lib/libtiff.so.6.0.2 /usr/lib/libtiff.so.5
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.reddit.com/register">https://www.reddit.com/register</a></p>
 </blockquote>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

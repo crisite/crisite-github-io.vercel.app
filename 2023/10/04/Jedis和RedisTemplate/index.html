@@ -149,40 +149,48 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Jedis和RedisTemplate</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Jedis%E4%BD%BF%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">Jedis使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RedisTemplate"><span class="toc-number">2.</span> <span class="toc-text">RedisTemplate</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/4
-        </span>
+  </aside>
+  <div>
+    <h1>Jedis和RedisTemplate</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/4
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
+        <a href="/tags/Redis/" style="color: #00a596"
+          >Redis</a
+        >
+      </span>
+      
+      <span class="tag">
         
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Redis/" style="color: #00bdc4">Redis</a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/Java/" style="color: #ffa2c4">Java</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Java/" style="color: #ffa2c4"
+          >Java</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>Jedis和RedisTemplate的使用方法</p>
+  </div>
+  
+  <div class="content" v-pre><p>Jedis和RedisTemplate的使用方法</p>
 <span id="more"></span>
 
 <p>1、redisTemplate是基于某个具体实现的再封装，比如说springBoot1.x时，具体实现是jedis；而到了springBoot2.x时，具体实现变成了lettuce。封装的好处就是隐藏了具体的实现，使调用更简单，但是有人测试过jedis效率要10-30倍的高于redisTemplate的执行效率，所以单从执行效率上来讲，jedis完爆redisTemplate。redisTemplate的好处就是基于springBoot自动装配的原理，使得整合redis时比较简单。</p>
@@ -282,15 +290,8 @@ private RedisTemplate redisTemplate;
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7175756564752990267">redisTemplate使用</a></p>
 </blockquote>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

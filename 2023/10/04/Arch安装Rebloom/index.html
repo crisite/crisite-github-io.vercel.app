@@ -149,40 +149,48 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Arch安装Rebloom</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%89%A7%E8%A1%8C%E6%8A%A5%E9%94%99"><span class="toc-number">1.</span> <span class="toc-text">1.启动文件setup执行报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">2.执行启动文件setup报错</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/4
-        </span>
+  </aside>
+  <div>
+    <h1>Arch安装Rebloom</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/4
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
+        <a href="/tags/linux/" style="color: #ffa2c4"
+          >linux</a
+        >
+      </span>
+      
+      <span class="tag">
         
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/linux/" style="color: #ffa2c4">linux</a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/Redis/" style="color: #00a596">Redis</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Redis/" style="color: #ff7d73"
+          >Redis</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>曲折的Rebloom安装之路</p>
+  </div>
+  
+  <div class="content" v-pre><p>曲折的Rebloom安装之路</p>
 <span id="more"></span>
 
 <ul>
@@ -254,15 +262,8 @@ catastrophic damage to your system.
    8) (empty array)
 </code></pre>
 <p>至此，RedisBloom模块安装完成</p>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

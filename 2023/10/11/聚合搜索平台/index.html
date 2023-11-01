@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>聚合搜索平台</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E4%BA%AE%E6%98%BE%E7%A4%BA"><span class="toc-number">1.</span> <span class="toc-text">高亮显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java%E6%93%8D%E4%BD%9CEs%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">Java操作Es的几种方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E6%8A%A5%E9%94%99"><span class="toc-number">3.</span> <span class="toc-text">一些报错</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/11
-        </span>
+  </aside>
+  <div>
+    <h1>聚合搜索平台</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/11
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #00bdc4">项目</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #ffa2c4"
+          >项目</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>记录一些puff-Search的笔记</p>
+  </div>
+  
+  <div class="content" v-pre><p>记录一些puff-Search的笔记</p>
 <span id="more"></span>
 
 
@@ -253,15 +259,8 @@ org.elasticsearch.ElasticsearchException: not all primary shards of [.geoip_data
 </code></pre>
 </li>
 </ul>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

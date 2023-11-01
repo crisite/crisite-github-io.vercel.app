@@ -1,0 +1,427 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Mysql练习 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.</span> <span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sql%E4%B9%A0%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">Sql习题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%9F%A5%E8%AF%A2%E7%BC%96%E5%8F%B7%E2%80%9D01%E2%80%9D%E8%AF%BE%E7%A8%8B%E6%AF%94%E2%80%9D02%E2%80%9D%E8%AF%BE%E7%A8%8B%E6%88%90%E7%BB%A9%E9%AB%98%E7%9A%84%E5%AD%A6%E7%94%9F%E7%9A%84%E4%BF%A1%E6%81%AF%E5%8F%8A%E8%AF%BE%E7%A8%8B%E5%88%86%E6%95%B0"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、查询编号”01”课程比”02”课程成绩高的学生的信息及课程分数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81-%E6%9F%A5%E8%AF%A2%E2%80%9D01%E2%80%9D%E8%AF%BE%E7%A8%8B%E6%AF%94%E2%80%9D02%E2%80%9D%E8%AF%BE%E7%A8%8B%E6%88%90%E7%BB%A9%E4%BD%8E%E7%9A%84%E5%AD%A6%E7%94%9F%E7%9A%84%E4%BF%A1%E6%81%AF%E5%8F%8A%E8%AF%BE%E7%A8%8B%E5%88%86%E6%95%B0"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、 查询”01”课程比”02”课程成绩低的学生的信息及课程分数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E6%88%90%E7%BB%A9%E5%A4%A7%E4%BA%8E%E7%AD%89%E4%BA%8E60%E5%88%86%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E5%AD%A6%E7%94%9F%E7%BC%96%E5%8F%B7%E5%92%8C%E5%AD%A6%E7%94%9F%E5%A7%93%E5%90%8D%E5%92%8C%E5%B9%B3%E5%9D%87%E6%88%90%E7%BB%A9"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E6%9F%A5%E8%AF%A2%E5%B9%B3%E5%9D%87%E6%88%90%E7%BB%A9%E5%B0%8F%E4%BA%8E60%E5%88%86%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E5%AD%A6%E7%94%9F%E7%BC%96%E5%8F%B7%E5%92%8C%E5%AD%A6%E7%94%9F%E5%A7%93%E5%90%8D%E5%92%8C%E5%B9%B3%E5%9D%87%E6%88%90%E7%BB%A9-%E5%8C%85%E6%8B%AC%E6%9C%89%E6%88%90%E7%BB%A9%E7%9A%84%E5%92%8C%E6%97%A0%E6%88%90%E7%BB%A9%E7%9A%84"><span class="toc-number">2.0.4.</span> <span class="toc-text">4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩 (包括有成绩的和无成绩的)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81%E6%9F%A5%E8%AF%A2%E6%89%80%E6%9C%89%E5%90%8C%E5%AD%A6%E7%9A%84%E5%AD%A6%E7%94%9F%E7%BC%96%E5%8F%B7%E3%80%81%E5%AD%A6%E7%94%9F%E5%A7%93%E5%90%8D%E3%80%81%E9%80%89%E8%AF%BE%E6%80%BB%E6%95%B0%E3%80%81%E6%89%80%E6%9C%89%E8%AF%BE%E7%A8%8B%E7%9A%84%E6%80%BB%E6%88%90%E7%BB%A9%EF%BC%88%E5%8C%85%E5%90%AB%E6%B2%A1%E6%9C%89%E9%80%89%E8%AF%BE%E7%9A%84%EF%BC%89"><span class="toc-number">2.0.5.</span> <span class="toc-text">5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩（包含没有选课的）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6%E3%80%81%E6%9F%A5%E8%AF%A2%E2%80%9D%E6%9D%8E%E2%80%9D%E5%A7%93%E8%80%81%E5%B8%88%E7%9A%84%E6%95%B0%E9%87%8F"><span class="toc-number">2.0.6.</span> <span class="toc-text">6、查询”李”姓老师的数量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7%E3%80%81%E6%9F%A5%E8%AF%A2%E5%AD%A6%E8%BF%87%E2%80%9D%E5%BC%A0%E4%B8%89%E2%80%9D%E8%80%81%E5%B8%88%E6%8E%88%E8%AF%BE%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.7.</span> <span class="toc-text">7、查询学过”张三”老师授课的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8%E3%80%81%E6%9F%A5%E8%AF%A2%E6%B2%A1%E5%AD%A6%E8%BF%87%E2%80%9D%E5%BC%A0%E4%B8%89%E2%80%9D%E8%80%81%E5%B8%88%E6%8E%88%E8%AF%BE%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.8.</span> <span class="toc-text">8、查询没学过”张三”老师授课的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9%E3%80%81%E6%9F%A5%E8%AF%A2%E5%AD%A6%E8%BF%87%E7%BC%96%E5%8F%B7%E4%B8%BA%E2%80%9D01%E2%80%9D%E5%B9%B6%E4%B8%94%E4%B9%9F%E5%AD%A6%E8%BF%87%E7%BC%96%E5%8F%B7%E4%B8%BA%E2%80%9D02%E2%80%9D%E7%9A%84%E8%AF%BE%E7%A8%8B%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.9.</span> <span class="toc-text">9、查询学过编号为”01”并且也学过编号为”02”的课程的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10%E3%80%81%E6%9F%A5%E8%AF%A2%E5%AD%A6%E8%BF%87%E7%BC%96%E5%8F%B7%E4%B8%BA%E2%80%9D01%E2%80%9D%E4%BD%86%E6%98%AF%E6%B2%A1%E6%9C%89%E5%AD%A6%E8%BF%87%E7%BC%96%E5%8F%B7%E4%B8%BA%E2%80%9D02%E2%80%9D%E7%9A%84%E8%AF%BE%E7%A8%8B%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.10.</span> <span class="toc-text">10、查询学过编号为”01”但是没有学过编号为”02”的课程的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11%E3%80%81%E6%9F%A5%E8%AF%A2%E6%B2%A1%E6%9C%89%E5%AD%A6%E5%85%A8%E6%89%80%E6%9C%89%E8%AF%BE%E7%A8%8B%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.11.</span> <span class="toc-text">11、查询没有学全所有课程的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12%E3%80%81%E6%9F%A5%E8%AF%A2%E8%87%B3%E5%B0%91%E6%9C%89%E4%B8%80%E9%97%A8%E8%AF%BE%E4%B8%8E%E5%AD%A6%E5%8F%B7%E4%B8%BA%E2%80%9D01%E2%80%9D%E7%9A%84%E5%90%8C%E5%AD%A6%E6%89%80%E5%AD%A6%E7%9B%B8%E5%90%8C%E7%9A%84%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.12.</span> <span class="toc-text">12、查询至少有一门课与学号为”01”的同学所学相同的同学的信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13%E3%80%81%E6%9F%A5%E8%AF%A2%E5%92%8C%E2%80%9D01%E2%80%9D%E5%8F%B7%E7%9A%84%E5%90%8C%E5%AD%A6%E5%AD%A6%E4%B9%A0%E7%9A%84%E8%AF%BE%E7%A8%8B%E5%AE%8C%E5%85%A8%E7%9B%B8%E5%90%8C%E7%9A%84%E5%85%B6%E4%BB%96%E5%90%8C%E5%AD%A6%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="toc-number">2.0.13.</span> <span class="toc-text">13、查询和”01”号的同学学习的课程完全相同的其他同学的信息</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>Mysql练习</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/11/1
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/Mysql/" style="color: #00a596"
+          >Mysql</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p>已经在 <a target="_blank" rel="noopener" href="http://www.xuesql.cn/">http://www.xuesql.cn/</a> 联系过一遍<code>sql</code>查询了，现在过一遍<code>sql</code>面试50题</p>
+<span id="more"></span>
+
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><pre><code class="bash">Mysql: 5.7.42
+</code></pre>
+<p>数据库sql：</p>
+<pre><code class="sql">create database  if not exists sql_test;
+
+use sql_test;
+
+#–1.学生表 
+#Student(s_id,s_name,s_brith,s_sex) –学生编号,学生姓名, 出生年月,学生性别
+CREATE TABLE `Student` (
+    `s_id` VARCHAR(20),
+    s_name VARCHAR(20) NOT NULL DEFAULT &#39;&#39;,
+    s_brith VARCHAR(20) NOT NULL DEFAULT &#39;&#39;,
+    s_sex VARCHAR(10) NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY(s_id)
+);
+
+#–2.课程表 
+#Course(c_id,c_name,t_id) – –课程编号, 课程名称, 教师编号 
+CREATE TABLE `Course`(
+    c_id varchar(20),
+    c_name VARCHAR(20) not null DEFAULT &#39;&#39;,
+    t_id VARCHAR(20) NOT NULL,
+    PRIMARY KEY(c_id)
+);
+
+/*
+–3.教师表 
+Teacher(t_id,t_name) –教师编号,教师姓名 
+*/
+CREATE TABLE Teacher(
+    t_id VARCHAR(20),
+    t_name VARCHAR(20) NOT NULL DEFAULT &#39;&#39;,
+    PRIMARY KEY(t_id)
+);
+
+/*
+–4.成绩表 
+Score(s_id,c_id,s_score) –学生编号,课程编号,分数
+*/
+Create table Score(
+    s_id VARCHAR(20),
+    c_id VARCHAR(20) not null default &#39;&#39;,
+    s_score INT(3),
+    primary key(`s_id`,`c_id`)
+);
+
+#--插入学生表测试数据
+#(&#39;01&#39; , &#39;赵雷&#39; , &#39;1990-01-01&#39; , &#39;男&#39;)
+insert into Student values(&#39;01&#39; , &#39;赵雷&#39; , &#39;1990-01-01&#39; , &#39;男&#39;);
+insert into Student values(&#39;02&#39; , &#39;钱电&#39; , &#39;1990-12-21&#39; , &#39;男&#39;);
+insert into Student values(&#39;03&#39; , &#39;孙风&#39; , &#39;1990-05-20&#39; , &#39;男&#39;);
+insert into Student values(&#39;04&#39; , &#39;李云&#39; , &#39;1990-08-06&#39; , &#39;男&#39;);
+insert into Student values(&#39;05&#39; , &#39;周梅&#39; , &#39;1991-12-01&#39; , &#39;女&#39;);
+insert into Student values(&#39;06&#39; , &#39;吴兰&#39; , &#39;1992-03-01&#39; , &#39;女&#39;);
+insert into Student values(&#39;07&#39; , &#39;郑竹&#39; , &#39;1989-07-01&#39; , &#39;女&#39;);
+insert into Student values(&#39;08&#39; , &#39;王菊&#39; , &#39;1990-01-20&#39; , &#39;女&#39;);
+#--课程表测试数据
+insert into Course values(&#39;01&#39; , &#39;语文&#39; , &#39;02&#39;);
+insert into Course values(&#39;02&#39; , &#39;数学&#39; , &#39;01&#39;);
+insert into Course values(&#39;03&#39; , &#39;英语&#39; , &#39;03&#39;);
+#--教师表测试数据
+insert into Teacher values(&#39;01&#39; , &#39;张三&#39;);
+insert into Teacher values(&#39;02&#39; , &#39;李四&#39;);
+insert into Teacher values(&#39;03&#39; , &#39;王五&#39;);
+#--成绩表测试数据
+insert into Score values(&#39;01&#39; , &#39;01&#39; , 80);
+insert into Score values(&#39;01&#39; , &#39;02&#39; , 90);
+insert into Score values(&#39;01&#39; , &#39;03&#39; , 99);
+insert into Score values(&#39;02&#39; , &#39;01&#39; , 70);
+insert into Score values(&#39;02&#39; , &#39;02&#39; , 60);
+insert into Score values(&#39;02&#39; , &#39;03&#39; , 80);
+insert into Score values(&#39;03&#39; , &#39;01&#39; , 80);
+insert into Score values(&#39;03&#39; , &#39;02&#39; , 80);
+insert into Score values(&#39;03&#39; , &#39;03&#39; , 80);
+insert into Score values(&#39;04&#39; , &#39;01&#39; , 50);
+insert into Score values(&#39;04&#39; , &#39;02&#39; , 30);
+insert into Score values(&#39;04&#39; , &#39;03&#39; , 20);
+insert into Score values(&#39;05&#39; , &#39;01&#39; , 76);
+insert into Score values(&#39;05&#39; , &#39;02&#39; , 87);
+insert into Score values(&#39;06&#39; , &#39;01&#39; , 31);
+insert into Score values(&#39;06&#39; , &#39;03&#39; , 34);
+insert into Score values(&#39;07&#39; , &#39;02&#39; , 89);
+insert into Score values(&#39;07&#39; , &#39;03&#39; , 98);
+</code></pre>
+<h2 id="Sql习题"><a href="#Sql习题" class="headerlink" title="Sql习题"></a>Sql习题</h2><h4 id="1、查询编号”01”课程比”02”课程成绩高的学生的信息及课程分数"><a href="#1、查询编号”01”课程比”02”课程成绩高的学生的信息及课程分数" class="headerlink" title="1、查询编号”01”课程比”02”课程成绩高的学生的信息及课程分数"></a>1、查询编号”01”课程比”02”课程成绩高的学生的信息及课程分数</h4><p>需求格式</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101182419961.png" alt="image-20231101182419961"></p>
+<pre><code class="sql">select student.* ,
+       a.s_score as score_01,
+       b.s_score as score_02
+from student , score as a, score as b
+where student.s_id = a.s_id
+  and Student.s_id = b.s_id
+  and a.c_id = &#39;01&#39;
+  and b.c_id = &#39;02&#39;
+  and a.s_score &gt; b.s_score;
+</code></pre>
+<h4 id="2、-查询”01”课程比”02”课程成绩低的学生的信息及课程分数"><a href="#2、-查询”01”课程比”02”课程成绩低的学生的信息及课程分数" class="headerlink" title="2、 查询”01”课程比”02”课程成绩低的学生的信息及课程分数"></a>2、 查询”01”课程比”02”课程成绩低的学生的信息及课程分数</h4><p>略</p>
+<h4 id="3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩"><a href="#3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩" class="headerlink" title="3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩"></a>3、查询平均成绩大于等于60分的同学的学生编号和学生姓名和平均成绩</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101183012847.png" alt="image-20231101183012847"></p>
+<pre><code class="sql">select Student.s_id, s_name, round(avg(s_score), 2)
+from student left join score on Score.s_id = Student.s_id
+group by Score.s_id
+having avg(Score.s_score) &gt;= 60;
+</code></pre>
+<h4 id="4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩-包括有成绩的和无成绩的"><a href="#4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩-包括有成绩的和无成绩的" class="headerlink" title="4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩 (包括有成绩的和无成绩的)"></a>4、查询平均成绩小于60分的同学的学生编号和学生姓名和平均成绩 (包括有成绩的和无成绩的)</h4><p>略</p>
+<h4 id="5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩（包含没有选课的）"><a href="#5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩（包含没有选课的）" class="headerlink" title="5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩（包含没有选课的）"></a>5、查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩（包含没有选课的）</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101183622863.png" alt="image-20231101183622863"></p>
+<pre><code class="sql">select Student.s_id, s_name, count(s_score), sum(s_score)
+from Student left join score s on Student.s_id = s.s_id
+group by Student.s_id
+</code></pre>
+<h4 id="6、查询”李”姓老师的数量"><a href="#6、查询”李”姓老师的数量" class="headerlink" title="6、查询”李”姓老师的数量"></a>6、查询”李”姓老师的数量</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101183834332.png" alt="image-20231101183834332"></p>
+<pre><code class="sql">select count(t_id) from teacher where t_name like &#39;李%&#39;;
+</code></pre>
+<h4 id="7、查询学过”张三”老师授课的同学的信息"><a href="#7、查询学过”张三”老师授课的同学的信息" class="headerlink" title="7、查询学过”张三”老师授课的同学的信息"></a>7、查询学过”张三”老师授课的同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101184126837.png" alt="image-20231101184126837"></p>
+<pre><code class="sql">select student.* from student
+    left join score s on Student.s_id = s.s_id
+    left join course c on s.c_id = c.c_id
+    left join teacher t on c.t_id = t.t_id
+where t.t_name = &#39;张三&#39;;
+</code></pre>
+<h4 id="8、查询没学过”张三”老师授课的同学的信息"><a href="#8、查询没学过”张三”老师授课的同学的信息" class="headerlink" title="8、查询没学过”张三”老师授课的同学的信息"></a>8、查询没学过”张三”老师授课的同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101184603014.png" alt="image-20231101184603014"></p>
+<pre><code class="sql">select student.* from student where student.s_id not in (
+    select student.s_id from student
+                          left join score s on Student.s_id = s.s_id
+                          left join course c on s.c_id = c.c_id
+                          left join teacher t on c.t_id = t.t_id
+    where t.t_name = &#39;张三&#39;);
+</code></pre>
+<h4 id="9、查询学过编号为”01”并且也学过编号为”02”的课程的同学的信息"><a href="#9、查询学过编号为”01”并且也学过编号为”02”的课程的同学的信息" class="headerlink" title="9、查询学过编号为”01”并且也学过编号为”02”的课程的同学的信息"></a>9、查询学过编号为”01”并且也学过编号为”02”的课程的同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231101185407631.png" alt="image-20231101185407631"></p>
+<pre><code># 可以使用嵌套查询，也可以进行两次连表查询
+
+select student.* from student join Score S on Student.s_id = S.s_id
+where S.c_id = &#39;01&#39;
+  AND Student.s_id in (
+      select Student.s_id from Student join Score S on Student.s_id = S.s_id
+      where S.c_id = &#39;02&#39;
+);
+</code></pre>
+<h4 id="10、查询学过编号为”01”但是没有学过编号为”02”的课程的同学的信息"><a href="#10、查询学过编号为”01”但是没有学过编号为”02”的课程的同学的信息" class="headerlink" title="10、查询学过编号为”01”但是没有学过编号为”02”的课程的同学的信息"></a>10、查询学过编号为”01”但是没有学过编号为”02”的课程的同学的信息</h4><p>略</p>
+<h4 id="11、查询没有学全所有课程的同学的信息"><a href="#11、查询没有学全所有课程的同学的信息" class="headerlink" title="11、查询没有学全所有课程的同学的信息"></a>11、查询没有学全所有课程的同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231102011958811.png" alt="image-20231102011958811"></p>
+<p><strong>有一定难度</strong></p>
+<p>查询没有学全所有课程的同学转换为查询学全所有课程的同学，<br>查询学全所有课程的同学的关键是每个同学对应的id所拥有的课程数量和所有课程数量能不能对应上</p>
+<pre><code class="sql">select student.* from student where s_id not in (
+    select student.s_id
+    from student left join Score S on Student.s_id = S.s_id
+    group by student.s_id
+    having count(c_id) = (
+        select count(c_id) from course
+        )
+);
+</code></pre>
+<h4 id="12、查询至少有一门课与学号为”01”的同学所学相同的同学的信息"><a href="#12、查询至少有一门课与学号为”01”的同学所学相同的同学的信息" class="headerlink" title="12、查询至少有一门课与学号为”01”的同学所学相同的同学的信息"></a>12、查询至少有一门课与学号为”01”的同学所学相同的同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231102020846852.png" alt="image-20231102020846852"></p>
+<p><strong>我也觉得挺难的，主要还是注意去重</strong></p>
+<pre><code class="sql">select distinct student.* from student left join Score S on Student.s_id = S.s_id
+where Student.s_id != &#39;01&#39;
+      AND s.c_id in (
+    select c_id
+    from score
+             left join Student S on Score.s_id = S.s_id
+    where s.s_id = &#39;01&#39;
+)
+</code></pre>
+<h4 id="13、查询和”01”号的同学学习的课程完全相同的其他同学的信息"><a href="#13、查询和”01”号的同学学习的课程完全相同的其他同学的信息" class="headerlink" title="13、查询和”01”号的同学学习的课程完全相同的其他同学的信息"></a>13、查询和”01”号的同学学习的课程完全相同的其他同学的信息</h4><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231102024523207.png" alt="image-20231102024523207"></p>
+<p>两种思路：</p>
+<ol>
+<li>使用<code>group_concat</code>函数，将课程列表输出为字符串，比较字符串是否相等</li>
+<li>比较课程数量是否相等，再判断同学的课程是否全在01号同学的学习课程列表中</li>
+</ol>
+<pre><code class="sql">SELECT student.* from student
+    left join Score S on Student.s_id = S.s_id
+group by Student.s_id
+having
+       Student.s_id != &#39;01&#39;
+       AND group_concat(s.c_id order by s.c_id) = (
+    SELECT group_concat(s.c_id order by s.c_id)
+    from score s
+        join student s2 on s.s_id = s2.s_id
+    where s2.s_id = &#39;01&#39;
+);
+
+# 思路二走不通 一种错误尝试
+SELECT student.* from student
+    left join Score S on Student.s_id = S.s_id
+where s.s_id != &#39;01&#39;
+group by S.s_id
+having c_id in (   # 此处必须为聚合函数或者c_id在group by中被提及（having处理的事group by之后的数据）
+    SELECT c_id
+    from score
+    where Score.s_id = &#39;01&#39;
+)
+   AND count(s.c_id) = (
+    SELECT count(c_id)
+    from score
+    where Score.s_id = &#39;01&#39;
+)
+
+</code></pre>
+<p>14、查询没学过”张三”老师讲授的任一门课程的学生姓名<br>15、查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩 （有争议）<br>16、检索”01”课程分数小于60，按分数降序排列的学生信息<br>17、按平均成绩从高到低显示所有学生的所有课程的成绩以及平均成绩<br>18.查询各科成绩最高分、最低分和平均分：以如下形式显示：课程ID，课程name，最高分，最低分，平均分，及格率，中等率，优良率，优秀率–及格为&gt;&#x3D;60，中等为：70-80，优良为：80-90，优秀为：&gt;&#x3D;90<br>19、按各科成绩进行排序，并显示排名<br>20、查询学生的总成绩并进行排名<br>21、查询不同老师所教不同课程平均分从高到低显示<br>22、查询所有课程的成绩第2名到第3名的学生信息及该课程成绩（有争议）<br>23、统计各科成绩各分数段人数：课程编号,课程名称,[100-85],[85-70],[70-60],[0-60]及所占百分比<br>24、查询学生平均成绩及其名次（与20题一样）<br>25、查询各科成绩前三名的记录（与22题一样）<br>26、查询每门课程被选修的学生数<br>27、查询出只有两门课程的全部学生的学号和姓名<br>28、查询男生、女生人数<br>29、查询名字中含有”风”字的学生信息<br>30、查询同名同性学生名单，并统计同名人数<br>31、查询1990年出生的学生名单<br>32、查询每门课程的平均成绩，结果按平均成绩降序排列，平均成绩相同时，按课程编号升序排列<br>33、查询平均成绩大于等于85的所有学生的学号、姓名和平均成绩<br>34、查询课程名称为”数学”，且分数低于60的学生姓名和分数<br>35、查询所有学生的课程及分数情况；<br>36、查询任何一门课程成绩在70分以上的姓名、课程名称和分数；(有争议)<br>37、查询不及格的课程<br>38、查询课程编号为01且课程成绩在80分以上的学生的学号和姓名；<br>39、求每门课程的学生人数<br>40、查询选修”张三”老师所授课程的学生中，成绩最高的学生信息及其成绩<br>41、查询不同课程成绩相同的学生的学生编号、课程编号、学生成绩<br>42、查询每门功成绩最好的前两名(类题25)<br>43、统计每门课程的学生选修人数（超过5人的课程才统计）。要求输出课程号和选修人数，查询结果按人数降序排列，若人数相同，按课程号升序排列<br>44、检索至少选修两门课程的学生学号<br>45、查询选修了全部课程的学生信息<br>46、查询各学生的年龄(有争议)<br>47、查询本周过生日的学生<br>48、查询下周过生日的学生<br>49、查询本月过生日的学生<br>50、查询下月过生日的学生</p>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2023 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

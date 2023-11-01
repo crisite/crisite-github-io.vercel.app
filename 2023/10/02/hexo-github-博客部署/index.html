@@ -149,22 +149,27 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>hexo-github 博客部署</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-number">1.</span> <span class="toc-text">部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83"><span class="toc-number">1.1.</span> <span class="toc-text">环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Hexo"><span class="toc-number">1.2.1.</span> <span class="toc-text">安装 Hexo</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Github-%E6%96%B0%E5%BB%BA%E4%BB%93%E5%BA%93"><span class="toc-number">1.2.2.</span> <span class="toc-text">Github 新建仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%8F%90%E4%BA%A4"><span class="toc-number">1.2.3.</span> <span class="toc-text">测试提交</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E4%B8%80%E4%B8%AA%E4%B8%BB%E9%A2%98"><span class="toc-number">1.2.4.</span> <span class="toc-text">选择一个主题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.2.5.</span> <span class="toc-text">创建第一篇博客</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BUG%E8%A7%A3%E5%86%B3"><span class="toc-number">2.</span> <span class="toc-text">BUG解决</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/2
-        </span>
-        
-        
-    </div>
-    
-    <div class="content" v-pre>
-        <p>部署基于 Hexo-github 的个人博客</p>
+  </aside>
+  <div>
+    <h1>hexo-github 博客部署</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/2
+    </span>
+     
+  </div>
+  
+  <div class="content" v-pre><p>部署基于 Hexo-github 的个人博客</p>
 <span id="more"></span>
 
 <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><blockquote>
@@ -275,15 +280,8 @@ Host github.com
 <blockquote>
 <p>另外，中途我有试过将ssh提交方式更换为http方式提交，但是提交的时候一直鉴权失败。（？）</p>
 </blockquote>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

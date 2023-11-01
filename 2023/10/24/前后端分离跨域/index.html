@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>前后端分离跨域</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">前端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">后端</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/24
-        </span>
+  </aside>
+  <div>
+    <h1>前后端分离跨域</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/24
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #ff7d73">项目</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #03a9f4"
+          >项目</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>前后端分离跨域最简版</p>
+  </div>
+  
+  <div class="content" v-pre><p>前后端分离跨域最简版</p>
 <span id="more"></span>
 
 <h2 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h2><p>Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。</p>
@@ -232,15 +238,8 @@ public class CorsConfig implements WebMvcConfigurer &#123;
     &#125;
 &#125;
 </code></pre>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Arch使用魔法</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BDclash-for-windows"><span class="toc-number">1.</span> <span class="toc-text">1. 下载clash for windows</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">使用教程</span></a></li></ol></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/3
-        </span>
+  </aside>
+  <div>
+    <h1>Arch使用魔法</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/3
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/linux/" style="color: #00bdc4">linux</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/linux/" style="color: #00a596"
+          >linux</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>博客部署好之后就该让访问博客变得轻松了 TvT</p>
+  </div>
+  
+  <div class="content" v-pre><p>博客部署好之后就该让访问博客变得轻松了 TvT</p>
 <span id="more"></span>
 
 <h3 id="1-下载clash-for-windows"><a href="#1-下载clash-for-windows" class="headerlink" title="1. 下载clash for windows"></a>1. 下载clash for windows</h3><pre><code class="shell">yay -S clash-for-windows-bin
@@ -230,15 +236,8 @@ http_proxy=http://127.0.0.1:%mixedPort%
 all_proxy=socks5://127.0.0.1:%mixedPort%
 </code></pre>
 <p>然后重启重新打开<code>clash for windows</code>，在浏览器中访问Google，发现成功访问Google：</p>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

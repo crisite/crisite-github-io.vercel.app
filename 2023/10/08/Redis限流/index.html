@@ -149,46 +149,45 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Redis限流</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">滑动窗口算法</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/8
-        </span>
+  </aside>
+  <div>
+    <h1>Redis限流</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/8
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Redis/" style="color: #03a9f4">Redis</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Redis/" style="color: #ff7d73"
+          >Redis</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>限定用户的某个行为在指定时间T内，只允许发生N次。</p>
+  </div>
+  
+  <div class="content" v-pre><p>限定用户的某个行为在指定时间T内，只允许发生N次。</p>
 <span id="more"></span>
 
-<h2 id="滑动窗口算法"><a href="#滑动窗口算法" class="headerlink" title="滑动窗口算法"></a>滑动窗口算法</h2>
-    </div>
-    
-    
-    
-    
-    
-    
-    
+<h2 id="滑动窗口算法"><a href="#滑动窗口算法" class="headerlink" title="滑动窗口算法"></a>滑动窗口算法</h2></div>
+        
 </div>
 
             <footer id="footer">

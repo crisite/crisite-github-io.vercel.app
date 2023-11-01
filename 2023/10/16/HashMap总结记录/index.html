@@ -149,50 +149,49 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>HashMap总结记录</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/16
-        </span>
+  </aside>
+  <div>
+    <h1>HashMap总结记录</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/16
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Java/" style="color: #00a596">Java</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Java/" style="color: #00bdc4"
+          >Java</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>面试之前把<code>HashMap</code>梳理一遍</p>
+  </div>
+  
+  <div class="content" v-pre><p>面试之前把<code>HashMap</code>梳理一遍</p>
 <span id="more"></span>
 
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>Jdk1.6和Jdk1.7使用的是位桶数组+链表实现</p>
 <p>Jdk1.8以后使用的位桶数组+链表+红黑树实现</p>
 <pre><code class="java">transient Node&lt;K, V&gt;[] table; //位桶数组
 </code></pre>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

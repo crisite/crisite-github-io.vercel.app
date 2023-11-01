@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>Redis源码分析</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#deps"><span class="toc-number">1.</span> <span class="toc-text">deps</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#src-%E7%9B%AE%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">src 目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tests-%E7%9B%AE%E5%BD%95"><span class="toc-number">3.</span> <span class="toc-text">tests 目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#utils-%E7%9B%AE%E5%BD%95"><span class="toc-number">4.</span> <span class="toc-text">utils 目录</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/6
-        </span>
+  </aside>
+  <div>
+    <h1>Redis源码分析</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/6
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/Redis/" style="color: #00bdc4">Redis</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/Redis/" style="color: #00bdc4"
+          >Redis</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>Redis7.2 源码分析</p>
+  </div>
+  
+  <div class="content" v-pre><p>Redis7.2 源码分析</p>
 <span id="more"></span>
 
 <h4 id="deps"><a href="#deps" class="headerlink" title="deps"></a><strong>deps</strong></h4><p>这个目录主要包含 Redis 所依赖的第三方代码库。</p>
@@ -219,15 +225,8 @@
 </li>
 </ol>
 </blockquote>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>手撕LRU</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">思考流程</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/7
-        </span>
+  </aside>
+  <div>
+    <h1>手撕LRU</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/7
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #00a596">算法</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #00bdc4"
+          >算法</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>时间复杂度为O(1)的LRU算法</p>
+  </div>
+  
+  <div class="content" v-pre><p>时间复杂度为O(1)的LRU算法</p>
 <span id="more"></span>
 
 <h2 id="思考流程"><a href="#思考流程" class="headerlink" title="思考流程"></a>思考流程</h2><p>LRU需要再指定的空间存满数据时，移除最久为访问的元素。 —-&gt;</p>
@@ -313,15 +319,8 @@ class DoubleLinkedList &#123;
 
 &#125;
 </code></pre>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">

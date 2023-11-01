@@ -149,35 +149,41 @@
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
-    <div>
-        <h1>ArchLinux使用小结</h1>
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BD%AF%E4%BB%B6%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">创建软件快捷方式</span></a></li></ol>
     </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/6
-        </span>
+  </aside>
+  <div>
+    <h1>ArchLinux使用小结</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2023/10/6
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
         
-        
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/linux/" style="color: #ffa2c4">linux</a>
-            </span>
-            
-        </span>
-        
-    </div>
+        <a href="/tags/linux/" style="color: #00a596"
+          >linux</a
+        >
+      </span>
+      
+    </span>
     
-    <div class="content" v-pre>
-        <p>主要记录一些在linux中的学习，随时更新</p>
+  </div>
+  
+  <div class="content" v-pre><p>主要记录一些在linux中的学习，随时更新</p>
 <span id="more"></span>
 
 <h2 id="创建软件快捷方式"><a href="#创建软件快捷方式" class="headerlink" title="创建软件快捷方式"></a>创建软件快捷方式</h2><p>目前用过的三种快捷启动的方式：创建软连接到<code>/usr/local/bin</code>、在shell配置文件中添加<code>alias</code>、在<code>/usr/share/applications</code>中创建<code>.desktop</code>的启动器</p>
@@ -212,15 +218,8 @@ StartupNotify=false
 <p>通过在<del>&#x2F;.zshrc中添加别名只在zsh终端中生效（不同种终端对应各自的</del>&#x2F;.*shrc）</p>
 <p>创建<code>.desktop</code>启动器可以通过菜单中找到idea启动应用（eg. <code>roki -show drun</code>）</p>
 </blockquote>
-
-    </div>
-    
-    
-    
-    
-    
-    
-    
+</div>
+        
 </div>
 
             <footer id="footer">
