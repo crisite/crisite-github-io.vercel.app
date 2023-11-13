@@ -269,7 +269,7 @@ Trying 20.205.243.166...
 telnet: Unable to connect to remote host: 连接超时
 </code></pre>
 <p>通过<code>ssh -T git@github.com  </code> <code>telnet 20.205.243.166 22</code>确认确实是github的22端口无法访问，测试一下443接口，测试443接口可用，更改一下ssh配置：</p>
-<p>在<code>~/.ssh</code>下新建<code>config</code>文件 添加如下内容:</p>
+<p>在<code>~/.ssh</code>下新建<code>config</code>文件 添加如下内容:33</p>
 <pre><code class="bash"># 22端口连接超时，切换为443端口
 Host github.com
     port 443 # 默认是22端口

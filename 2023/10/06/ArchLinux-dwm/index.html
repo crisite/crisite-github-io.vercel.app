@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E6%BA%90"><span class="toc-number">1.</span> <span class="toc-text">换源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">软件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%AA%E5%9B%BE"><span class="toc-number">2.1.</span> <span class="toc-text">截图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%8A%A5%E9%94%99"><span class="toc-number">3.</span> <span class="toc-text">软件报错</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E6%BA%90"><span class="toc-number">1.</span> <span class="toc-text">换源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">软件安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%AA%E5%9B%BE"><span class="toc-number">2.1.</span> <span class="toc-text">截图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AA%97%E5%8F%A3%E9%80%8F%E6%98%8E%E5%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">窗口透明度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%8A%A5%E9%94%99"><span class="toc-number">4.</span> <span class="toc-text">软件报错</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #00a596"
+        <a href="/tags/linux/" style="color: #ff7d73"
           >linux</a
         >
       </span>
@@ -208,6 +208,35 @@ static const key keys[] = &#123;
   launcher       Open the capture launcher.
   config         Configure flameshot.
 </code></pre>
+<h2 id="窗口透明度"><a href="#窗口透明度" class="headerlink" title="窗口透明度"></a>窗口透明度</h2><ol>
+<li><p>打<code>dwm-alpha</code>补丁</p>
+</li>
+<li><p>安装<code>picom</code></p>
+</li>
+<li><p><code>Pacman</code>下载<code>xorg-xprop</code></p>
+</li>
+<li><p>复制<code>/etc/xdg/picom.conf.example</code>到<code>~/.config/picom/picom.conf</code>(自己创建)</p>
+</li>
+<li><p>配置 </p>
+<pre><code class="bash">opacity-rule = [
+    &quot;100:class_g = &#39;microsoft-edge-dev&#39;&quot;,
+];
+
+wintypes:
+&#123;
+  normal = &#123; fade = true; shadow = true; opacity = 0.95; &#125;
+  tooltip = &#123; fade = true; shadow = true; opacity = 0.10; focus = true; full-shadow = false; &#125;;
+  dock = &#123; shadow = false; clip-shadow-above = true; &#125;
+  dnd = &#123; shadow = false; &#125;
+  popup_menu = &#123; opacity = 0.8; &#125;
+  dropdown_menu = &#123; opacity = 0.8; &#125;
+&#125;;
+</code></pre>
+</li>
+</ol>
+<blockquote>
+<p>其中<code>opaciry-rule</code>配置不同窗口的透明度规则，通过<code>xprop</code>确认不同窗口的<code>WM_CLASS</code>，其他的属性自己多试试应该也能懂什么意思</p>
+</blockquote>
 <h2 id="软件报错"><a href="#软件报错" class="headerlink" title="软件报错"></a>软件报错</h2><p><code>WPS</code>正常启动并使用，但是<code>wpspdf</code>无法使用报错，找不到库文件</p>
 <pre><code class="bash">dlopen /usr/lib/office6/libpdfmain.so failed , error: libtiff.so.5: 无法打开共享对象文件: 没有那个文件或目录
 </code></pre>
