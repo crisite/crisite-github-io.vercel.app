@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E4%BC%98%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">SQL优化</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Mysql/" style="color: #03a9f4"
+        <a href="/tags/Mysql/" style="color: #ffa2c4"
           >Mysql</a
         >
       </span>
@@ -194,6 +194,31 @@
 <li>锁定表</li>
 <li>使用索引，尽量不要对数据库中存在大量重复的值的字段建立索引</li>
 <li>优化查询语句</li>
+</ol>
+<h2 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h2><ol>
+<li><p>使用<code>explain</code>查询</p>
+<ul>
+<li>是否命中索引 （索引失效）-&gt; 查询条件是否覆盖了索引</li>
+<li>是否加载了过多行数据（超大分页）-&gt; 增加缓存 limit</li>
+<li>是否加载了不必要的字段 -&gt; 指定列名</li>
+</ul>
+</li>
+<li><p>是否是表中的数据量太大</p>
+<ul>
+<li>针对数据量大的表进行水平切分</li>
+</ul>
+</li>
+<li><p>表的设计方面</p>
+<ul>
+<li><p>字段设计</p>
+<p>- </p>
+<ul>
+<li>选择区分度较高的列<code>count(dinstinct col)/count(*)</code>为索引</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
 </ol>
 </div>
         
