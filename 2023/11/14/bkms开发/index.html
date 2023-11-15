@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #ffa2c4"
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #00a596"
           >项目</a
         >
       </span>
@@ -193,9 +193,12 @@
     username: root
     password: 123456
 </code></pre>
-<h3 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h3><pre><code class="yml"># 不配置这个的话也会报错Invalid bound statement (not found)
-mybatis:
+<h3 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h3><pre><code class="yml">mybatis:
+# 不配置这个的话也会报错Invalid bound statement (not found)
   mapper-locations: mapper/*.xml
+  configuration:
+    # 数据库字段驼峰转换
+    map-underscore-to-camel-case: true
 </code></pre>
 <h3 id="Knife4j"><a href="#Knife4j" class="headerlink" title="Knife4j"></a>Knife4j</h3><pre><code class="yml">  # 支持 swagger3
 spring:
