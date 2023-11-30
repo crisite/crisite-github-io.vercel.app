@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">基本环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql"><span class="toc-number">1.1.</span> <span class="toc-text">Mysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mybatis"><span class="toc-number">1.2.</span> <span class="toc-text">Mybatis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Knife4j"><span class="toc-number">1.3.</span> <span class="toc-text">Knife4j</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">基本环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql"><span class="toc-number">1.1.</span> <span class="toc-text">Mysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mybatis"><span class="toc-number">1.2.</span> <span class="toc-text">Mybatis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Knife4j"><span class="toc-number">1.3.</span> <span class="toc-text">Knife4j</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BUG"><span class="toc-number">2.</span> <span class="toc-text">BUG</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #00a596"
+        <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #03a9f4"
           >项目</a
         >
       </span>
@@ -227,6 +227,14 @@ public class Knife4jConfig &#123;
     &#125;
 &#125;
 </code></pre>
+<h2 id="BUG"><a href="#BUG" class="headerlink" title="BUG"></a>BUG</h2><pre><code>public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler &#123;	
+    // @OptLog(OperationEnum.LOGIN_TYPE)
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException &#123;
+    &#125;
+&#125;
+</code></pre>
+<p>用aop註解實現的日誌功能對spring security的處理器進行切片的時候，導致處理器失效</p>
+<p>但是在類上使用aop日誌註解 處理器又能成功使用 不知道爲啥</p>
 </div>
         
 </div>
