@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BD%AF%E4%BB%B6%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">创建软件快捷方式</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%BD%AF%E4%BB%B6%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">创建软件快捷方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E5%B1%8F%E5%B9%95%E4%BA%AE%E5%BA%A6"><span class="toc-number">1.1.</span> <span class="toc-text">设置屏幕亮度</span></a></li></ol></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #ffa2c4"
+        <a href="/tags/linux/" style="color: #ff7d73"
           >linux</a
         >
       </span>
@@ -218,6 +218,11 @@ StartupNotify=false
 <p>通过在<del>&#x2F;.zshrc中添加别名只在zsh终端中生效（不同种终端对应各自的</del>&#x2F;.*shrc）</p>
 <p>创建<code>.desktop</code>启动器可以通过菜单中找到idea启动应用（eg. <code>roki -show drun</code>）</p>
 </blockquote>
+<h3 id="设置屏幕亮度"><a href="#设置屏幕亮度" class="headerlink" title="设置屏幕亮度"></a>设置屏幕亮度</h3><pre><code class="bash"># 先通过指令查看输出信号的名字 然后设置显示器的亮度0-1.0
+xrandr --listmonitors
+
+xrandr --output eDP-1 --brightness [0 - 1]
+</code></pre>
 </div>
         
 </div>

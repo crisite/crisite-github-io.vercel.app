@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Arch使用魔法 | Crisite の博客</title>
+    <title> | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%8B%E8%BD%BDclash-for-windows"><span class="toc-number">1.</span> <span class="toc-text">1. 下载clash for windows</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">使用教程</span></a></li></ol></li></ol>
+      
     </div>
   </aside>
   <div>
-    <h1>Arch使用魔法</h1>
+    <h1></h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2023/10/3
+      2023/12/12
     </span>
      
     <span class="tags">
@@ -174,8 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #00a596"
-          >linux</a
+        <a href="/tags/Redis/" style="color: #00a596"
+          >Redis</a
         >
       </span>
       
@@ -183,59 +183,7 @@
     
   </div>
   
-  <div class="content" v-pre><p>博客部署好之后就该让访问博客变得轻松了 TvT</p>
-<span id="more"></span>
-
-<h3 id="1-下载clash-for-windows"><a href="#1-下载clash-for-windows" class="headerlink" title="1. 下载clash for windows"></a>1. 下载clash for windows</h3><pre><code class="shell">yay -S clash-for-windows-bin
-</code></pre>
-<p>终端输入<code>cfw</code>即可启动<code>clash fow windows</code></p>
-<p>界面简介</p>
-<ul>
-<li>General（常规）：</li>
-<li>Port、Socks Port；分别为 HTTP、SOCKS 代理端口，点击终端图案可以打开一个配置了代理的命令行窗口，点击端口数字可以复制该命令；</li>
-<li>Allow LAN：启用局域网共享代理功能；</li>
-<li>Log Level：日志等级；</li>
-<li>Home Directory：点击下方路径直达 ~&#x2F;.config&#x2F;clash 文件夹；</li>
-<li>GeoIP Database：点击下方日期可更新 GeoIP 数据库；</li>
-<li>UWP Loopback ：可以用来使 UWP 应用解除回环代理限制；</li>
-<li>Tap Device ：安装 cfw-tap 网卡，可用于处理不遵循系统代理的软件（实际启动 tap 模式需要更改配置文件）；</li>
-<li>General YML：编辑 config.yml 文件，可用于配置部分 General 页面内容；</li>
-<li>Dark Theme：控制暗色模式；</li>
-<li>Start with linux：设置开机自启；</li>
-<li>Proxies（代理）：选择代理方式（Global – 全局、Rule – 规则、Direct – 直连）及策略组节点选择；</li>
-<li>Profiles（配置管理）：</li>
-<li>用来下载远端配置文件和创建本地副本，且可在多个配置文件间切换；</li>
-<li>对配置进行节点、策略组和规则的管理（添加节点、策略组和规则在各自编辑界面选择 Add, 调整策略组顺序、节点顺序及策略组节点使用拖拽的方式）；</li>
-<li>Logs（日志）：显示当前请求命中规则类型和策略；</li>
-<li>Connections (连接): 显示当前的 TCP 连接，可对某个具体连接执行关闭操作；</li>
-<li>Settings（设置）：软件详细设置；</li>
-<li>Feedback（反馈）：显示软件、作者相关信息。</li>
-</ul>
-<h4 id="使用教程"><a href="#使用教程" class="headerlink" title="使用教程"></a>使用教程</h4><ul>
-<li><strong>远程订阅地址</strong></li>
-</ul>
-<p>远程订阅地址即通过 URL 链接导入，点击界面左侧菜单 Profiles，在顶部输入框填入 URL 连接地址并点击 Download 即可，下载完成后点击对应的配置文件即可添加配置文件</p>
-<blockquote>
-<p>个人使用的代理-&gt;[SSRDog][<a target="_blank" rel="noopener" href="https://dog.ssrdog111.com/#/register?code=UNM89GSi]">https://dog.ssrdog111.com/#/register?code=UNM89GSi]</a></p>
-</blockquote>
-<ul>
-<li>设置本机代理</li>
-</ul>
-<p><code>export</code></p>
-<pre><code class="shell">export https_proxy=http://127.0.0.1:%mixedPort%
-export http_proxy=http://127.0.0.1:%mixedPort%
-export all_proxy=socks5://127.0.0.1:%mixedPort%
-</code></pre>
-<blockquote>
-<p>不同的终端命令所识别的环境变量名不同，如<code>all_proxy</code>对<code>curl</code>生效，而对<code>wegt</code>则不生效</p>
-</blockquote>
-<p>！ 但是设置当前终端代理方式后，当前终端通过<code>curl ip.gs</code>查看ip地址时，修改生效，但是仍然无法ping通Google，于是切换全局代理</p>
-<p>在<code>/etc/environment</code>中添加代理</p>
-<pre><code class="shell">https_proxy=http://127.0.0.1:%mixedPort%
-http_proxy=http://127.0.0.1:%mixedPort%
-all_proxy=socks5://127.0.0.1:%mixedPort%
-</code></pre>
-<p>然后重启重新打开<code>clash for windows</code>，在浏览器中访问Google，发现成功访问Google：</p>
+  <div class="content" v-pre><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231212154551867.png" alt="image-20231212154551867"></p>
 </div>
         
 </div>
