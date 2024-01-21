@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Spring Security流程及源码分析 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81"><span class="toc-number">1.</span> <span class="toc-text">认证</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">结构分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringContextHolder"><span class="toc-number">1.1.1.</span> <span class="toc-text">SpringContextHolder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SpringContext"><span class="toc-number">1.1.2.</span> <span class="toc-text">SpringContext</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-number">1.1.3.</span> <span class="toc-text">Authentication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AuthenticationProvider"><span class="toc-number">1.1.4.</span> <span class="toc-text">AuthenticationProvider</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ProviderManager"><span class="toc-number">1.1.5.</span> <span class="toc-text">ProviderManager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UserDetails"><span class="toc-number">1.1.6.</span> <span class="toc-text">UserDetails</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90%EF%BC%88%E4%BB%A5UsernamePassword%E9%AA%8C%E8%AF%81%E6%96%B9%E5%BC%8F%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">流程分析（以UsernamePassword验证方式为例）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E5%99%A8%E9%93%BE"><span class="toc-number">2.</span> <span class="toc-text">过滤器链</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#FilterChainProxy"><span class="toc-number">2.1.</span> <span class="toc-text">FilterChainProxy</span></a></li></ol></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>Spring Security流程及源码分析</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/1/20
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/SpringBoot/" style="color: #00a596"
+          >SpringBoot</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p>主要是对Spring Security的源码进行分析</p>
+<span id="more"></span>
+
+<h1 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h1><h2 id="结构分析"><a href="#结构分析" class="headerlink" title="结构分析"></a>结构分析</h2><h3 id="SpringContextHolder"><a href="#SpringContextHolder" class="headerlink" title="SpringContextHolder"></a>SpringContextHolder</h3><p>用户认证通过后，为了避免用户的每次操作都进行认证，可将用户的信息保存在会话中。Spring Security 提供会话管理，认证通过后将身份信息放入 SecurityContextHolder 上下文，SecurityContext 与当前线程进行绑定，方便获取用户身份。</p>
+<hr>
+<h3 id="SpringContext"><a href="#SpringContext" class="headerlink" title="SpringContext"></a>SpringContext</h3><pre><code class="java">public class SecurityContextImpl implements SecurityContext &#123;
+    private Authentication authentication
+&#125;
+</code></pre>
+<p>用户认证后的用户信息存放在SecurityContext中</p>
+<hr>
+<h3 id="Authentication"><a href="#Authentication" class="headerlink" title="Authentication"></a>Authentication</h3><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240120122943404.png" alt="image-20240120122943404"></p>
+<hr>
+<p>**<code>Authentication（身份验证）**</code> 接口是 Spring Security 中身份验证流程的顶级接口，该接口定义了如下方法：</p>
+<pre><code class="java">//获取登录用户的权限列表	
+Collection&lt;? extends GrantedAuthority&gt; getAuthorities();
+//获取凭据。用户密码登录，这个字段就是密码信息，在认证过后通常会被移除(eraseCredentials()方法，定义在AbstractAuthenticationToken中)，用于保障安全。如果是手机号验证码登录，那这个字段存的就是验证码
+Object getCredentials();
+//包含了一些认证时的信息，默认的实现为 WebAuthentications，记录了访问者的远程地址和sessionId的值。
+Object getDetails();
+//身份信息，默认情况下返回的是 UserDetails的实例
+Object getPrincipal();
+//是否通过认证，通过认证为 true
+boolean isAuthenticated();
+//设置是否已认证
+void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException;
+</code></pre>
+<hr>
+<h3 id="AuthenticationProvider"><a href="#AuthenticationProvider" class="headerlink" title="AuthenticationProvider"></a>AuthenticationProvider</h3><p><strong><code>AuthenticationProvider</code>（身份验证提供者）</strong>，<code>providerManager</code>操作<code>AuthenticationProvider</code>，<code>AuthenticationProvider</code>操作<code>Authentication</code>。</p>
+<p>每个<code>AuthenticationProvider</code>可以执行特定的 <code>Authentication</code> （身份验证）类型。例如：<code>DaoAuthenticationProvider</code>支持基于用户名+密码的 <code>UsernamePasswordAuthenticationToken</code> 身份验证。也可以自定义认证方式，比如自定义<code>EmailVerificationCodeAuthenticationProvider</code>支持邮箱 + 验证码的 <code>EmailVerificationCodeAuthenticationToken</code> 身份验证。</p>
+<pre><code class="java">public interface AuthenticationProvider &#123;
+    // 方法接收一个未通过认证 Authentication 对象，返回一个通过认证的 Authentication 对象。重写authenticate即可实现对用户自定义验证方式
+    Authentication authenticate(Authentication authentication) throws AuthenticationException;
+
+    boolean supports(Class&lt;?&gt; authentication);
+&#125;
+</code></pre>
+<p>在AbstractUserDetailsAuthenticationProvider中重写了authenticate方法</p>
+<pre><code class="java">@Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException &#123;
+        // 从authentication取出UserDetails
+        String username = determineUsername(authentication);
+        boolean cacheWasUsed = true;
+        // 从缓存中根据用户名取出userDetails，如果缓存中有，则直接校验，若无，则通过自定义loadUserByUsername()方法从数据库中载入user
+        UserDetails user = this.userCache.getUserFromCache(username);
+        if (user == null) &#123;
+            cacheWasUsed = false;
+            try &#123;
+                // 调用子类DaoAuthenticationProvider的retrieveUser方法
+                user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+            &#125;
+            catch (UsernameNotFoundException ex) &#123;
+                // 抛出认证失败的异常
+                throw new BadCredentialsException(this.messages
+                        .getMessage(&quot;AbstractUserDetailsAuthenticationProvider.badCredentials&quot;, &quot;Bad credentials&quot;));
+            &#125;
+        &#125;
+        try &#123;
+            // 检验 user 中的各个账户状态属性是否正常，例如账户是否被禁用、账户是否被锁定、账户是否过期等等
+            this.preAuthenticationChecks.check(user);
+            // 做密码比对
+            additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken) authentication);
+        &#125;
+        catch (AuthenticationException ex) &#123;
+            if (!cacheWasUsed) &#123;
+                throw ex;
+            &#125;
+            // 检查报错后额外再检测一次
+            cacheWasUsed = false;
+            user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+            this.preAuthenticationChecks.check(user);
+            additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken) authentication);
+        &#125;
+        // 检查密码是否过期
+        this.postAuthenticationChecks.check(user);
+        if (!cacheWasUsed) &#123;
+            // 存入缓存中
+            this.userCache.putUserInCache(user);
+        &#125;
+        Object principalToReturn = user;
+        if (this.forcePrincipalAsString) &#123;
+            principalToReturn = user.getUsername();
+        &#125;
+        // 构建一个新的UsernamePasswordAuthenticationToken
+        return createSuccessAuthentication(principalToReturn, authentication, user);
+    &#125;
+</code></pre>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240120123856013.png" alt="image-20240120123856013"></p>
+<hr>
+<h3 id="ProviderManager"><a href="#ProviderManager" class="headerlink" title="ProviderManager"></a>ProviderManager</h3><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240120123159885.png" alt="image-20240120123159885"></p>
+<p>**<code>ProviderManager</code>**是身份验证管理器，其中包含了一个 List 的 <code>AuthenticationProvider</code> 的属性，该属性存放多种认证方式。当<code>Spring Security</code>默认提供的认证方式不能满足需求时，就可以通过 <code>AuthenticationProvider</code> 接口来扩展出其他认证方式。同时，该类中的<code>authenticate</code>方法也是身份认证中的关键方法</p>
+<pre><code class="java">public Authentication authenticate(Authentication authentication)&#123;
+    Class&lt;? extends Authentication&gt; toTest = authentication.getClass();
+    AuthenticationException lastException = null;
+    Authentication result = null;
+
+    // 进入authenticate方法中首先判断provider是否支持该Authentication
+    // 首先进入的是AnonymousAuthenticationProvider，接着是DaoAuthenticationProvider
+    // 二者是两个不同的身份验证提供者。它们之间的父子关系是因为在Spring Security中，AnonymousAuthenticationProvider是由DaoAuthenticationProvider所创建的
+    for (AuthenticationProvider provider : getProviders()) &#123;
+        if (!provider.supports(toTest)) &#123;
+            continue;
+        &#125;
+
+        try &#123;
+            // 既然支持该Authentication则调用AuthenticationProvider的authenticate方法进行校验，校验完成后返回一个Authentication
+            result = provider.authenticate(authentication);
+            if (result != null) &#123;
+                copyDetails(authentication, result);
+                break;
+            &#125;
+        &#125;
+        catch (AccountStatusException | InternalAuthenticationServiceException e) &#123;
+            ....
+        &#125;
+    &#125;
+    // 如果校验失败则调用provider的父类的authenticate方法进行校验
+    if (result == null &amp;&amp; parent != null) &#123;
+        // Allow the parent to try.
+        try &#123;
+            result = parentResult = parent.authenticate(authentication);
+        &#125;
+        catch (ProviderNotFoundException e) &#123;
+        .....
+        &#125;
+    &#125;
+
+    // 校验完成擦除凭证
+    if (result != null) &#123;
+        if (eraseCredentialsAfterAuthentication
+            &amp;&amp; (result instanceof CredentialsContainer)) &#123;
+            ((CredentialsContainer) result).eraseCredentials();
+        &#125;
+
+        .....
+        return result;
+    &#125;
+    .....
+    // 最后将登录成功事件广播出去
+    eventPublisher.publishAuthenticationSuccess(ex, auth);
+    throw lastException;
+&#125;
+</code></pre>
+<hr>
+<h3 id="UserDetails"><a href="#UserDetails" class="headerlink" title="UserDetails"></a>UserDetails</h3><p>这个接口定义了用户的核心信息。在 Spring Security 中，如果自定义认证逻辑时，需要实现该接口进行扩展，来保存自己系统的用户信息</p>
+<pre><code class="java">public interface UserDetails extends Serializable &#123;
+
+    Collection&lt;? extends GrantedAuthority&gt; getAuthorities();
+
+    String getPassword();
+
+    String getUsername();
+
+    boolean isAccountNonExpired();
+
+    boolean isAccountNonLocked();
+
+    boolean isCredentialsNonExpired();
+
+    boolean isEnabled();
+&#125;
+</code></pre>
+<hr>
+<h2 id="流程分析（以UsernamePassword验证方式为例）"><a href="#流程分析（以UsernamePassword验证方式为例）" class="headerlink" title="流程分析（以UsernamePassword验证方式为例）"></a>流程分析（以UsernamePassword验证方式为例）<img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240120214850194.png" alt="image-20240120214850194"></h2><ol>
+<li>请求进入<code>springSecurityFilterChain</code>后，首先进入<code>AbstractAuthenticationProcessingFilter.doFilter()</code>在该方法中调用，<code>UsernamePasswordAuthencationFilter</code>的<code>attemptAuthentication</code>方法，根据传入的用户名密码创建一个<code>UsernamePasswordAuthenticationToken</code>实例，然后将该实例传入<code>ProviderManager.authenticate()</code>中进行身份认证</li>
+<li>在<code>ProviderManager.authenticate()</code>中首先根据传入的<code>UsernamePasswordAuthenticationToken</code>选择支持该<code>Authentication</code>的<code>AuthenticationProvider</code>，此处是<code>DaoAuthenticationProvider</code>，判断出支持的<code>AuthenticationProvider</code>后，调用其的<code>authenticate()</code>方法（<code>DaoAuthenticationProvider</code>没有重写<code>authenticate()</code>方法，调用的是其抽象父类的方法）</li>
+<li>在<code>AbstractUserDetailsAuthenticationProvider.authenticate()</code>中，首先得到用户名，然后根据用户名判断缓存中是否存在该用户，若有则得到<code>UserDetails</code>，若无则调用子类<code>DaoAuthenticationProvider.retireveUser()</code>方法，在这个方法中调用<code>loadUserByUsername()</code>方法从数据库中取得数据构造<code>UserDetails</code>。</li>
+<li>得到<code>UserDetails</code>后通过<code>preAuthenticationChecks.check()</code>方法对<code>UserDetails</code>中的几个数据进行校验（需都为true），校验成功后将执行<code>additionalAuthenticationChecks(user,(UsernamePasswordAuthenticationToken) authentication)</code>来校验用户名及密码（user是数据库查询出来的数据构造的<code>UserDetails </code> ,<code>authentication</code>是用户传来的用户名密码构造的<code>UsernamePasswordAuthenticationToken</code>），之后再校验密码是否过期，再将<code>UserDetails</code>存入缓存中，最后再返回一个重新构建的<code>UsernamePasswordAuthenticationToken</code></li>
+<li>返回到ProviderManager后调用<code>eraseCredentials()</code>方法擦除凭证即可，然后返回到<code>AbstractAuthenticationProcessingFilter.doFilter()</code>中，继续调用<code>successfulAuthentication</code>，在该方法中奖认证成功的<code>Authentication</code>存入到<code>SecurityContextHolder</code>中，并继续调用<code>successHalder</code>来处理认证成功后的逻辑</li>
+</ol>
+<h1 id="过滤器链"><a href="#过滤器链" class="headerlink" title="过滤器链"></a>过滤器链</h1><p><code>Spring Security</code>的一系列功能都是通过一个过滤器链来实现的</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240121094717192.png" alt="image-20240121094717192"></p>
+<h2 id="FilterChainProxy"><a href="#FilterChainProxy" class="headerlink" title="FilterChainProxy"></a>FilterChainProxy</h2><p>在一个Web项目中，请求的流程大概如下图所示：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240121100440029.png" alt="image-20240121100440029"></p>
+<p>请求从客户端发起（例如浏览器），然后穿过层层 Filter，最终来到 Servlet 上，被 Servlet 所处理。其中，Spring Security Filter如图所示：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240121100535369.png" alt="image-20240121100535369"></p>
+<p>可以看到，Spring Security Filter 并不是直接嵌入到 Web Filter 中的，而是通过 FilterChainProxy 来统一管理 Spring Security Filter，FilterChainProxy 本身则通过 Spring 提供的 DelegatingFilterProxy 代理过滤器嵌入到 Web Filter 之中。</p>
+<p>FilterChainProxy 中可以存在多个过滤器链，如下图：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240121100635160.png" alt="image-20240121100635160"></p>
+<p>可以看到，当请求到达 FilterChainProxy 之后，FilterChainProxy 会根据请求的路径，将请求转发到不同的 Spring Security Filters 上面去，不同的 Spring Security Filters 对应了不同的过滤器，也就是不同的请求将经过不同的过滤器。</p>
+<pre><code class="java">private final static String FILTER_APPLIED = FilterChainProxy.class.getName().concat(&quot;.APPLIED&quot;);
+private List&lt;SecurityFilterChain&gt; filterChains;
+private FilterChainValidator filterChainValidator = new NullFilterChainValidator();
+private HttpFirewall firewall = new StrictHttpFirewall();
+</code></pre>
+<ul>
+<li>FILTER_APPLIED 变量是一个标记，用来标记过滤器是否已经执行过了。</li>
+<li><code>filterChains</code> 是过滤器链列表</li>
+<li><code>filterChainValidator</code> 是 <code>FilterChainProxy</code> 配置完成后的校验方法，默认使用的 <code>NullFilterChainValidator</code> 实际上对应了一个空方法，也就是不做任何校验。</li>
+<li><code>firewall </code>防火墙</li>
+</ul>
+<pre><code class="java">    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        boolean clearContext = request.getAttribute(FILTER_APPLIED) == null;
+        if (!clearContext) &#123;
+            doFilterInternal(request, response, chain);
+            return;
+        &#125;
+        try &#123;
+            request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
+            doFilterInternal(request, response, chain);
+        &#125;
+        catch (RequestRejectedException ex) &#123;
+            this.requestRejectedHandler.handle((HttpServletRequest) request, (HttpServletResponse) response, ex);
+        &#125;
+        finally &#123;
+            SecurityContextHolder.clearContext();
+            request.removeAttribute(FILTER_APPLIED);
+        &#125;
+    &#125;
+</code></pre>
+<pre><code class="java">    private void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        FirewalledRequest firewallRequest = this.firewall.getFirewalledRequest((HttpServletRequest) request);
+        HttpServletResponse firewallResponse = this.firewall.getFirewalledResponse((HttpServletResponse) response);
+        List&lt;Filter&gt; filters = getFilters(firewallRequest);
+        if (filters == null || filters.size() == 0) &#123;
+            firewallRequest.reset();
+            chain.doFilter(firewallRequest, firewallResponse);
+            return;
+        &#125;
+        VirtualFilterChain virtualFilterChain = new VirtualFilterChain(firewallRequest, chain, filters);
+        virtualFilterChain.doFilter(firewallRequest, firewallResponse);
+    &#125;
+</code></pre>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
