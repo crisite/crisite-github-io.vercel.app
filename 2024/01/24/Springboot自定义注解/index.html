@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Arch安装Rebloom | Crisite の博客</title>
+    <title>Springboot自定义注解 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%89%A7%E8%A1%8C%E6%8A%A5%E9%94%99"><span class="toc-number">1.</span> <span class="toc-text">1.启动文件setup执行报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">2.执行启动文件setup报错</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%9F%BA%E6%9C%AC%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">JDK基本注解</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK%E5%85%83%E6%B3%A8%E8%A7%A3"><span class="toc-number"></span> <span class="toc-text">JDK元注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E6%B3%A8%E8%A7%A3%E5%B1%9E%E6%80%A7%E5%80%BC"><span class="toc-number"></span> <span class="toc-text">获取注解属性值</span></a>
     </div>
   </aside>
   <div>
-    <h1>Arch安装Rebloom</h1>
+    <h1>Springboot自定义注解</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2023/10/4
+      2024/1/24
     </span>
      
     <span class="tags">
@@ -174,15 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #ffa2c4"
-          >linux</a
-        >
-      </span>
-      
-      <span class="tag">
-        
-        <a href="/tags/Redis/" style="color: #03a9f4"
-          >Redis</a
+        <a href="/tags/Springboot/" style="color: #00a596"
+          >Springboot</a
         >
       </span>
       
@@ -190,78 +183,48 @@
     
   </div>
   
-  <div class="content" v-pre><p>曲折的Rebloom安装之路</p>
+  <div class="content" v-pre><p>Springboot自定义注解</p>
 <span id="more"></span>
 
-<ul>
-<li>前往github获取源码(<a target="_blank" rel="noopener" href="https://github.com/RedisBloom/RedisBloom">https://github.com/RedisBloom/RedisBloom</a>)</li>
-</ul>
-<pre><code class="bash">git clone --recursive https://github.com/RedisBloom/RedisBloom.git
-cd RedisBloom
-./sbin/setup
-bash -l
-make
+<h4 id="JDK基本注解"><a href="#JDK基本注解" class="headerlink" title="JDK基本注解"></a>JDK基本注解</h4><pre><code class="java">@Override
+重写
+
+@SuppressWarnings(value = &quot;unchecked&quot;)
+压制编辑器警告
 </code></pre>
-<h3 id="1-启动文件setup执行报错"><a href="#1-启动文件setup执行报错" class="headerlink" title="1.启动文件setup执行报错"></a>1.启动文件setup执行报错</h3><pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent, catastrophic damage to your system.
+<h3 id="JDK元注解"><a href="#JDK元注解" class="headerlink" title="JDK元注解"></a>JDK元注解</h3><pre><code class="java">@Retention：定义注解的保留策略
+@Retention(RetentionPolicy.SOURCE)             //注解仅存在于源码中，在class字节码文件中不包含
+@Retention(RetentionPolicy.CLASS)              //默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，
+@Retention(RetentionPolicy.RUNTIME)            //注解会在class字节码文件中存在，在运行时可以通过反射获取到
+
+@Target：指定被修饰的Annotation可以放置的位置(被修饰的目标)
+@Target(ElementType.TYPE)                      //接口、类
+@Target(ElementType.FIELD)                     //属性
+@Target(ElementType.METHOD)                    //方法
+@Target(ElementType.PARAMETER)                 //方法参数
+@Target(ElementType.CONSTRUCTOR)               //构造函数
+@Target(ElementType.LOCAL_VARIABLE)            //局部变量
+@Target(ElementType.ANNOTATION_TYPE)           //注解
+@Target(ElementType.PACKAGE)                   //包
+    
+//注：可以指定多个位置，例如：
+@Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)，也就是此注解可以在方法和类上面使用
+
+@Inherited：指定被修饰的Annotation将具有继承性
+
+@Documented：指定被修饰的该Annotation可以被javadoc工具提取成文档.
 </code></pre>
-<blockquote>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.yaolong.net/article/pip-externally-managed-environment/">pip(3) install，完美解决 externally-managed-environment</a></p>
-</blockquote>
-<p>选择解决方式：</p>
-<ul>
-<li>方案一、(粗暴) 去掉这个提示</li>
-</ul>
-<p>强制删除此警告，回归到熟悉的操作。</p>
-<p>将 “x” 替换为实际版本。</p>
-<table>
-<thead>
-<tr>
-<th><code>1 </code></th>
-<th><code>sudo mv /usr/lib/python3.x/EXTERNALLY-MANAGED /usr/lib/python3.x/EXTERNALLY-MANAGED.bk </code></th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>和之前一样，现在您可以直接运行 <code>pip(3) install package_name</code> 命令来安装python模块。</p>
-<h3 id="2-执行启动文件setup报错"><a href="#2-执行启动文件setup报错" class="headerlink" title="2.执行启动文件setup报错"></a>2.执行启动文件setup报错</h3><pre><code class="bash">FileNotFoundError: Failed to find yay or trizen, for aur package installation.
+<h3 id="获取注解属性值"><a href="#获取注解属性值" class="headerlink" title="获取注解属性值"></a>获取注解属性值</h3><pre><code class="java">//  类
+MyAnnotation1 annotation1 = Demo1.class.getAnnotation(注解.class);
+// 属性
+Demo2.class.getDeclaredField(&quot;属性名&quot;).getAnnotation(注解.class);
+// 方法
+Demo1.class.getMethod(&quot;方法名&quot;).getAnnotation(注解.class);
+// 参数
+for (Parameter parameter : demo3.getClass().getMethod(&quot;方法名&quot;, String.class).getParameters()) &#123;
+    注解 annotation = parameter.getAnnotation(注解.class);
+&#125;
 </code></pre>
-<ul>
-<li><p>尝试1：</p>
-<p>下载terizen</p>
-<p>出现新的报错</p>
-<pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent,
-catastrophic damage to your system.
-</code></pre>
-<p>tarizen无法使用管理员权限进行下载软件，于是找到system-setup.py文件</p>
-<pre><code class="PYTHON">    def common_last(self):
-        if self.dist == &quot;arch&quot;:
-            # self.install(&quot;lcov-git&quot;, aur=True)
-            eprint(&quot;yes&quot;)
-        else:
-</code></pre>
-<p>将其中的<code>self.install(&quot;lcov-git&quot;, aur=True)</code>注释掉，然后手动执行<code>trizen --noconfirm -S lcov-git  </code></p>
-<p>之后再继续执行启动文件.&#x2F;sbin&#x2F;setup即可</p>
-</li>
-</ul>
-<blockquote>
-<p>安装RedisBloom模块最好是先配置redis.conf文件，然后动态加载RedisBoom模块。因为只动态加载，在Redis重启后就失效了，但是只在redis.conf中配置，又没办法动态生效，必须重启。</p>
-</blockquote>
-<p>安装成功后通过<code>module list</code>进行查看是否配置成功</p>
-<pre><code class="bash">127.0.0.1:6379&gt; module list
-1) 1) &quot;name&quot;
-   2) &quot;bf&quot;
-   3) &quot;ver&quot;
-   4) (integer) 999999
-   5) &quot;path&quot;
-   6) &quot;/etc/redis/RedisBloom/bin/linux-x64-release/redisbloom.so&quot;
-   7) &quot;args&quot;
-   8) (empty array)
-</code></pre>
-<p>至此，RedisBloom模块安装完成</p>
 </div>
         
 </div>

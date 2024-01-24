@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Arch安装Rebloom | Crisite の博客</title>
+    <title>Tags: Springboot | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -31,10 +31,6 @@
 
 
 <script src="/js/lib/preview.js"></script>
-
-
-
-
 
 
 
@@ -148,122 +144,207 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-  <!-- Table of Contents -->
-  <aside>
-    <div id="toc" class="toc-article">
-      <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%89%A7%E8%A1%8C%E6%8A%A5%E9%94%99"><span class="toc-number">1.</span> <span class="toc-text">1.启动文件setup执行报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">2.执行启动文件setup报错</span></a></li></ol>
-    </div>
-  </aside>
-  <div>
-    <h1>Arch安装Rebloom</h1>
-  </div>
-  <div class="info">
-    <span class="date">
-      <span class="icon">
-        <i class="fa-solid fa-calendar fa-fw"></i>
-      </span>
-      2023/10/4
-    </span>
-     
-    <span class="tags">
-      <span class="icon">
-        <i class="fa-solid fa-tags fa-fw"></i>
-      </span>
-       
-      <span class="tag">
-        
-        <a href="/tags/linux/" style="color: #ffa2c4"
-          >linux</a
-        >
-      </span>
-      
-      <span class="tag">
-        
-        <a href="/tags/Redis/" style="color: #03a9f4"
-          >Redis</a
-        >
-      </span>
-      
-    </span>
+            <div id="archives">
     
-  </div>
-  
-  <div class="content" v-pre><p>曲折的Rebloom安装之路</p>
-<span id="more"></span>
-
-<ul>
-<li>前往github获取源码(<a target="_blank" rel="noopener" href="https://github.com/RedisBloom/RedisBloom">https://github.com/RedisBloom/RedisBloom</a>)</li>
-</ul>
-<pre><code class="bash">git clone --recursive https://github.com/RedisBloom/RedisBloom.git
-cd RedisBloom
-./sbin/setup
-bash -l
-make
-</code></pre>
-<h3 id="1-启动文件setup执行报错"><a href="#1-启动文件setup执行报错" class="headerlink" title="1.启动文件setup执行报错"></a>1.启动文件setup执行报错</h3><pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent, catastrophic damage to your system.
-</code></pre>
-<blockquote>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.yaolong.net/article/pip-externally-managed-environment/">pip(3) install，完美解决 externally-managed-environment</a></p>
-</blockquote>
-<p>选择解决方式：</p>
-<ul>
-<li>方案一、(粗暴) 去掉这个提示</li>
-</ul>
-<p>强制删除此警告，回归到熟悉的操作。</p>
-<p>将 “x” 替换为实际版本。</p>
-<table>
-<thead>
-<tr>
-<th><code>1 </code></th>
-<th><code>sudo mv /usr/lib/python3.x/EXTERNALLY-MANAGED /usr/lib/python3.x/EXTERNALLY-MANAGED.bk </code></th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>和之前一样，现在您可以直接运行 <code>pip(3) install package_name</code> 命令来安装python模块。</p>
-<h3 id="2-执行启动文件setup报错"><a href="#2-执行启动文件setup报错" class="headerlink" title="2.执行启动文件setup报错"></a>2.执行启动文件setup报错</h3><pre><code class="bash">FileNotFoundError: Failed to find yay or trizen, for aur package installation.
-</code></pre>
-<ul>
-<li><p>尝试1：</p>
-<p>下载terizen</p>
-<p>出现新的报错</p>
-<pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent,
-catastrophic damage to your system.
-</code></pre>
-<p>tarizen无法使用管理员权限进行下载软件，于是找到system-setup.py文件</p>
-<pre><code class="PYTHON">    def common_last(self):
-        if self.dist == &quot;arch&quot;:
-            # self.install(&quot;lcov-git&quot;, aur=True)
-            eprint(&quot;yes&quot;)
-        else:
-</code></pre>
-<p>将其中的<code>self.install(&quot;lcov-git&quot;, aur=True)</code>注释掉，然后手动执行<code>trizen --noconfirm -S lcov-git  </code></p>
-<p>之后再继续执行启动文件.&#x2F;sbin&#x2F;setup即可</p>
-</li>
-</ul>
-<blockquote>
-<p>安装RedisBloom模块最好是先配置redis.conf文件，然后动态加载RedisBoom模块。因为只动态加载，在Redis重启后就失效了，但是只在redis.conf中配置，又没办法动态生效，必须重启。</p>
-</blockquote>
-<p>安装成功后通过<code>module list</code>进行查看是否配置成功</p>
-<pre><code class="bash">127.0.0.1:6379&gt; module list
-1) 1) &quot;name&quot;
-   2) &quot;bf&quot;
-   3) &quot;ver&quot;
-   4) (integer) 999999
-   5) &quot;path&quot;
-   6) &quot;/etc/redis/RedisBloom/bin/linux-x64-release/redisbloom.so&quot;
-   7) &quot;args&quot;
-   8) (empty array)
-</code></pre>
-<p>至此，RedisBloom模块安装完成</p>
-</div>
+    <div class="categories-tags">
         
+        
+        
+        <span>
+            <a href="/tags/linux/" style="background: #ffa2c4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                linux
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Redis/" style="background: #00a596">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Redis
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Java/" style="background: #ffa2c4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Java
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/JavaScript/" style="background: #00a596">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                JavaScript
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Mysql/" style="background: #ffa2c4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Mysql
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/shell/" style="background: #ff7d73">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                shell
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Windows/" style="background: #03a9f4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Windows
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="background: #ffa2c4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                项目
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/%E7%AE%97%E6%B3%95/" style="background: #00a596">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                算法
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="background: #00bdc4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                计算机网络
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/%E9%9D%A2%E8%AF%95/" style="background: #ff7d73">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                面试
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Application/" style="background: #03a9f4">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Application
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/SpringBoot/" style="background: #ff7d73">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                SpringBoot
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/tags/Springboot/" style="background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%)">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                Springboot
+            </a>
+        </span>
+        
+        
+        
+        
+        
+        <span>
+            <a href="/tags/RabbitMQ/" style="background: #00a596">
+                <span class="icon">
+                    <i class="fa-solid fa-tags fa-fw"></i>
+                </span>
+                RabbitMQ
+            </a>
+        </span>
+        
+        
+    </div>
+    
+    <div class="timeline">
+        <div class="timeline-tail"></div>
+        <div class="timeline-content">
+            <div class="item-time">2024/1/24</div>
+            <a href="/2024/01/24/Springboot%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3/">
+                <h3>Springboot自定义注解</h3>
+            </a>
+            <div class="info">
+                
+                
+                <span class="tags">
+                    <span class="icon">
+                        <i class="fa-solid fa-tags fa-fw"></i>
+                    </span>
+                    
+                    
+                    <span class="tag">
+                        
+                        <a href="/tags/Springboot/" style="color: #ff7d73">Springboot</a>
+                    </span>
+                    
+                </span>
+                
+            </div>
+        </div>
+    </div>
+    
 </div>
 
             <footer id="footer">
@@ -294,12 +375,6 @@ catastrophic damage to your system.
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 </body>
 </html>
