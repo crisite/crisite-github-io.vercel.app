@@ -167,6 +167,142 @@
         
 
 <div class="post">
+    <a href="/2024/01/26/canal-rabbitmq%E5%AE%9E%E7%8E%B0mysql%E4%B8%8Eredis%E7%9A%84%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/">
+        <h2 class="post-title">canal+rabbitmq实现mysql与redis的数据同步</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/1/26
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="Canal配置"><a href="#Canal配置" class="headerlink" title="Canal配置"></a>Canal配置</h1><pre><code class="bash">cd /usr/lcoal/mysql
+vim my.cnf
+
+# 开启mysql的binlog
+[mysqld]
+log-bin=mysql-bin # 开启 binlog
+binlog-format=ROW # 选择 ROW 模式
+server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId 重复
+
+# 配置canal 进入canal/conf 只列出一些关键属性
+canal.port = 11111 # 端口号，tcp连接的时候用到，rabbitmq模式用不到
+# 指定模式 tcp, kafka, rocketMQ, rabbitMQ
+canal.serverMode = rabbitMQ
+# 数据库用户名密码，此处我创建了一个canal的用户并授予了权限
+canal.instance.tsdb.dbUsername = canal
+canal.instance.tsdb.dbPassword = canal
+# 指定实例 多个实例之间,分割
+canal.destinations = example
+# mq配置
+rabbitmq.host = 127.0.0.1
+rabbitmq.virtual.host = /
+rabbitmq.exchange = canal.exchange
+# 在rabbitmq中的用户，此处我也是创建了一个canal用户并授权了
+rabbitmq.username = canal
+rabbitmq.password = canal
+
+# 配置canal实例，在canal/conf/example/instace.properties 如需新增实例只需复制example并且配置就行
+canal.instance.master.address=127.0.0.1:3306
+canal.instance.dbUsername=canal
+canal.instance.dbPassword=canal
+# canal.instance.filter.regex=.*\\..* 指定数据库及表 .*\\..*表示所有库所有表
+canal.instance.filter.regex=bkms.books
+</code></pre>
+<p><code>canal</code>配置就这么多，配置完成之后通过<code>canal/bin/start.sh</code>启动<code>canal</code>即可，然后查看<code>canal/log</code>下的日志文件，出现下列信息即表示成功</p>
+<pre><code class="bash">2024-01-26 16:35:43.587 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## set default uncaught exception handler
+2024-01-26 16:35:43.617 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## load canal configurations
+2024-01-26 16:35:43.737 [main] INFO  com.alibaba.otter.canal.deployer.CanalStarter - ## start the canal server.
+2024-01-26 16:35:43.771 [main] INFO  com.alibaba.otter.canal.deployer.CanalController - ## start the canal server[172.17.0.1(172.17.0.1):11111]
+2024-01-26 16:35:45.181 [main] INFO  com.alibaba.otter.canal.deployer.CanalStarter - ## the canal server is running now ......
+</code></pre>
+<h1 id="RabbitMQ配置"><a href="#RabbitMQ配置" class="headerlink" title="RabbitMQ配置"></a>RabbitMQ配置</h1><p>好像也没啥配置，下载安装之后能正常访问<code>localhost:15672</code>即可成功</p>
+<p>在<code>canal</code>启动后能在connection中看到runing状态即可(exchanges和quene都需要自己创建)</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240126163852101.png" alt="image-20240126163852101"></p>
+<p>可以测试一下<code>rabbitmq</code>能否接收到<code>canal</code>的数据库修改信息，修改数据库后查看绑定的queue（需要现创建）</p>
+<p><img src="/home/crisite/.config/Typora/typora-user-images/image-20240126164345877.png" alt="image-20240126164345877"></p>
+<p>在修改数据库后点击<code>Get Message</code> 如果能得到数据的话就说明成功得到了<code>canal</code>生产的消息</p>
+<h1 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h1><p>添加依赖</p>
+<pre><code class="xml">&lt;!--rabbitMq--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<p>配置<code>config</code>创建交换机和队列</p>
+<pre><code class="java">@Configuration
+public class RabbitMQConfig &#123;
+
+    /**
+     * canal通知队列
+     */
+    @Bean
+    public Queue canalQueue() &#123;
+        return new Queue(MQPrefixConst.CANAL_QUEUE, true);
+    &#125;
+
+    /**
+     * canal交换机
+     */
+    @Bean
+    public FanoutExchange canalExchange() &#123;
+        return new FanoutExchange(MQPrefixConst.CANAL_EXCHANGE, true, false);
+    &#125;
+
+    /**
+     * 绑定canal交换机和队列
+     */
+    @Bean
+    public Binding bindingCanalDirect() &#123;
+        return BindingBuilder.bind(canalQueue()).to(canalExchange());
+    &#125;
+&#125;
+</code></pre>
+<p>创建消费者：</p>
+<pre><code class="java">@Slf4j
+@Component
+@RabbitListener(queues = MQPrefixConst.CANAL_QUEUE)
+public class CanalToRedisConsumer &#123;
+
+    // 接受到的message是一个byte[]数组，接收到之后自己做类型转换吧
+    @RabbitHandler
+    public void syncToRedis(byte[] message) &#123;
+        String messageString = new String(message, StandardCharsets.UTF_8);
+        log.info(&quot;Canal 监听发生变化；明细：&#123;&#125;&quot;, messageString);
+        // 处理消息逻辑....
+    &#125;
+&#125;
+</code></pre>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/rabbitmq/" style="color: #03a9f4">rabbitmq</a>
+        </span>
+        
+    </div>
+    <a href="/2024/01/26/canal-rabbitmq%E5%AE%9E%E7%8E%B0mysql%E4%B8%8Eredis%E7%9A%84%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/01/24/%E3%80%90RabbitMQ%E3%80%91%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2-Channels-%E6%8A%A5%E9%94%99%E6%8F%90%E7%A4%BA/">
         <h2 class="post-title">【RabbitMQ】后台管理页面 Channels 报错提示</h2>
     </a>
@@ -200,7 +336,7 @@
         
         <span class="tag">
             
-            <a href="/tags/RabbitMQ/" style="color: #ffa2c4">RabbitMQ</a>
+            <a href="/tags/RabbitMQ/" style="color: #03a9f4">RabbitMQ</a>
         </span>
         
     </div>
@@ -239,7 +375,7 @@
         
         <span class="tag">
             
-            <a href="/tags/Springboot/" style="color: #ff7d73">Springboot</a>
+            <a href="/tags/Springboot/" style="color: #00bdc4">Springboot</a>
         </span>
         
     </div>
@@ -278,12 +414,12 @@
         
         <span class="tag">
             
-            <a href="/tags/linux/" style="color: #ffa2c4">linux</a>
+            <a href="/tags/linux/" style="color: #00bdc4">linux</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Application/" style="color: #03a9f4">Application</a>
+            <a href="/tags/Application/" style="color: #00a596">Application</a>
         </span>
         
     </div>
@@ -322,7 +458,7 @@
         
         <span class="tag">
             
-            <a href="/tags/SpringBoot/" style="color: #03a9f4">SpringBoot</a>
+            <a href="/tags/SpringBoot/" style="color: #00a596">SpringBoot</a>
         </span>
         
     </div>
@@ -430,7 +566,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #03a9f4">项目</a>
+            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #00a596">项目</a>
         </span>
         
     </div>
@@ -508,50 +644,11 @@
         
         <span class="tag">
             
-            <a href="/tags/Windows/" style="color: #03a9f4">Windows</a>
+            <a href="/tags/Windows/" style="color: #00a596">Windows</a>
         </span>
         
     </div>
     <a href="/2023/10/28/windows%E6%BF%80%E6%B4%BB/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/10/28/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
-        <h2 class="post-title">计算机网络</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/10/28
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>跟了小林coding 的 [图解计算机网络][<a target="_blank" rel="noopener" href="https://www.xiaolincoding.com/network]">https://www.xiaolincoding.com/network]</a> 学习的计网（学过一遍忘了）</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="color: #ff7d73">计算机网络</a>
-        </span>
-        
-    </div>
-    <a href="/2023/10/28/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="go-post">阅读全文</a>
 </div>
 
 
