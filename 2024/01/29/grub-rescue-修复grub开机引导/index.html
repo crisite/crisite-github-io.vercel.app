@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>dwm添加rofi | Crisite の博客</title>
+    <title>grub rescue 修复grub开机引导 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BDrofi"><span class="toc-number">1.</span> <span class="toc-text">下载rofi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rofi%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">rofi启动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dwm%E4%B8%AD%E6%B7%BB%E5%8A%A0rofi%E5%BF%AB%E6%8D%B7%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">dwm中添加rofi快捷启动方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6%E6%B7%BB%E5%8A%A0%E6%A1%8C%E9%9D%A2%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">下载软件添加桌面快捷方式</span></a></li></ol>
+      
     </div>
   </aside>
   <div>
-    <h1>dwm添加rofi</h1>
+    <h1>grub rescue 修复grub开机引导</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2023/10/4
+      2024/1/29
     </span>
      
     <span class="tags">
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #ffa2c4"
+        <a href="/tags/linux/" style="color: #03a9f4"
           >linux</a
         >
       </span>
@@ -183,43 +183,33 @@
     
   </div>
   
-  <div class="content" v-pre><p>在dwm窗口管理器添加一个rofi启动器，dwm下原来用的是dmenu，优点快速、简洁，缺点也是太简洁了，外观就是传统的命令行界面，而且不支持.desktop启动。后来rofi出现，开始取代dmenu，功能上强化，支持command启动、desktop启动、窗口切换还有ssh之类的其他功能；界面支持主题自定义，也积累了很多的主题。</p>
+  <div class="content" v-pre><p>开机报错<code>file &#39;/bootgrub/xxxx/normal.mod&#39; not found</code></p>
 <span id="more"></span>
 
-<h3 id="下载rofi"><a href="#下载rofi" class="headerlink" title="下载rofi"></a>下载rofi</h3><pre><code class="shell">yay -S rofi
-</code></pre>
-<h3 id="rofi启动模式"><a href="#rofi启动模式" class="headerlink" title="rofi启动模式"></a><strong>rofi启动模式</strong></h3><pre><code class="bash">rofi -show [mode]
+<p>这表示你的grub2的配置文件坏了……由于分区调整或分区UUID改变造成grub2不能正常启动，从而进入修复模式了（grub rescue)，也称救援模式。</p>
+<p>在救援模式下只有很少的命令可以用：set , ls , insmod , root , prefix</p>
+<pre><code class="bash">set  查看环境变量，这里可以查看启动路径和分区。
+ls   查看设备
+insmod  加载模块
+root  指定用于启动系统的分区,在救援模式下设置grub启动分区
+prefix 设定grub启动路径
 </code></pre>
 <ul>
-<li><strong>run</strong>: <code>$PATH</code>下的应用程序</li>
-<li><strong>drun</strong>: 桌面程序，一般对应目录<code>/usr/share/applications</code>下的<code>.desktop</code>文件.</li>
-<li><strong>window</strong>: 窗口</li>
-<li><strong>ssh</strong>: 通过ssh链接远程服务器</li>
-<li><strong>file-browser</strong>: 简单的文件浏览器.</li>
-<li><strong>keys</strong>: 快捷键.</li>
-<li><strong>combi</strong>: 混合模式.</li>
+<li>首先<code>ls</code>展示出所有分区，然后<code>ls 分区设备名称</code>一个个进行查看，我查看到<code>ls (hd0,gpt8)</code>是查看到了文件信息</li>
+<li>修改启动分区<ul>
+<li><code>set root=(hd0,gpt8)</code></li>
+<li><code>set prefix=(hd0,gpt8)/boot/grub</code></li>
+<li><code>insmod normal</code></li>
+<li><code>normal</code></li>
 </ul>
-<h3 id="dwm中添加rofi快捷启动方式"><a href="#dwm中添加rofi快捷启动方式" class="headerlink" title="dwm中添加rofi快捷启动方式"></a>dwm中添加rofi快捷启动方式</h3><p>在dwm配置文件<code>config.h</code>的<code>commands</code>列表中添加rofi启动命令</p>
-<pre><code class="c">static const char *rofi[] = &#123; &quot;rofi&quot;, &quot;-show&quot;, &quot;drun&quot;, NULL &#125;;
-
-static const Key keys[] = &#123;
-    ..........
-    &#123; MODKEY,            						XK_r, 	   spawn,          &#123;.v = rofi &#125; &#125;,
-    ..........
-    |
+</li>
+</ul>
+<p>执行完这几个命令即可正常启动</p>
+<p>启动后，如果重启仍然会进入<code>grub secure</code>模式，因此需要修复，linux环境下执行</p>
+<pre><code class="bash">sudo update-grub
+sudo grub-install /dev/nvme0n1 (这个路径应该是/boot挂载点对应的分区，`df-h`查看即可)
 </code></pre>
-<p>保存退出之后，在dwm目录下执行<code>sudo make clean install</code>重新编译，然后重启dwm即可通过<code>win + r</code>快速启动rofi</p>
-<h3 id="下载软件添加桌面快捷方式"><a href="#下载软件添加桌面快捷方式" class="headerlink" title="下载软件添加桌面快捷方式"></a>下载软件添加桌面快捷方式</h3><pre><code class="shell">cd /usr/share/applications
-sudo touch typora.desktop # 应用名.desktop
-sudo vim typora.desktop
-</code></pre>
-<pre><code>[Desktop Entry]
-Name=typora		# 软件名
-Exec=/opt/typora/Typora   # 启动文件地址
-Type=Application
-StartupNotify=false
-</code></pre>
-<p>保存退出之后即可在rofi中通过软件名快速启动手动下载的的软件</p>
+<p><code>over~</code></p>
 </div>
         
 </div>
