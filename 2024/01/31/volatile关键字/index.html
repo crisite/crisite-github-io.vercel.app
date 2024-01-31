@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E7%9A%84%E6%95%88%E7%8E%87%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">硬件的效率与一致性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">Java内存模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7%E3%80%81%E5%8F%AF%E8%A7%81%E6%80%A7%E5%92%8C%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">原子性、可见性和有序性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">3.</span> <span class="toc-text">Volatile关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">保证可见性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">3.2.</span> <span class="toc-text">保证有序性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">3.3.</span> <span class="toc-text">如何保证原子性</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E7%9A%84%E6%95%88%E7%8E%87%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">硬件的效率与一致性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">Java内存模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7%E3%80%81%E5%8F%AF%E8%A7%81%E6%80%A7%E5%92%8C%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">原子性、可见性和有序性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">3.</span> <span class="toc-text">volatile关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">保证可见性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%9D%E8%AF%81%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-number">3.2.</span> <span class="toc-text">保证有序性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">3.3.</span> <span class="toc-text">如何保证原子性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.4.</span> <span class="toc-text">使用场景</span></a></li></ol></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Java/" style="color: #03a9f4"
+        <a href="/tags/Java/" style="color: #00bdc4"
           >Java</a
         >
       </span>
@@ -197,7 +197,7 @@
 <blockquote>
 <p>基于高速缓存的存储交互很好地解决了处理器与内存的速度矛盾，但是它也引出了一个新的问题：缓存一致性。在处理器的系统中，每个处理器都有自己的高速缓存，而他们又共享同一主存。当多个处理器的运算任务都涉及同一块主存区域时，就可能导致各自的缓存数据不一致。为了解决这一问题，就需要这些高速缓存遵从一些协议，如MSI，MESI，MOSI等等</p>
 </blockquote>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240131150914713.png" alt="image-20240131150914713"></p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240131185905265.png" alt="image-20240131185905265"></p>
 <h2 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h2><p>Java内存模型的主要目标是<strong>定义程序中各个变量的访问规则</strong>，即在虚拟机中将变量存储到内存以及从内存中取出变量这样的底层细节。此处的变量主要指的是<strong>实例字段、静态字段和构成数组对象的元素</strong>，但是并不包括线程私有的局部变量和方法参数（线程私有则不存则不会被共享，不存在竞争问题）</p>
 <p>Java内存模型规定了所有的变量都存储在主内存中（对应物理内存），每条线程还有自己的工作内存（对应寄存器和CPU的高速缓存），线程的工作内存中保存了使用到的<strong>变量的主内存副本拷贝</strong>，<strong>线程对变量的所有操作都必须在工作内存中进行，不同的线程之间也无法直接访问对方的工作内存中的变量，线程间变量值的传递均需要通过主内存来完成</strong></p>
 <p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240131154818102.png" alt="image-20240131154818102"></p>
@@ -225,7 +225,7 @@
 </blockquote>
 </li>
 </ul>
-<h1 id="Volatile关键字"><a href="#Volatile关键字" class="headerlink" title="Volatile关键字"></a>Volatile关键字</h1><p>前面全是给<code>volatile</code>关键字的铺垫^_^</p>
+<h1 id="volatile关键字"><a href="#volatile关键字" class="headerlink" title="volatile关键字"></a>volatile关键字</h1><p>前面全是给<code>volatile</code>关键字的铺垫^_^</p>
 <p><strong><code>volatile</code>关键字的语义</strong></p>
 <p>一旦一个共享变量（成员变量，静态成员变量，数组中的元素）被<code>volatile</code>修饰之后，主要就具备了两种语义</p>
 <ul>
@@ -288,6 +288,46 @@ public final boolean compareAndSet(int paramInt1, int paramInt2) &#123;
 <blockquote>
 <p>在Java中，sun.misc.Unsafe是一个特殊的类，它提供了直接操作内存和执行低级别非安全操作的功能。Unsafe类中的方法可以用于在不受限制的情况下执行内存操作、CAS（比较并交换）操作以及其他需要绕过Java语言规范的低级别操作。这个类通常被认为是不安全的，因为它可以绕过Java语言的类型检查和内存模型，可能导致不安全的行为和内存错误。由于它提供了对底层系统级操作的访问，因此开发人员应当小心谨慎地使用它。在Java 9中，Unsafe类的某些方法被标记为不推荐使用，并且在未来的Java版本中可能会被删除。 </p>
 </blockquote>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>　synchronized关键字是防止多个线程同时执行一段代码，那么就会很影响程序执行效率，而volatile关键字在某些情况下性能要优于synchronized，但是要注意volatile关键字是无法替代synchronized关键字的，因为volatile关键字无法保证操作的原子性。通常来说，使用volatile必须具备以下2个条件：</p>
+<ul>
+<li>对变量的写操作不依赖于当前值</li>
+<li>该变量没有包含在具有其他变量的不变式中</li>
+</ul>
+<p>以下是<code>volatile</code>常见的使用场景：</p>
+<blockquote>
+<p>多线程编程：在多线程编程中，volatile 关键字可以用于标记变量，以确保不同线程对该变量的访问是可见的，并且不会出现意外的优化行为。<br>硬件设备编程：在与硬件设备进行交互的程序中，volatile 可以用于标记与硬件相关的变量，以确保编译器不会对其进行优化。<br>内存映射 I&#x2F;O：在进行内存映射 I&#x2F;O 操作时，volatile 可以用于标记与设备寄存器相关的变量，以确保编译器不会对其进行优化。<br>状态标记：在需要使用标记位来表示状态的情况下，volatile 可以用于标记状态变量，以确保状态的可见性和正确性。</p>
+</blockquote>
+<p>实例：</p>
+<pre><code class="java">// 状态标记量
+volatile boolean flag = false;
+ 
+while(!flag)&#123;
+    doSomething();
+&#125;
+ 
+public void setFlag() &#123;
+    flag = true;
+&#125;
+</code></pre>
+<pre><code class="java">// 双重检测锁单例模式
+Class Singleton &#123;
+    private volatile static Singleton instance = null;
+    
+    private Singleton() &#123;&#125;
+    
+    public Singleton getInstance() &#123;
+        if (instance == null) &#123;
+        synchronized (Singleton.class) &#123;
+            if (instance == null) &#123;
+                instance =  new Singleton();
+                &#125;
+            &#125;
+        &#125;
+        return instance;
+    &#125;
+    
+&#125;
+</code></pre>
 <hr>
 <blockquote>
 <p> <strong>主要参考</strong></p>
