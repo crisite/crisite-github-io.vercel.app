@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Redisson批处理操作 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RBucket%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">RBucket的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RBatch%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">RBatch的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E6%93%8D%E4%BD%9C%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">批量操作的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%91%BD%E4%BB%A4%EF%BC%88multi%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">批量命令（multi）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%EF%BC%88pipelining%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">管道（pipelining）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%EF%BC%88transaction%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">事务（transaction）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LUA%E8%84%9A%E6%9C%AC"><span class="toc-number">3.4.</span> <span class="toc-text">LUA脚本</span></a></li></ol></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>Redisson批处理操作</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/1/30
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/Redis/" style="color: #00bdc4"
+          >Redis</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p><code>Redisson</code>的批处理操作使用方法，以及LUA、管道、事务等操作方式之间的异同</p>
+<span id="more"></span>
+
+<p>在<code>Redisson</code>中，<code>RBucket</code>和<code>RBatch</code>是两种不同的数据类型操作方式。<code>RBucket</code>用于存储单个对象，而<code>RBatch</code>用于批量执行多个操作。<code>RBucket</code>提供了简单的get和set方法来操作存储在Redis中的对象，而<code>RBatch</code>可以用于同时执行多个操作，例如设置多个对象的值或获取多个对象的值。总的来说，<code>RBucket</code>适用于单个对象的操作，而<code>RBatch</code>适用于批量操作多个对象。</p>
+<h2 id="RBucket的使用"><a href="#RBucket的使用" class="headerlink" title="RBucket的使用"></a>RBucket的使用</h2><pre><code class="java">RBuckets buckets = redisson.getBuckets();
+Map&lt;String, V&gt; loadedBuckets = buckets.get(&quot;myBucket1&quot;, &quot;myBucket2&quot;, &quot;myBucket3&quot;);
+Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+map.put(&quot;myBucket1&quot;, new MyObject());
+map.put(&quot;myBucket2&quot;, new MyObject());
+// 利用Redis的事务特性，同时保存所有的通用对象桶，如果任意一个通用对象桶已经存在则放弃保存其他所有数据。
+buckets.trySet(map);
+// 同时保存全部通用对象桶。
+buckets.set(map);
+</code></pre>
+<h2 id="RBatch的使用"><a href="#RBatch的使用" class="headerlink" title="RBatch的使用"></a>RBatch的使用</h2><p>多个连续命令可以通过<code>RBatch</code>对象在一次网络会话请求里合并发送，这样省去了产生多个请求消耗的时间和资源。这在Redis中叫做管道。</p>
+<p><code>RBatch</code>管道功能就是REDIS的批量发送，实际上是客户端的功能，与服务端无关。相当于把多个请求的命令放在一个数据包通过TCP发送到服务端，然后客户端再一次性读取所有的命令回应。管道技术最显著的优势是提高了<code>redis</code>服务的性能。</p>
+<p>使用方式：</p>
+<pre><code class="java">// 获取Rbatch对象
+RBatch batch = redissonClient.createBatch();
+for (BookCacheDTO bookCacheDTO : bookCacheDTOS) &#123;
+    RMapAsync&lt;String, Object&gt; map = batch.getMap(BOOK_CACHE + bookCacheDTO.getId());
+    map.fastPutAsync(BOOK_ID, bookCacheDTO.getId());
+    map.fastPutAsync(BOOK_TITLE, bookCacheDTO.getTitle());
+&#125;
+// 调用batch.execute() 获取执行结果
+BatchResult&lt;?&gt; result = batch.execute();
+// 或者
+Future&lt;BatchResult&gt; asyncRes = batch.executeAsync();
+List&lt;?&gt; response = res.getResponses();
+res.getSyncedSlaves();
+</code></pre>
+<p>可以通过一下方式调整管道方式发送命令的方式： 出处 <a target="_blank" rel="noopener" href="https://github.com/redisson/redisson/wiki/10.-%E9%A2%9D%E5%A4%96%E5%8A%9F%E8%83%BD">https://github.com/redisson/redisson/wiki/10.-%E9%A2%9D%E5%A4%96%E5%8A%9F%E8%83%BD</a></p>
+<pre><code class="java">BatchOptions options = BatchOptions.defaults()
+// 指定执行模式
+//
+// ExecutionMode.REDIS_READ_ATOMIC - 所有命令缓存在Redis节点中，以原子性事务的方式执行。
+//
+// ExecutionMode.REDIS_WRITE_ATOMIC - 所有命令缓存在Redis节点中，以原子性事务的方式执行。
+//
+// ExecutionMode.IN_MEMORY - 所有命令缓存在Redisson本机内存中统一发送，但逐一执行（非事务）。默认模式。
+//
+// ExecutionMode.IN_MEMORY_ATOMIC - 所有命令缓存在Redisson本机内存中统一发送，并以原子性事务的方式执行。
+//
+.executionMode(ExecutionMode.IN_MEMORY)
+
+// 告知Redis不用返回结果（可以减少网络用量）
+.skipResult()
+
+// 将写入操作同步到从节点
+// 同步到2个从节点，等待时间为1秒钟
+.syncSlaves(2, 1, TimeUnit.SECONDS)
+
+// 处理结果超时为2秒钟
+.responseTimeout(2, TimeUnit.SECONDS)
+
+// 命令重试等待间隔时间为2秒钟
+.retryInterval(2, TimeUnit.SECONDS);
+
+// 命令重试次数。仅适用于未发送成功的命令
+.retryAttempts(4);
+</code></pre>
+<h2 id="批量操作的区别"><a href="#批量操作的区别" class="headerlink" title="批量操作的区别"></a>批量操作的区别</h2><h3 id="批量命令（multi）"><a href="#批量命令（multi）" class="headerlink" title="批量命令（multi）"></a>批量命令（multi）</h3><p>每个数据类型都对应着几个批量操作的命令，例如<code>mset/mget/hmset/hmget...</code>,这种的一次可以对多个key进行操作，相比于所有姿势这个是最快的，因为这里面的对多个key进行一次性操作，是一个命令，注意，是一个命令。不是把很多命令打包，也不是缓存了很多命令最后一起执行。这是最快的方式。一次连接，一个命令。并且这个是原子操作。但是缺点是并不是所有命令都支持，只支持一小部分基本的命令，所以最终结论是，能用这个就一定用这个，不能的话在用其他批量处理的姿势。</p>
+<pre><code class="bash">127.0.0.1:6379&gt; MSET name laohu age 18
+OK
+127.0.0.1:6379&gt; mget name age
+1) &quot;laohu&quot;
+2) &quot;18&quot;
+</code></pre>
+<h3 id="管道（pipelining）"><a href="#管道（pipelining）" class="headerlink" title="管道（pipelining）"></a>管道（pipelining）</h3><p>管道的话这么理解，有9个任务，我们直接扔在一个管道里了（过大的话会被自动分批发送），可能会变成3截。每截3个。每次发送一截。这样不用建立9次连接发送9个。3次就可以了，这个就是管道的原理。同时一定要注意，管道的批量操作是建立在协议上的优化，就是就是依靠协议进行分批操作。同时一定一定记住，管道不是原子操作</p>
+<h3 id="事务（transaction）"><a href="#事务（transaction）" class="headerlink" title="事务（transaction）"></a>事务（transaction）</h3><p>这么理解，先喊一声 准备，然后把所有任务都扔在车里（此时已经陆续的传给操作端了），然后再喊开始，所有被传过去的任务才开始执行。就是分三部分，准备好了、上任务、干活。是不是感觉这东西可能会比管道慢点，因为管道是 仍一批过去、干活 再扔一批过去、干活 不用等都到了再开始统一干活。没错。实际测试结果也是事务慢于管道一点点，但是重点是这东西是原子操作。</p>
+<h3 id="LUA脚本"><a href="#LUA脚本" class="headerlink" title="LUA脚本"></a>LUA脚本</h3><p>Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。<br><strong>Redis中使用Lua的好处:</strong></p>
+<ul>
+<li>减少网络开销。可以将多个请求通过脚本的形式一次发送，减少网络时延时</li>
+<li>原子操作。redis会将整个脚本作为一个整体执行，中间不会被其他命令插入。因此在编写脚本的过程中无需担心会出现竞态条件，无需使用事务。<br>复用。</li>
+<li>可复用。客户端发送的脚步会永久存在redis中，这样，其他客户端可以复用这一脚本而不需要使用代码完成相同的逻辑。</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/redisson/redisson/wiki/11.-Redis-commands-mapping">Redis命令匹配-Redisson </a></p>
+</blockquote>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
