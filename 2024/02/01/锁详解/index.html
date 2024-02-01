@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Synchronized%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.</span> <span class="toc-text">Synchronized关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFsynchronized"><span class="toc-number">1.1.</span> <span class="toc-text">什么是synchronized</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#synchronized%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">synchronized的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#synchronized%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">synchronized的实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%A0%86%E6%A0%88%E5%88%86%E6%9E%90"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">线程堆栈分析</span></a></li></ol></li></ol></li></ol></li></ol>
     </div>
   </aside>
   <div>
@@ -174,14 +174,14 @@
        
       <span class="tag">
         
-        <a href="/tags/Java/" style="color: #00a596"
+        <a href="/tags/Java/" style="color: #00bdc4"
           >Java</a
         >
       </span>
       
       <span class="tag">
         
-        <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%88%86%E5%B8%83%E5%BC%8F/" style="color: #ffa2c4"
+        <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%88%86%E5%B8%83%E5%BC%8F/" style="color: #03a9f4"
           >高并发分布式</a
         >
       </span>
@@ -193,6 +193,71 @@
   <div class="content" v-pre><p>看<code>synchronized</code>时深入一下Java锁相关的机制~</p>
 <span id="more"></span>
 
+<h1 id="Synchronized关键字"><a href="#Synchronized关键字" class="headerlink" title="Synchronized关键字"></a>Synchronized关键字</h1><h2 id="什么是synchronized"><a href="#什么是synchronized" class="headerlink" title="什么是synchronized"></a>什么是synchronized</h2><p>JDK官网对synchronized关键字有个解释</p>
+<blockquote>
+<p>Synchronized keyword enable a simple strategy for preventing thread interference and memory consistency errors: if an object is visible to more than one thread, all reads or writes to that object’s variables ard done through synchronized methods.</p>
+</blockquote>
+<p>上述解释的意思是：synchronized关键字可以实现一个简单的策略来防止线程干扰和内存一致性错误，如果一个对象对多个线程是可见的，那么对该对象的所有读或者写都将通过同步的方式来进行，具体表现如下：</p>
+<ul>
+<li>synchronized关键字提供了一种锁的机制，能够确保共享变量的互斥访问，从而防止数据不一致的问题出现。</li>
+<li>synchronized关键字包括<code>monitor enter</code>和<code>monitor exit</code>两个JVM指令，它能够保证在任何时候任何线程执行到<code>monitor enter</code>成功之前都必须从主内存中获取数据，而不是缓存中，在<code>monitor exit</code>运行成功之后，共享变量被更新后的值必须刷入主内存。</li>
+<li>synchronized的执行严格遵守<code>happens-before </code>规则，一个<code>monitor exit</code>指令之前必定要有一个<code>monitor enter</code>。</li>
+</ul>
+<h2 id="synchronized的用法"><a href="#synchronized的用法" class="headerlink" title="synchronized的用法"></a>synchronized的用法</h2><p>通常使用<code>synchronized</code>关键字来给一段代码或一个方法上锁。它通常有以下三种形式：（其实是两种：同步方法、同步方法块）</p>
+<pre><code class="java">// 关键字在实例方法上，锁为当前实例
+public synchronized void instanceLock() &#123;
+    // code
+&#125;
+
+// 关键字在静态方法上，锁为当前Class对象
+public static synchronized void classLock() &#123;
+    // code
+&#125;
+
+// 关键字在代码块上，锁为括号里面的对象 如果括号里面的对象为 *.class 那么它就仍然是一个类锁
+public void blockLock() &#123;
+    Object o = new Object();
+    synchronized (o) &#123;
+        // code
+    &#125;
+&#125;
+</code></pre>
+<p><strong>总结一下synchronized的使用效果</strong></p>
+<ul>
+<li><p>一把锁只能同时被一个线程获取，没有拿到锁的线程必须等待；</p>
+</li>
+<li><p>每个实例都对应有自己的一把锁，不同实例之间互不影响；</p>
+</li>
+<li><p>锁对象是*.class以及synchronized修饰的static方法时，所有对象共用一把类锁；</p>
+</li>
+<li><p>无论是方法正常执行完毕或者方法抛出异常，都会释放锁；</p>
+</li>
+<li><p>使用synchronized修饰的方法都是可重入的。（拿到了锁的线程可以重复进入被该锁锁定的代码块）</p>
+</li>
+</ul>
+<h2 id="synchronized的实现原理"><a href="#synchronized的实现原理" class="headerlink" title="synchronized的实现原理"></a>synchronized的实现原理</h2><h4 id="线程堆栈分析"><a href="#线程堆栈分析" class="headerlink" title="线程堆栈分析"></a>线程堆栈分析</h4><pre><code class="java">public class TestSync &#123;
+    private final static Object lock = new Object();
+    public void accessResource() &#123;
+        synchronized (lock) &#123;
+            try &#123;
+                TimeUnit.MINUTES.sleep(10);
+            &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+    public static void main(String[] args) &#123;
+        TestSync testSync = new TestSync();
+        for (int i = 0; i &lt; 3; i++) &#123;
+            new Thread(testSync::accessResource).start();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>在上述代码中，创建了三个线程去执行<code>accessResource()</code>方法，在获得锁后会线程会进入等待状态，其他线程则阻塞等待解锁。</p>
+<p>代码运行时，通过<code>top</code>命令查询所有进程信息，使用<code>COMMAND=java</code>筛选出需要查询的Java线程，找到线程的pid，然后执行<code>jstack + pid</code>，就可以查看堆栈信息，如图：</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240202012453151.png" alt="image-20240202012453151"></p>
+<p>可以看到线程<code>Thread-0</code>持有了锁<code>&lt;0x00000000d7fbdce0&gt;</code>并且处于<code>TIMED_WAITING</code>等待状态，而另外两个线程则进入了阻塞状态</p>
 <blockquote>
 <p><strong>参考资料：</strong></p>
 <p>第13章 线程安全与锁优化–《深入理解Java虚拟机》</p>
