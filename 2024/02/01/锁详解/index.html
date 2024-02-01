@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>tags | Crisite の博客</title>
+    <title>锁详解 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -31,6 +31,10 @@
 
 
 <script src="/js/lib/preview.js"></script>
+
+
+
+
 
 
 
@@ -144,189 +148,61 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="archives">
-    
-    <div class="categories-tags">
-        
-        
-        
-        <span>
-            <a href="/tags/linux/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                linux
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/Redis/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                Redis
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/Java/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                Java
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/JavaScript/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                JavaScript
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/Mysql/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                Mysql
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/shell/" style="background: #ffa2c4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                shell
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/Windows/" style="background: #03a9f4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                Windows
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                项目
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/%E7%AE%97%E6%B3%95/" style="background: #ff7d73">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                算法
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                计算机网络
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/%E9%9D%A2%E8%AF%95/" style="background: #00a596">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                面试
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/Application/" style="background: #ffa2c4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                Application
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/SpringBoot/" style="background: #00a596">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                SpringBoot
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/RabbitMQ/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                RabbitMQ
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/rabbitmq/" style="background: #00a596">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                rabbitmq
-            </a>
-        </span>
-        
-        
-        
-        <span>
-            <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%88%86%E5%B8%83%E5%BC%8F/" style="background: #00bdc4">
-                <span class="icon">
-                    <i class="fa-solid fa-tags fa-fw"></i>
-                </span>
-                高并发分布式
-            </a>
-        </span>
-        
-        
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      
     </div>
+  </aside>
+  <div>
+    <h1>锁详解</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/2/1
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/Java/" style="color: #00a596"
+          >Java</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%88%86%E5%B8%83%E5%BC%8F/" style="color: #ffa2c4"
+          >高并发分布式</a
+        >
+      </span>
+      
+    </span>
     
+  </div>
+  
+  <div class="content" v-pre><p>看<code>synchronized</code>时深入一下Java锁相关的机制~</p>
+<span id="more"></span>
+
+<blockquote>
+<p><strong>参考资料：</strong></p>
+<p>第13章 线程安全与锁优化–《深入理解Java虚拟机》</p>
+<p><a target="_blank" rel="noopener" href="http://concurrent.redspider.group/article/02/9.html">synchronized与锁</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/charlesblc/p/5994162.html">Java中的锁机制 synchronized &amp; 偏向锁 &amp; 轻量级锁 &amp; 重量级锁 &amp; 各自优缺点及场景 &amp; AtomicReference </a></p>
+<p><a target="_blank" rel="noopener" href="https://www.infoq.cn/article/java-se-16-synchronized/">聊聊并发（二）——Java SE1.6 中的 Synchronized</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903757709312014">深入理解synchronized关键字</a></p>
+</blockquote>
+</div>
+        
 </div>
 
             <footer id="footer">
@@ -357,6 +233,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>
