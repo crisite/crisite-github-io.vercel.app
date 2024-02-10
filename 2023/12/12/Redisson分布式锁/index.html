@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Redis/" style="color: #03a9f4"
+        <a href="/tags/Redis/" style="color: #00a596"
           >Redis</a
         >
       </span>
@@ -267,6 +267,7 @@ end;
 <li>setIfAbsent()方法中如果携带了时间参数，其实就已经能保证操作的原子性，但是问题还是出现在锁续期上</li>
 <li>lua脚本实现分布式锁，也可以保证原子性，lua脚本的复用性也好，但问题也还是出现在锁续期上</li>
 </ul>
+<p>二者还有可重入没有实现，可重入的话可以考虑将数据结构换为hash，hash的key为锁对象，hash的field为线程id，field对应的value为重入次数，第一次成功进入为1，每次重入次数累加。线程来解锁时，判断有无线程id的field，有则重入次数减一，若重入次数为0则删除这把锁。</p>
 <h1 id="Redisson源码分析"><a href="#Redisson源码分析" class="headerlink" title="Redisson源码分析"></a>Redisson源码分析</h1><p>Redisson分布式锁加锁流程如下：</p>
 <p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231212154551867.png" alt="image-20231212154551867"></p>
 <ol>
@@ -524,7 +525,7 @@ private void renewExpiration() &#123;
 <p>参考资料：</p>
 <p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7164446200526028808">Redisson看门狗源码分析</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yy4y1k79y?p=6&vd_source=b9935b5be13bdd8cadfdb19fb4d6efc4">1小时掌握Redisson实现Redis分布式锁以及Redlock分布式锁</a></p>
-<p><a target="_blank" rel="noopener" href="https://ost.51cto.com/posts/18881">七种方案！探讨Redis分布式锁的正确使用姿势</a></p>
+<p><a target="_blank" rel="noopener" href="https://ost.51cto.com/posts/18881">七种方案！探讨Redis分布式锁的正确使用姿势</a>1QAZ</p>
 </blockquote>
 </div>
         

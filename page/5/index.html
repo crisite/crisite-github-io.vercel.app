@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>dwm添加rofi | Crisite の博客</title>
+    <title>Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -36,9 +36,7 @@
 
 
 
-
-
-
+<script src="/js/lib/home.js"></script>
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -148,80 +146,120 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-  <!-- Table of Contents -->
-  <aside>
-    <div id="toc" class="toc-article">
-      <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BDrofi"><span class="toc-number">1.</span> <span class="toc-text">下载rofi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rofi%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">rofi启动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dwm%E4%B8%AD%E6%B7%BB%E5%8A%A0rofi%E5%BF%AB%E6%8D%B7%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">dwm中添加rofi快捷启动方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6%E6%B7%BB%E5%8A%A0%E6%A1%8C%E9%9D%A2%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">下载软件添加桌面快捷方式</span></a></li></ol>
+            <div id="home-head">
+    <div id="home-background" ref="homeBackground" data-images="/images/background.jpg"></div>
+    <div id="home-info" @click="homeClick">
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="info">
+            <div class="wrap">
+                <h1>Crisite の博客</h1>
+                <h3>Here&#39;s an blog...</h3>
+                <h5></h5>
+            </div>
+        </span>
     </div>
-  </aside>
-  <div>
-    <h1>dwm添加rofi</h1>
-  </div>
-  <div class="info">
-    <span class="date">
-      <span class="icon">
-        <i class="fa-solid fa-calendar fa-fw"></i>
-      </span>
-      2023/10/4
-    </span>
-     
-    <span class="tags">
-      <span class="icon">
-        <i class="fa-solid fa-tags fa-fw"></i>
-      </span>
-       
-      <span class="tag">
-        
-        <a href="/tags/linux/" style="color: #ffa2c4"
-          >linux</a
-        >
-      </span>
-      
-    </span>
-    
-  </div>
-  
-  <div class="content" v-pre><p>在dwm窗口管理器添加一个rofi启动器，dwm下原来用的是dmenu，优点快速、简洁，缺点也是太简洁了，外观就是传统的命令行界面，而且不支持.desktop启动。后来rofi出现，开始取代dmenu，功能上强化，支持command启动、desktop启动、窗口切换还有ssh之类的其他功能；界面支持主题自定义，也积累了很多的主题。</p>
-<span id="more"></span>
-
-<h3 id="下载rofi"><a href="#下载rofi" class="headerlink" title="下载rofi"></a>下载rofi</h3><pre><code class="shell">yay -S rofi
-</code></pre>
-<h3 id="rofi启动模式"><a href="#rofi启动模式" class="headerlink" title="rofi启动模式"></a><strong>rofi启动模式</strong></h3><pre><code class="bash">rofi -show [mode]
-</code></pre>
-<ul>
-<li><strong>run</strong>: <code>$PATH</code>下的应用程序</li>
-<li><strong>drun</strong>: 桌面程序，一般对应目录<code>/usr/share/applications</code>下的<code>.desktop</code>文件.</li>
-<li><strong>window</strong>: 窗口</li>
-<li><strong>ssh</strong>: 通过ssh链接远程服务器</li>
-<li><strong>file-browser</strong>: 简单的文件浏览器.</li>
-<li><strong>keys</strong>: 快捷键.</li>
-<li><strong>combi</strong>: 混合模式.</li>
-</ul>
-<h3 id="dwm中添加rofi快捷启动方式"><a href="#dwm中添加rofi快捷启动方式" class="headerlink" title="dwm中添加rofi快捷启动方式"></a>dwm中添加rofi快捷启动方式</h3><p>在dwm配置文件<code>config.h</code>的<code>commands</code>列表中添加rofi启动命令</p>
-<pre><code class="c">static const char *rofi[] = &#123; &quot;rofi&quot;, &quot;-show&quot;, &quot;drun&quot;, NULL &#125;;
-
-static const Key keys[] = &#123;
-    ..........
-    &#123; MODKEY,            						XK_r, 	   spawn,          &#123;.v = rofi &#125; &#125;,
-    ..........
-    |
-</code></pre>
-<p>保存退出之后，在dwm目录下执行<code>sudo make clean install</code>重新编译，然后重启dwm即可通过<code>win + r</code>快速启动rofi</p>
-<h3 id="下载软件添加桌面快捷方式"><a href="#下载软件添加桌面快捷方式" class="headerlink" title="下载软件添加桌面快捷方式"></a>下载软件添加桌面快捷方式</h3><pre><code class="shell">cd /usr/share/applications
-sudo touch typora.desktop # 应用名.desktop
-sudo vim typora.desktop
-</code></pre>
-<pre><code>[Desktop Entry]
-Name=typora		# 软件名
-Exec=/opt/typora/Typora   # 启动文件地址
-Type=Application
-StartupNotify=false
-</code></pre>
-<p>保存退出之后即可在rofi中通过软件名快速启动手动下载的的软件</p>
 </div>
+<div id="home-posts-wrap" true ref="homePostsWrap">
+    <div id="home-posts">
         
+
+<div class="post">
+    <a href="/2023/10/02/hello-world/">
+        <h2 class="post-title">Hello World</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/2
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2023/10/02/hello-world/" class="go-post">阅读全文</a>
+</div>
+
+
+        <div class="page-current">
+    
+    <a class="page-num" href="/page/4/">
+        <i class="fa-solid fa-caret-left fa-fw"></i>
+    </a>
+    <a class="page-num" href="/">1</a>
+    <span class="page-omit">...</span>
+    
+    <span class="current">5</span>
+    
+    
+    
+    
+</div>
+
+    </div>
+    
+    <div id="home-card">
+        <div id="card-style">
+    <div id="card-div">
+        <div class="avatar">
+            <img src="/images/avatar.jpg" alt="avatar" />
+        </div>
+        <div class="name">Crisite</div>
+        <div class="description">
+            <p>Description<br>越学越不会</p>
+
+        </div>
+        
+        <div class="icon-links">
+            
+            <span class="icon-link">
+                <a target="_blank" rel="noopener" href="https://github.com/crisite">
+                    <i
+                        class="fa-brands fa-github fa-fw"
+                    ></i>
+                </a>
+            </span>
+            
+            <span class="icon-link">
+                <a target="_blank" rel="noopener" href="https://wpa.qq.com/msgrd?v=3&uin=844858692&site=qq&menu=yes&jumpflag=1">
+                    <i
+                        class="fa-brands fa-qq fa-fw"
+                    ></i>
+                </a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="friend-links">
+            
+            <div class="friend-link">
+                <a target="_blank" rel="noopener" href="https://argvchs.github.io">Argvchs</a>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+    </div>
+    
 </div>
 
             <footer id="footer">
@@ -252,12 +290,6 @@ StartupNotify=false
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 </body>
 </html>
