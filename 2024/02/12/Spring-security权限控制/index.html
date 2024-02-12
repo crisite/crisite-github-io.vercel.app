@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>手撕LRU | Crisite の博客</title>
+    <title>Spring security权限控制 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">思考流程</span></a></li></ol>
+      
     </div>
   </aside>
   <div>
-    <h1>手撕LRU</h1>
+    <h1>Spring security权限控制</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2023/10/7
+      2024/2/12
     </span>
      
     <span class="tags">
@@ -174,8 +174,22 @@
        
       <span class="tag">
         
-        <a href="/tags/%E7%AE%97%E6%B3%95/" style="color: #03a9f4"
-          >算法</a
+        <a href="/tags/SpringBoot/" style="color: #ffa2c4"
+          >SpringBoot</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/Spring-Security/" style="color: #ff7d73"
+          >Spring Security</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/%E6%BA%90%E7%A0%81/" style="color: #03a9f4"
+          >源码</a
         >
       </span>
       
@@ -183,143 +197,7 @@
     
   </div>
   
-  <div class="content" v-pre><p>时间复杂度为O(1)的LRU算法</p>
-<span id="more"></span>
-
-<h2 id="思考流程"><a href="#思考流程" class="headerlink" title="思考流程"></a>思考流程</h2><p>LRU需要再指定的空间存满数据时，移除最久为访问的元素。 —-&gt;</p>
-<p>需要一个数据结构对数据进行按访问顺序排序，因为需要频繁插入元素 ，故而需要一个能快速增删改查的数据结构  ——-&gt;</p>
-<p>增删改最快无疑是链表，时间复杂度O(1)，查询HashMap时间复杂度O(1) ——&gt;</p>
-<p>当一个已经存在链表中的元素被访问到时，需要将其移到链表头部，因此要能快速访问该元素的前驱节点 —–&gt;</p>
-<p>故而选择：双向链表+HashMap</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231007005843620.png" alt="image-20231007005843620"></p>
-<ul>
-<li><p><strong>为什么需要hashmap呢?</strong></p>
-<p>因为我们需要能快速的定位到一个元素（节点）在doubleLinkedList中的位置，但是doubleLinkedList是无法快速定位到元素的，他的查找效率是O(N)，</p>
-<p>但是如果在hashmap的 value中缓存Node的话(实际存的是指针,指向双向链表的Node)，就可以通过hashmap快速定位到doubleLinkedList的每一个节点。这样查找效率就是O(1)。同时通过hashmap也可以通过<code>map.containsKey</code>来判断元素是否存在。</p>
-</li>
-</ul>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231007223948693.png" alt="image-20231007223948693"></p>
-<ul>
-<li><strong>源码</strong></li>
-</ul>
-<pre><code class="java">/**
- * 1. 定义一个Node节点
- * 2. 要建立双向链表，链表节点需要有前驱和后继节点
- *
- */
-class Node&#123;
-    Integer key;
-    Integer value;
-    Node next;
-    Node prev;
-
-    Node() &#123;
-        this.next = this.prev = null;
-    &#125;
-
-    Node(Integer key, Integer value) &#123;
-        this.key = key;
-        this.value = value;
-        this.next =  this.prev = null;
-    &#125;
-&#125;
-
-/**
- * 2. 定义一个双向链表 (这个双向链表就只是个双向链表)
- * LRUCache将使用这个链表来实现需要的功能
- */
-class DoubleLinkedList &#123;
-    Node head;
-    Node tail;
-
-    // 初始化
-    DoubleLinkedList() &#123;
-        head = new Node();
-        tail = new Node();
-        head.next = tail;
-        tail.prev = head;
-    &#125;
-
-    // 存放节点
-    void addHead(Node node) &#123;
-        if (node != null) &#123;
-            node.next = head.next;
-            node.prev = head;
-            head.next.prev = node;
-            head.next = node;
-        &#125;
-    &#125;
-
-    // 删除节点
-    public void removeNode(Node node) &#123;
-        node.next.prev = node.prev;
-        node.prev.next = node.next;
-        node.next = null;
-        node.prev = null;
-    &#125;
-
-    // 获得最后一个节点
-    public Node getLastNode() &#123;
-        return tail.prev;
-    &#125;
-&#125;
-</code></pre>
-<pre><code class="java">public class LRUCacheDemo &#123;
-
-    // 容量大小
-    private int capacity;
-    // 构建一个Hashmap
-    Map&lt;Integer, Node&gt; map;
-    // 构建一个双向链表
-    DoubleLinkedList doubleLinkedList;
-
-    /** 初始化LRU容器
-     *  容器操作双向链表实现LRU的功能
-     *  双向链表快速增删，哈希表快速查询
-     */
-    public LRUCacheDemo(int capacity) &#123;
-        this.capacity = capacity;
-        map = new HashMap&lt;&gt;();
-        doubleLinkedList = new DoubleLinkedList();
-    &#125;
-
-    // 将访问的元素加入到容器
-    public void put(int key, int value) &#123;
-        // 容器中原本就存储了该元素则将该元素在双向链表的位置移动到头部
-        if (map.containsKey(key)) &#123;
-            Node node = map.get(key);
-            doubleLinkedList.removeNode(node);
-            doubleLinkedList.addHead(node);
-            return;
-        &#125;
-        // 如果容量已满则移除末尾元素，再添加元素到头部
-        // 如果容量未满则直接添加元素到头部
-        Node node = new Node(key, value);
-        if (map.size() &gt;= capacity) &#123;
-            Node lastNode = doubleLinkedList.getLastNode();
-            map.remove(lastNode.key);
-            doubleLinkedList.removeNode(lastNode);
-        &#125;
-        map.put(key, node);
-        doubleLinkedList.addHead(node);
-    &#125;
-
-    public static void main(String[] args) &#123;
-        // 创建一个容量大小为3的LRU容器
-        LRUCacheDemo lruCacheDemo = new LRUCacheDemo(3);
-        lruCacheDemo.put(1,1);
-        lruCacheDemo.put(2,2);
-        lruCacheDemo.put(3,3);
-        lruCacheDemo.put(4,4);
-        lruCacheDemo.put(5,5);
-        lruCacheDemo.put(1,1);
-        lruCacheDemo.put(2,2);
-        System.out.println(lruCacheDemo.map.keySet());
-    &#125;
-
-&#125;
-</code></pre>
-</div>
+  <div class="content" v-pre></div>
         
 </div>
 
