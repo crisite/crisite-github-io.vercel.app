@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">问题：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">流程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RoleHierarchyImpl%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">RoleHierarchyImpl源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rolesReachableInOneStepMap"><span class="toc-number">3.1.</span> <span class="toc-text">rolesReachableInOneStepMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#buildRolesReachableInOneOrMoreStepsMap"><span class="toc-number">3.2.</span> <span class="toc-text">buildRolesReachableInOneOrMoreStepsMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="toc-number">4.</span> <span class="toc-text">问题所在</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%85%E8%A7%A3%E5%86%B3"><span class="toc-number">5.</span> <span class="toc-text">待解决</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">问题：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">流程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RoleHierarchyImpl%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">RoleHierarchyImpl源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rolesReachableInOneStepMap"><span class="toc-number">3.1.</span> <span class="toc-text">rolesReachableInOneStepMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#buildRolesReachableInOneOrMoreStepsMap"><span class="toc-number">3.2.</span> <span class="toc-text">buildRolesReachableInOneOrMoreStepsMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="toc-number">4.</span> <span class="toc-text">问题所在</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%85%E8%A7%A3%E5%86%B3"><span class="toc-number">5.</span> <span class="toc-text">待解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">6.</span> <span class="toc-text">解决方案</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/SpringBoot/" style="color: #ffa2c4"
+        <a href="/tags/SpringBoot/" style="color: #00bdc4"
           >SpringBoot</a
         >
       </span>
@@ -292,6 +292,31 @@ public RoleHierarchy roleHierarchy() &#123;
 <p>问题出现在AbstractDecisionManager能获得到的Voter是RoleVoter，而在RoleVoter中只会直接通过authentication.getAuthorities()方法来获取当前用户的权限，只有在其子类RoleHierarchyVoter中才会调用this.roleHierarchy.getReachableGrantedAuthorities(authentication.getAuthorities())，因此，实际上配置的权限继承并没有用到。</p>
 <hr>
 <h2 id="待解决"><a href="#待解决" class="headerlink" title="待解决"></a>待解决</h2><hr>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>需要使用RoleHierarchyVoter，可以通过自定义的bean来解决问题</p>
+<p>来源 <a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-security/issues/9158">github issue</a></p>
+<pre><code>/**
+ * 角色继承 但是貌似 Authentication 里面只能存一种权限，如果使用 role 的话
+ * 那么数据库中的 sys:xxx 好像就不能用 @PreAuthority(&quot;hasAuthority(&#39;sys:xx&#39;)&quot;)
+ * 但是 依然可以使用 @PreAuthority(&quot;principal.powerList.contains(sys:xx)&quot;)来做权限验证
+ * principal一般存储的是 UserDetails 实例 （同理 Principal 中的其他属性也能比较）
+ *
+ * 角色继承，上级可能具备下级的所有权限
+ */
+@Bean
+public RoleHierarchy roleHierarchy() &#123;
+    RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+    hierarchy.setHierarchy(&quot;ROLE_admin &gt; ROLE_user&quot;);
+    return hierarchy;
+&#125;
+
+/** github issue: https://github.com/spring-projects/spring-security/issues/9158 */
+@Bean
+MethodSecurityExpressionHandler MmthodSecurityExpressionHandler(RoleHierarchy roleHierarchy) &#123;
+    DefaultMethodSecurityExpressionHandler meh = new DefaultMethodSecurityExpressionHandler();
+    meh.setRoleHierarchy(roleHierarchy);
+    return meh;
+&#125;
+</code></pre>
 </div>
         
 </div>
