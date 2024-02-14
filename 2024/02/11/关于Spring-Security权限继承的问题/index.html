@@ -174,14 +174,14 @@
        
       <span class="tag">
         
-        <a href="/tags/SpringBoot/" style="color: #00bdc4"
+        <a href="/tags/SpringBoot/" style="color: #00a596"
           >SpringBoot</a
         >
       </span>
       
       <span class="tag">
         
-        <a href="/tags/Spring-Security/" style="color: #00a596"
+        <a href="/tags/Spring-Security/" style="color: #ffa2c4"
           >Spring Security</a
         >
       </span>
@@ -292,7 +292,8 @@ public RoleHierarchy roleHierarchy() &#123;
 <p>问题出现在AbstractDecisionManager能获得到的Voter是RoleVoter，而在RoleVoter中只会直接通过authentication.getAuthorities()方法来获取当前用户的权限，只有在其子类RoleHierarchyVoter中才会调用this.roleHierarchy.getReachableGrantedAuthorities(authentication.getAuthorities())，因此，实际上配置的权限继承并没有用到。</p>
 <hr>
 <h2 id="待解决"><a href="#待解决" class="headerlink" title="待解决"></a>待解决</h2><hr>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>需要使用RoleHierarchyVoter，可以通过自定义的bean来解决问题</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>需要使用RoleHierarchyVoter，可以通过自定义的bean来解决问题（具体的SpEL看不懂 没去看）</p>
+<p>最后通过的投票器其实还是Web投票器和PreInvocationAuthorizationAdviceVoter（经过这个投票器之后由于是AffirmativeBased策略，就直接return了）</p>
 <p>来源 <a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-security/issues/9158">github issue</a></p>
 <pre><code>/**
  * 角色继承 但是貌似 Authentication 里面只能存一种权限，如果使用 role 的话
