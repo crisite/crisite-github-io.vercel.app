@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">流程分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AccessDecisionManager"><span class="toc-number">2.</span> <span class="toc-text">AccessDecisionManager</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%95%E7%A5%A8%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">投票器</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/SpringBoot/" style="color: #03a9f4"
+        <a href="/tags/SpringBoot/" style="color: #ffa2c4"
           >SpringBoot</a
         >
       </span>
@@ -188,7 +188,7 @@
       
       <span class="tag">
         
-        <a href="/tags/%E6%BA%90%E7%A0%81/" style="color: #00bdc4"
+        <a href="/tags/%E6%BA%90%E7%A0%81/" style="color: #ff7d73"
           >源码</a
         >
       </span>
@@ -201,6 +201,109 @@
 <p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240213010359486.png" alt="image-20240213010359486"></p>
 <span id="more"></span>
 
+<h2 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h2><p>Spring Security的功能都是基于拦截器实现的，从FilterChain开始</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240121094717192.png" alt="image-20240121094717192"></p>
+<p>其中FilterSecurityInterceptor就主要负责SpringSecurity的权限，拦截器的作用如下</p>
+<ol>
+<li>获取到需访问接口的权限信息，即@Secured 或@PreAuthorize定义的权限信息；</li>
+<li>根据SecurityContextHolder中存储的authentication用户信息，来判断是否包含与需访问接口的权限信息，若包含，则说明拥有该接口权限；</li>
+<li>主要授权功能在父类AbstractSecurityInterceptor中实现；</li>
+</ol>
+<p><code>FilterSecurityInterceptor.java</code></p>
+<pre><code class="java">/** 入口方法 */
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    throws IOException, ServletException &#123;
+    // 将传入的数据封装成一个 FilterInvocation 对象，方便在此拦截器中对数据进行处理 解耦合~
+    invoke(new FilterInvocation(request, response, chain));
+&#125;
+
+public void invoke(FilterInvocation filterInvocation) throws IOException, ServletException &#123;
+    if (isApplied(filterInvocation) &amp;&amp; this.observeOncePerRequest) &#123;
+        // 过滤器已经处理过此请求 直接进入下一个过滤器
+        filterInvocation.getChain().doFilter(filterInvocation.getRequest(), filterInvocation.getResponse());
+        return;
+    &#125;
+    // 执行安全检查
+    if (filterInvocation.getRequest() != null &amp;&amp; this.observeOncePerRequest) &#123;
+        filterInvocation.getRequest().setAttribute(FILTER_APPLIED, Boolean.TRUE);
+    &#125;
+    // 1.授权具体实现入口
+    InterceptorStatusToken token = super.beforeInvocation(filterInvocation);
+    try &#123;
+        // 授权通过 
+        filterInvocation.getChain().doFilter(filterInvocation.getRequest(), filterInvocation.getResponse());
+    &#125;
+    finally &#123;
+        super.finallyInvocation(token);
+    &#125;
+    // 授权通过后续处理
+    super.afterInvocation(token, null);
+&#125;
+</code></pre>
+<p>FilterSecurityInterceptor调用父类的beforeInvocation完成权限校验</p>
+<p><code>AbstractSecurityInterceptor.java</code></p>
+<pre><code class="java">protected InterceptorStatusToken beforeInvocation(Object object) &#123;
+    // .... 大量的参数校验 直接省略
+    // 1.
+    Collection&lt;ConfigAttribute&gt; attributes = this.obtainSecurityMetadataSource().getAttributes(object);
+    // 2. 获取SecurityContextHolde中的Authentication
+    Authentication authenticated = authenticateIfRequired();
+    // 3.调用this.accessDecisionManager.decide(authenticated, object, attributes)
+    attemptAuthorization(object, attributes, authenticated);
+    Authentication runAs = this.runAsManager.buildRunAs(authenticated, object, attributes);
+    return new InterceptorStatusToken(SecurityContextHolder.getContext(), false, attributes, object);
+
+&#125;
+</code></pre>
+<p>在AbstractSecurityInterceptor中 1 -&gt; attributes 里面保存了访问该方法需要的权限</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240214232530058.png" alt="image-20240214232530058"></p>
+<p>在attemptAuthorization()方法中会调用<code>AccessDecisionManager</code>(在Spring Security 6.x 被废弃了)</p>
+<h2 id="AccessDecisionManager"><a href="#AccessDecisionManager" class="headerlink" title="AccessDecisionManager"></a>AccessDecisionManager</h2><p><code>AccessDecisionManager</code>类结构如下</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240214235550928.png" alt="image-20240214235550928"></p>
+<ul>
+<li>AffirmativeBased表示一票通过就授权成功，这是AccessDecisionManager默认类；</li>
+<li>ConsensusBased表示少数服从多数；</li>
+<li>UnanimousBased表示一票反对则将抛出异常；</li>
+</ul>
+<p>以<code>AffirmativeBased</code>为例</p>
+<pre><code class="java">public void decide(Authentication authentication, Object object, Collection&lt;ConfigAttribute&gt; configAttributes)
+      throws AccessDeniedException &#123;
+   int deny = 0;
+   for (AccessDecisionVoter voter : getDecisionVoters()) &#123;
+       // 调用投票器 如果返回1则授权成功退出。如果返回-1则deny++，如果到最后仍然没有授权成功并退出，则抛出异常
+      int result = voter.vote(authentication, object, configAttributes);
+      switch (result) &#123;
+      case AccessDecisionVoter.ACCESS_GRANTED:
+         return;
+      case AccessDecisionVoter.ACCESS_DENIED:
+         deny++;
+         break;
+      default:
+         break;
+      &#125;
+   &#125;
+   if (deny &gt; 0) &#123;
+      throw new AccessDeniedException(
+            this.messages.getMessage(&quot;AbstractAccessDecisionManager.accessDenied&quot;, &quot;Access is denied&quot;));
+   &#125;
+   // To get this far, every AccessDecisionVoter abstained
+   checkAllowIfAllAbstainDecisions();
+&#125;
+</code></pre>
+<h2 id="投票器"><a href="#投票器" class="headerlink" title="投票器"></a>投票器</h2><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240215003922277.png" alt="image-20240215003922277"></p>
+<p>主要的用的投票器就这三个</p>
+<ul>
+<li>RoleVoter: @Secure注解通过这个投票器来投票</li>
+<li>PreInvocationAuthorizationAdviceVoter： @PreAuthorize 和 @PostAuthorize 两个注解通过这个注解器来投票，因为类里面是通过SpEL来实现投票功能，不是太懂~</li>
+<li>WebExpressionVoter： URL请求通过 WebExpressionVoter 来授权（直接permitAll了）</li>
+</ul>
+<hr>
+<blockquote>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40706420/article/details/134992217">深入理解Spring Security授权机制原理</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2146062">SpringSecurity鉴权流程分析 附源码注释，xdm，一起来看看吧</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.javaboy.org/2020/0911/springsecurity-voter.html">Spring Security 权限管理的投票器与表决机制</a></p>
+</blockquote>
 </div>
         
 </div>
