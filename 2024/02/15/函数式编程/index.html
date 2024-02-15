@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>函数式编程 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">Lambda表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.</span> <span class="toc-text">Lambda表达式的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lambda-and-Collections"><span class="toc-number">1.2.</span> <span class="toc-text">Lambda and Collections</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">方法引用 ::</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">引用构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.2.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Stream"><span class="toc-number">3.</span> <span class="toc-text">Stream</span></a></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>函数式编程</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/2/15
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/Java/" style="color: #ff7d73"
+          >Java</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p>lambda、方法引用、Stream流操作~</p>
+<span id="more"></span>
+
+<p>函数式编程（Functional Programming）是把函数作为基本运算单元，函数可以作为变量，可以接收函数，还可以返回函数。历史上研究函数式编程的理论是Lambda演算，所以我们经常把支持函数式编程的编码风格称为Lambda表达式。（看不懂一点）</p>
+<h1 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h1><p>lambda表达式使用的两个依据</p>
+<ul>
+<li>函数式接口（内部只有一个抽象方法）</li>
+<li>javac的类型推断机制（Java是强类型语言，每个变量和对象必须有明确的类型，推断失败时需要手动指定类型）</li>
+</ul>
+<p>示例一：匿名内部类</p>
+<pre><code class="java">List&lt;String&gt; list = Arrays.asList(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;);
+Collections.sort(list, new Comparator&lt;String&gt;()&#123;// 接口名
+    @Override
+    public int compare(String s1, String s2)&#123;// 方法名
+        if(s1 == null)
+            return -1;
+        if(s2 == null)
+            return 1;
+        return s1.length()-s2.length();
+    &#125;
+&#125;);
+</code></pre>
+<p>lambda表达式：</p>
+<pre><code class="java">List&lt;String&gt; list = Arrays.asList(&quot;I&quot;, &quot;love&quot;, &quot;you&quot;, &quot;too&quot;);
+Collections.sort(list, (s1, s2) -&gt;&#123;// 省略参数表的类型
+    if(s1 == null)
+        return -1;
+    if(s2 == null)
+        return 1;
+    return s1.length()-s2.length();
+&#125;);
+</code></pre>
+<h2 id="Lambda表达式的实现"><a href="#Lambda表达式的实现" class="headerlink" title="Lambda表达式的实现"></a>Lambda表达式的实现</h2><p><strong>Lambda表达式通过*invokedynamic*指令实现，书写Lambda表达式不会产生新的类</strong>。</p>
+<pre><code class="java">public class MainLambda &#123;
+    public static void main(String[] args) &#123;
+        new Thread(
+                () -&gt; System.out.println(&quot;Lambda Thread run()&quot;)
+            ).start();;
+    &#125;
+&#125;
+
+// javap -c -p MainLambda.class
+public class MainLambda &#123;
+  ...
+  public static void main(java.lang.String[]);
+    Code:
+       0: new           #2                  // class java/lang/Thread
+       3: dup
+       4: invokedynamic #3,  0              // InvokeDynamic #0:run:()Ljava/lang/Runnable; /*使用invokedynamic指令调用*/
+       9: invokespecial #4                  // Method java/lang/Thread.&quot;&lt;init&gt;&quot;:(Ljava/lang/Runnable;)V
+      12: invokevirtual #5                  // Method java/lang/Thread.start:()V
+      15: return
+
+  private static void lambda$main$0();  /*Lambda表达式被封装成主类的私有方法*/
+    Code:
+       0: getstatic     #6                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: ldc           #7                  // String Lambda Thread run()
+       5: invokevirtual #8                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       8: return
+&#125;
+</code></pre>
+<p>反编译之后Lambda表达式被封装成了主类的一个私有方法，并通过<em>invokedynamic</em>指令进行调用。</p>
+<p>同理，既然Lambda表达式不是内部类的简写，那么Lambda内部的<code>this</code>引用也就跟内部类对象没什么关系了。在Lambda表达式中<code>this</code>的意义跟在表达式外部完全一样。在lambda表达式中的this的意义和外部一样。</p>
+<pre><code class="java">public class Hello &#123;
+    Runnable r1 = () -&gt; &#123; System.out.println(this); &#125;;
+    Runnable r2 = () -&gt; &#123; System.out.println(toString()); &#125;;
+    public static void main(String[] args) &#123;
+        new Hello().r1.run();
+        new Hello().r2.run();
+    &#125;
+    public String toString() &#123; return &quot;Hello Hoolee&quot;; &#125;
+&#125;
+</code></pre>
+<h2 id="Lambda-and-Collections"><a href="#Lambda-and-Collections" class="headerlink" title="Lambda and Collections"></a>Lambda and Collections</h2><p>为引入Lambda表达式，Java8新增了<code>java.util.funcion</code>包，里面包含常用的<strong>函数接口</strong>，这是Lambda表达式的基础，Java集合框架也新增部分接口，以便与Lambda表达式对接。</p>
+<table>
+<thead>
+<tr>
+<th align="left">接口名</th>
+<th align="left">Java8新加入的方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Collection</td>
+<td align="left">removeIf() spliterator() stream() parallelStream() forEach()</td>
+</tr>
+<tr>
+<td align="left">List</td>
+<td align="left">replaceAll() sort()</td>
+</tr>
+<tr>
+<td align="left">Map</td>
+<td align="left">getOrDefault() forEach() replaceAll() putIfAbsent() remove() replace() computeIfAbsent() computeIfPresent() compute() merge()</td>
+</tr>
+</tbody></table>
+<p>这些新加入的方法部分要用到<code>java.util.function</code>包下的接口，这意味着这些方法部分跟Lambda表达式相关。</p>
+<p>以ArrayList的forEach()为例</p>
+<p>ArrayList.java</p>
+<pre><code class="java">public void forEach(Consumer&lt;? super E&gt; paramConsumer) &#123;
+    Objects.requireNonNull(paramConsumer);
+    int i = this.modCount;
+
+    Object[] arrayOfObject = this.elementData;
+    int j = this.size;
+    for (byte b = 0; this.modCount == i &amp;&amp; b &lt; j; b++) &#123;
+        paramConsumer.accept((E)arrayOfObject[b]);
+    &#125;
+    if (this.modCount != i) &#123;
+        throw new ConcurrentModificationException();
+    &#125;
+&#125;
+</code></pre>
+<p>forEach接收的是一个Consumer对象，这就是function包下的一个函数式接口</p>
+<p>Consumer.java</p>
+<pre><code class="java">/** 来源 gpt
+* 在Java中，虽然Consumer接口中定义了两个方法accept()和andThen()，但它仍然被认为是一个函数式接口。函数式接口是指只包含一个* 抽象方法的接口，可以通过Lambda表达式来实现该接口的方法。即使接口中有默认方法或静态方法，只要它只包含一个抽象方法，仍然可以
+* 被视为函数式接口。
+*
+*在Consumer接口中，accept()方法用于接受一个输入参数并对其执行操作，而andThen()方法用于返回一个组合了当前Consumer和指定*Consumer的新Consumer，以便顺序执行这两个Consumer的操作。
+*
+*因此，尽管Consumer接口中有多个方法，但只要它只包含一个抽象方法（在这种情况下是accept()），它仍然可以被视为函数式接口。
+*/
+@FunctionalInterface
+public interface Consumer&lt;T&gt;
+&#123;
+    void accept(T paramT);
+  
+    default Consumer&lt;T&gt; andThen(Consumer&lt;? super T&gt; paramConsumer) &#123;
+        Objects.requireNonNull(paramConsumer);
+        return paramObject -&gt; &#123;
+                accept((T)paramObject);
+                paramConsumer.accept(paramObject);
+            &#125;;
+    &#125;
+&#125;
+</code></pre>
+<p>其他的，像removeIf()、relpaceAll()、sort()、spliterator()等也是同理 省略~</p>
+<h1 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用 ::"></a>方法引用 ::</h1><p>个人理解：当lambda表达式满足特殊条件时，即可使用更简便的方法引用</p>
+<p>一个没什么用的例子：</p>
+<pre><code class="java">new Thread(() -&gt; System.out.println()).start();
+new Thread(System.out::println).start();
+</code></pre>
+<p>这个例子能使用方法引用因为满足两个条件：</p>
+<ul>
+<li>函数式接口中调用的方法返回值和接口函数一致</li>
+<li>函数式接口中调用的方法参数(列表)和接口函数一致</li>
+</ul>
+<pre><code class="java">// 匿名内部类 Comparator中没有抽象函数，所以可以自定义一个compare方法
+String[] array = ...
+Arrays.sort(array, new Comparator&lt;String&gt;() &#123;
+    public int compare(String s1, String s2) &#123;
+        return s1.compareTo(s2);
+    &#125;
+&#125;);
+
+// lambda表达式 lambda表达式是对compare方法的简写
+Arrays.sort(array, (s1, s2) -&gt; &#123;
+    return s1.compareTo(s2);
+&#125;);
+
+// 方法引用
+Arrays.sort(array, String::compareTo);
+</code></pre>
+<p>为什么这里能使用方法引用呢？</p>
+<p>代码块中Array.sort()的参数为sort( T[], Comparator&lt;? super T&gt;)，Comparator是java.util.function包中的函数式接口</p>
+<p>Comparator.java</p>
+<pre><code class="java">@FunctionalInterface
+public interface Comparator&lt;T&gt; &#123;
+    int compare(T paramT1, T paramT2)；
+    boolean equals(Object paramObject);
+&#125;
+</code></pre>
+<blockquote>
+<p>不知道为什么 equals方法 既没有方法体，也没有default或者static标识，为什么equals不是抽象方法呢？</p>
+</blockquote>
+<p>在compare方法中返回值为int ，参数为(T, T)此处为String，String</p>
+<p>而在String的compareTo方法为public int compareTo(String paramString)二者参数列表好像不一致，但是compare和compareTo却可以匹配</p>
+<p>因为实例方法有一个隐含的<code>this</code>参数，<code>String</code>类的<code>compareTo()</code>方法在实际调用的时候，第一个隐含参数总是传入<code>this</code>，相当于静态方法：(为什么System.out.println又没有这个this)（痛苦）</p>
+<pre><code>public static int compareTo(String this, String o);
+</code></pre>
+<h2 id="引用构造方法"><a href="#引用构造方法" class="headerlink" title="引用构造方法"></a>引用构造方法</h2><pre><code class="java">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; names = List.of(&quot;Bob&quot;, &quot;Alice&quot;, &quot;Tim&quot;);
+        List&lt;Person&gt; persons = names.stream().map(Person::new).collect(Collectors.toList());
+        System.out.println(persons);
+    &#125;
+&#125;
+
+class Person &#123;
+    String name;
+    public Person(String name) &#123;
+        this.name = name;
+    &#125;
+    public String toString() &#123;
+        return &quot;Person:&quot; + this.name;
+    &#125;
+&#125;
+</code></pre>
+<p>这里的<code>map()</code>需要传入的FunctionalInterface的定义是：</p>
+<pre><code class="java">@FunctionalInterface
+public interface Function&lt;T, R&gt; &#123;
+    R apply(T t);
+&#125;
+</code></pre>
+<p>把泛型对应上就是方法签名<code>Person apply(String)</code>，即传入参数<code>String</code>，返回类型<code>Person</code>。而<code>Person</code>类的构造方法恰好满足这个条件，因为构造方法的参数是<code>String</code>，而构造方法虽然没有<code>return</code>语句，但它会隐式地返回<code>this</code>实例，类型就是<code>Person</code>，因此，此处可以引用构造方法。构造方法的引用写法是<code>类名::new</code>，因此，此处传入<code>Person::new</code></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>FunctionalInterface</code>允许传入：</p>
+<ul>
+<li>接口的实现类（传统写法，代码较繁琐）；</li>
+<li>Lambda表达式（只需列出参数名，由编译器推断类型）；</li>
+<li>符合方法签名的静态方法；</li>
+<li>符合方法签名的实例方法（实例类型被看做第一个参数类型）；</li>
+<li>符合方法签名的构造方法（实例类型被看做返回类型）。</li>
+</ul>
+<p><code>FunctionalInterface</code>不强制继承关系，不需要方法名称相同，只要求方法参数（类型和数量）与方法返回类型相同，即认为方法签名相同。</p>
+<h1 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h1><p>晚点再学Stream吧~</p>
+<blockquote>
+<p>参考文献：大量复制</p>
+<p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1252599548343744/1305207799545890">方法引用</a></p>
+<p><a target="_blank" rel="noopener" href="https://objcoding.com/2019/03/04/lambda/#streams-apiii">关于Java Lambda表达式看这一篇就够了</a>(后续的Stream还没看)</p>
+</blockquote>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
