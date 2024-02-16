@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>【RabbitMQ】后台管理页面 Channels 报错提示 | Crisite の博客</title>
+    <title>深入理解泛型 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">泛型类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">泛型方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">泛型接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="toc-number">4.</span> <span class="toc-text">泛型通配符</span></a></li></ol>
     </div>
   </aside>
   <div>
-    <h1>【RabbitMQ】后台管理页面 Channels 报错提示</h1>
+    <h1>深入理解泛型</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2024/1/24
+      2024/2/16
     </span>
      
     <span class="tags">
@@ -174,8 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/RabbitMQ/" style="color: #00bdc4"
-          >RabbitMQ</a
+        <a href="/tags/Java/" style="color: #ffa2c4"
+          >Java</a
         >
       </span>
       
@@ -183,22 +183,112 @@
     
   </div>
   
-  <div class="content" v-pre><p>在 RabbitMQ 后台管理页面上点击 Channels 时如果出现提示：</p>
-<pre><code class="bash">Stats in management UI are disabled on this node
-</code></pre>
+  <div class="content" v-pre><p>类型参数化 ~ 在编译期间约束值的类型，确保在泛型类型上只能使用正确类型（被约定的）的对象，避免<code>ClassCastException</code></p>
 <span id="more"></span>
 
-<p>问题原因：<br>The reason is that the default image disables metrics collector in the management_agent plugin：</p>
-<pre><code class="bash"># cat /etc/rabbitmq/conf.d/management_agent.disable_metrics_collector.conf 
-management_agent.disable_metrics_collector = true
+<pre><code class="java">List arrayList = new ArrayList();
+arrayList.add(&quot;hello world&quot;);
+arrayList.add(100);
 </code></pre>
-<p>解决办法：<br>1、修改配置文件：</p>
-<pre><code class="bash">docker exec -it rabbitmq /bin/bash
-cd  /etc/rabbitmq/conf.d/
-echo management_agent.disable_metrics_collector = false &gt; management_agent.disable_metrics_collector.conf
+<p>这段代码在运行时会抛出异常<code>ClassCastException</code>，但是显然我们希望的是在编译时报告错误，而不是在运行时报异常。泛型应运而生~</p>
+<pre><code class="java">List&lt;String&gt; arrayList = new ArrayList&lt;&gt;();
+arrayList.add(&quot;hello world&quot;);
+arrayList.add(100); // 在编译阶段，编译器就会报错
 </code></pre>
-<p>2、重启 RabbitMQ</p>
-<p>如果是 Docker 容器的话，就重启相应的 RabbitMQ 容器。</p>
+<h2 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h2><pre><code class="java">/**
+ * @param &lt;T&gt; 这里解释下&lt;T&gt;中的T:
+ *           此处的T可以随便写为任意标识，常见的有T、E等形式的参数表示泛型
+ *           泛型在定义的时候不具体，使用的时候才变得具体。
+ *           在使用的时候确定泛型的具体数据类型。即在创建对象的时候确定泛型。
+ */
+public class GenericsClassDemo&lt;T&gt; &#123;
+    //t这个成员变量的类型为T,T的类型由外部指定
+    private T t;
+
+    //泛型构造方法形参t的类型也为T，T的类型由外部指定
+    public GenericsClassDemo(T t) &#123;
+        this.t = t;
+    &#125;
+
+    //泛型方法getT的返回值类型为T，T的类型由外部指定
+    public T getT() &#123;
+        return t;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h2><pre><code class="java">/**
+*
+* @param t 传入泛型的参数
+* @param &lt;T&gt; 泛型的类型
+* @return T 返回值为T类型
+* 说明：
+*   1）public 与 返回值中间&lt;T&gt;非常重要，可以理解为声明此方法为泛型方法。
+*   2）只有声明了&lt;T&gt;的方法才是泛型方法，泛型类中的使用了泛型的成员方法并不是泛型方法。
+*   3）&lt;T&gt;表明该方法将使用泛型类型T，此时才可以在方法中使用泛型类型T。
+*   4）与泛型类的定义一样，此处T可以随便写为任意标识，常见的如T、E等形式的参数常用于表示泛型。
+*/
+public &lt;T&gt; T genercMethod(T t)&#123;
+    System.out.println(t.getClass());
+    System.out.println(t);
+    return t;
+&#125;
+</code></pre>
+<h2 id="泛型接口"><a href="#泛型接口" class="headerlink" title="泛型接口"></a>泛型接口</h2><pre><code class="java">/**
+ * 定义一个泛型接口
+ */
+public interface GenericsInteface&lt;T&gt; &#123;
+    public abstract void add(T t); 
+&#125;
+
+public class GenericsImp implements GenericsInteface&lt;String&gt; &#123;
+    @Override
+    public void add(String s) &#123;
+        System.out.println(&quot;设置了泛型为String类型&quot;);
+    &#125;
+&#125;
+
+/** 也可以在子类实例化的时候才指定类型 */
+public class GenericsImp&lt;T&gt; implements GenericsInteface&lt;T&gt; &#123;
+    @Override
+    public void add(T t) &#123;
+        System.out.println(&quot;没有设置类型&quot;);
+    &#125;
+&#125;
+
+public class GenericsTest &#123;
+    public static void main(String[] args) &#123;
+        GenericsImp&lt;Integer&gt; gi = new GenericsImp&lt;&gt;();
+        gi.add(66);
+    &#125;
+&#125;
+</code></pre>
+<h2 id="泛型通配符"><a href="#泛型通配符" class="headerlink" title="泛型通配符"></a>泛型通配符</h2><p><strong>泛型的上限</strong>：</p>
+<ul>
+<li><strong>格式</strong>： <code>类型名称 &lt;? extends 类 &gt; 对象名称</code></li>
+<li><strong>意义</strong>： <code>只能接收该类型及其子类</code></li>
+</ul>
+<p><strong>泛型的下限</strong>：</p>
+<ul>
+<li><strong>格式</strong>： <code>类型名称 &lt;? super 类 &gt; 对象名称</code></li>
+<li><strong>意义</strong>： <code>只能接收该类型及其父类型</code></li>
+</ul>
+<p>例：现已知Object类，Animal类，Dog类，Cat类，其中Animal是Dog，Cat的父类</p>
+<p><code>extend</code>:</p>
+<pre><code class="java">//        ArrayList&lt;? extends Animal&gt; list = new ArrayList&lt;Object&gt;();//报错
+        ArrayList&lt;? extends Animal&gt; list2 = new ArrayList&lt;Animal&gt;();
+        ArrayList&lt;? extends Animal&gt; list3 = new ArrayList&lt;Dog&gt;();
+        ArrayList&lt;? extends Animal&gt; list4 = new ArrayList&lt;Cat&gt;();
+</code></pre>
+<p><code>super</code>:</p>
+<pre><code class="java">        ArrayList&lt;? super Animal&gt; list5 = new ArrayList&lt;Object&gt;();
+        ArrayList&lt;? super Animal&gt; list6 = new ArrayList&lt;Animal&gt;();
+//        ArrayList&lt;? super Animal&gt; list7 = new ArrayList&lt;Dog&gt;();//报错
+//        ArrayList&lt;? super Animal&gt; list8 = new ArrayList&lt;Cat&gt;();//报错
+</code></pre>
+<hr>
+<blockquote>
+<p>抄自：<a target="_blank" rel="noopener" href="https://juejin.cn/post/7045809485364854820">深入理解Java泛型</a></p>
+</blockquote>
 </div>
         
 </div>
