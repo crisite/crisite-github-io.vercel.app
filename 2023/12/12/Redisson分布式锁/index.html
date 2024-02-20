@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">Redis实现分布式锁的两种方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redisson%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">Redisson源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock-%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">Lock()方法的实现（部分）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TryAcquire"><span class="toc-number">2.2.</span> <span class="toc-text">TryAcquire</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tryLockInnerAsync"><span class="toc-number">2.3.</span> <span class="toc-text">tryLockInnerAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scheduleExpirationRenewal"><span class="toc-number">2.4.</span> <span class="toc-text">scheduleExpirationRenewal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#renewExpirationAsync"><span class="toc-number">2.5.</span> <span class="toc-text">renewExpirationAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unLock"><span class="toc-number">2.6.</span> <span class="toc-text">unLock</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">为什么要用分布式锁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="toc-number"></span> <span class="toc-text">Redis实现分布式锁的两种方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redisson%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number"></span> <span class="toc-text">Redisson源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock-%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">Lock()方法的实现（部分）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TryAcquire"><span class="toc-number">2.</span> <span class="toc-text">TryAcquire</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tryLockInnerAsync"><span class="toc-number">3.</span> <span class="toc-text">tryLockInnerAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scheduleExpirationRenewal"><span class="toc-number">4.</span> <span class="toc-text">scheduleExpirationRenewal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#renewExpirationAsync"><span class="toc-number">5.</span> <span class="toc-text">renewExpirationAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unLock"><span class="toc-number">6.</span> <span class="toc-text">unLock</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Redis/" style="color: #ff7d73"
+        <a href="/tags/Redis/" style="color: #00a596"
           >Redis</a
         >
       </span>
@@ -186,7 +186,7 @@
   <div class="content" v-pre><p>Redisson分布式锁</p>
 <span id="more"></span>
 
-<h1 id="Redis实现分布式锁的两种方案"><a href="#Redis实现分布式锁的两种方案" class="headerlink" title="Redis实现分布式锁的两种方案"></a>Redis实现分布式锁的两种方案</h1><pre><code class="java">@SpringBootTest
+<h2 id="为什么要用分布式锁"><a href="#为什么要用分布式锁" class="headerlink" title="为什么要用分布式锁"></a>为什么要用分布式锁</h2><h1 id="Redis实现分布式锁的两种方案"><a href="#Redis实现分布式锁的两种方案" class="headerlink" title="Redis实现分布式锁的两种方案"></a>Redis实现分布式锁的两种方案</h1><pre><code class="java">@SpringBootTest
 @Slf4j
 public class RedisLockTest &#123;
     @Autowired

@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">HashMap源码分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node-%E5%93%88%E5%B8%8C%E6%A1%B6%E6%95%B0%E7%BB%84"><span class="toc-number">3.</span> <span class="toc-text">Node[]哈希桶数组</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -189,6 +189,50 @@
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>Jdk1.6和Jdk1.7使用的是位桶数组+链表实现</p>
 <p>Jdk1.8以后使用的位桶数组+链表+红黑树实现</p>
 <pre><code class="java">transient Node&lt;K, V&gt;[] table; //位桶数组
+</code></pre>
+<p>已经学的很多了~ 直接看一下源码然后再看问题吧</p>
+<h2 id="HashMap源码分析"><a href="#HashMap源码分析" class="headerlink" title="HashMap源码分析"></a>HashMap源码分析</h2><pre><code class="java">public class HashMap&#123;
+    // 默认数组初始容量
+    static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4; // aka 16
+    // map能容纳的最大元素量
+    static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;
+    // 加载因子 当map集合中存储的数据达到当前数组大小的75%则需要进行扩容
+    static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    // bin（链表）中元素量大于 TREEIFY_YHRESHOLD 时转换为树
+    static final int TREEIFY_THRESHOLD = 8;
+    // 元素量小于小于 UNTREEIFY_THRESHOLD 时 取消树
+    static final int UNTREEIFY_THRESHOLD = 6;
+    // 树化的最小元素总量 
+    static final int MIN_TREEIFY_CAPACITY = 64;
+    // 位桶数组
+    transient Node&lt;K,V&gt;[] table;
+    // ？
+    transient Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet;
+    // 当前map容量
+    transient int size;
+    // 用于迭代器 fail-fast 用于并发环境下尽快的发现问题
+    transient int modCount;
+&#125;
+</code></pre>
+<blockquote>
+<p>补充一下 <code>fail-fast</code> 和 <code>fail-safe</code></p>
+<ul>
+<li><p><code>fail-fast</code></p>
+<p>用迭代器遍历一个集合对象时，如果在迭代过程中发生并发修改，则会抛出<code>Concurrent Modification Exception</code></p>
+<p>每当迭代器使用<code>hashNext()/next()</code>遍历下个元素时，都会检验<code>modCount</code>是否等于<code>exceptedmodCount</code>，不等则抛出异常。但是由于<code>expectedmodCount</code>不可预测，因此这个异常仅能用于检测并发修改的bug。<code>java.util</code>下的集合类都是快速失败的</p>
+</li>
+<li><p><code>fail-safe</code></p>
+<p>采用安全失败的集合在遍历元素时，会复制原有集合，在拷贝的集合上进行遍历，因此不会触发<code>Concurrent Modification Exception</code>。<code>java.util.current</code>包下的集合都是安全失败的</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="Node-哈希桶数组"><a href="#Node-哈希桶数组" class="headerlink" title="Node[]哈希桶数组"></a>Node[]哈希桶数组</h2><p><code>Node[] table</code>由 Node 节点组成</p>
+<pre><code class="java">static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;
+    final int hash;//用来定位数组索引位置
+    final K key;
+    V value;
+    Node&lt;K,V&gt; next;//链表的下一个Node节点
+&#125;
 </code></pre>
 </div>
         
