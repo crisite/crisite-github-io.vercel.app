@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Java/" style="color: #03a9f4"
+        <a href="/tags/Java/" style="color: #00bdc4"
           >Java</a
         >
       </span>
@@ -291,23 +291,29 @@ tab[(n - 1) &amp; hash])
         if (p.hash == hash &amp;&amp;
             ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
             e = p;
-        // 不是同一 key 则放入树/链表
+        // 不是同一 key 则放入树
         else if (p instanceof TreeNode)
             e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+        // 放入链表
         else &#123;
+            // 遍历链表
             for (int binCount = 0; ; ++binCount) &#123;
+                // 如果遍历到了链表末尾
                 if ((e = p.next) == null) &#123;
                     p.next = newNode(hash, key, value, null);
+                    // 元素量 大于 8 则尝试树化 在方法内部判断了数组长度，如果数组为空/数组元素量&lt;64 则 resize()
                     if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
                         treeifyBin(tab, hash);
                     break;
                 &#125;
+                // 如果在没有遍历到数组末尾就找到了 对应的key 则退出循环
                 if (e.hash == hash &amp;&amp;
                     ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
                     break;
                 p = e;
             &#125;
         &#125;
+        // 如果此时传入的参数构造的Node还有没有被消费掉， 说明匹配到了Key， 可以赋值了
         if (e != null) &#123; // existing mapping for key
             V oldValue = e.value;
             if (!onlyIfAbsent || oldValue == null)
@@ -321,53 +327,6 @@ tab[(n - 1) &amp; hash])
         resize();
     afterNodeInsertion(evict);
     return null;
-&#125;
-
-/** 太抽象了 摆烂 */
-final TreeNode&lt;K,V&gt; putTreeVal(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab,
-                                       int h, K k, V v) &#123;
-    Class&lt;?&gt; kc = null;
-    boolean searched = false;
-    TreeNode&lt;K,V&gt; root = (parent != null) ? root() : this;
-    for (TreeNode&lt;K,V&gt; p = root;;) &#123;
-        int dir, ph; K pk;
-        if ((ph = p.hash) &gt; h)
-            dir = -1;
-        else if (ph &lt; h)
-            dir = 1;
-        else if ((pk = p.key) == k || (pk != null &amp;&amp; k.equals(pk)))
-            return p;
-        else if ((kc == null &amp;&amp;
-                  (kc = comparableClassFor(k)) == null) ||
-                 (dir = compareComparables(kc, k, pk)) == 0) &#123;
-            if (!searched) &#123;
-                TreeNode&lt;K,V&gt; q, ch;
-                searched = true;
-                if (((ch = p.left) != null &amp;&amp;
-                     (q = ch.find(h, k, kc)) != null) ||
-                    ((ch = p.right) != null &amp;&amp;
-                     (q = ch.find(h, k, kc)) != null))
-                    return q;
-            &#125;
-            dir = tieBreakOrder(k, pk);
-        &#125;
-
-        TreeNode&lt;K,V&gt; xp = p;
-        if ((p = (dir &lt;= 0) ? p.left : p.right) == null) &#123;
-            Node&lt;K,V&gt; xpn = xp.next;
-            TreeNode&lt;K,V&gt; x = map.newTreeNode(h, k, v, xpn);
-            if (dir &lt;= 0)
-                xp.left = x;
-            else
-                xp.right = x;
-            xp.next = x;
-            x.parent = x.prev = xp;
-            if (xpn != null)
-                ((TreeNode&lt;K,V&gt;)xpn).prev = x;
-            moveRootToFront(tab, balanceInsertion(root, x));
-            return null;
-        &#125;
-    &#125;
 &#125;
 </code></pre>
 <h2 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h2><pre><code class="java">final Node&lt;K,V&gt; getNode(int hash, Object key) &#123;
