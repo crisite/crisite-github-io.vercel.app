@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">HashMap源码结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9Node"><span class="toc-number">2.2.</span> <span class="toc-text">元素节点Node</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E5%93%88%E5%B8%8C%E8%A1%A8%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">建立一个哈希表需要考虑的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E4%B8%AD%E7%9A%84%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">hashmap中的哈希函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E8%A7%A3%E5%86%B3%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="toc-number">3.2.</span> <span class="toc-text">hashmap解决哈希冲突</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Put%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">Put方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Get%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">Get方法</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">HashMap源码结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9Node"><span class="toc-number">2.2.</span> <span class="toc-text">元素节点Node</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E5%93%88%E5%B8%8C%E8%A1%A8%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">建立一个哈希表需要考虑的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E4%B8%AD%E7%9A%84%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">hashmap中的哈希函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E8%A7%A3%E5%86%B3%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="toc-number">3.2.</span> <span class="toc-text">hashmap解决哈希冲突</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Put%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">Put方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Get%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">Get方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#resize%E6%96%B9%E6%B3%95"><span class="toc-number">6.</span> <span class="toc-text">resize方法</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -176,6 +176,13 @@
         
         <a href="/tags/Java/" style="color: #00bdc4"
           >Java</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/%E6%BA%90%E7%A0%81/" style="color: #ff7d73"
+          >源码</a
         >
       </span>
       
@@ -331,11 +338,14 @@ tab[(n - 1) &amp; hash])
 </code></pre>
 <h2 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h2><pre><code class="java">final Node&lt;K,V&gt; getNode(int hash, Object key) &#123;
     Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;
+    // 如果匹配到 hash 对应的 下标 对应的 元素不为空
     if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;
         (first = tab[(n - 1) &amp; hash]) != null) &#123;
+        // 如果 hash匹配成功 equals 也匹配成功 则返回节点
         if (first.hash == hash &amp;&amp; // always check first node
             ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))
             return first;
+        // 如果 是一个链表 或数组  直接遍历获取~
         if ((e = first.next) != null) &#123;
             if (first instanceof TreeNode)
                 return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);
@@ -349,6 +359,7 @@ tab[(n - 1) &amp; hash])
     return null;
 &#125;
 </code></pre>
+<h2 id="resize方法"><a href="#resize方法" class="headerlink" title="resize方法"></a>resize方法</h2><p>不贴代码了，就是判断一下如果扩容之后的容量小于最大容量，那么<code>newCap = oldCap &lt;&lt; 1</code>，然后新建一个<code>newCap</code>大小的哈希桶数组，双循环遍历将原数组&#x2F;链表&#x2F;树中的元素添加到新数组中</p>
 <hr>
 <blockquote>
 <p> 参考文献:</p>
