@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">HashMap源码分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node-%E5%93%88%E5%B8%8C%E6%A1%B6%E6%95%B0%E7%BB%84"><span class="toc-number">3.</span> <span class="toc-text">Node[]哈希桶数组</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HashMap%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">HashMap源码结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%B4%A0%E8%8A%82%E7%82%B9Node"><span class="toc-number">2.2.</span> <span class="toc-text">元素节点Node</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E5%93%88%E5%B8%8C%E8%A1%A8%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">建立一个哈希表需要考虑的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E4%B8%AD%E7%9A%84%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">hashmap中的哈希函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hashmap%E8%A7%A3%E5%86%B3%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="toc-number">3.2.</span> <span class="toc-text">hashmap解决哈希冲突</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Put%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">Put方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Get%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">Get方法</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Java/" style="color: #ff7d73"
+        <a href="/tags/Java/" style="color: #03a9f4"
           >Java</a
         >
       </span>
@@ -191,7 +191,7 @@
 <pre><code class="java">transient Node&lt;K, V&gt;[] table; //位桶数组
 </code></pre>
 <p>已经学的很多了~ 直接看一下源码然后再看问题吧</p>
-<h2 id="HashMap源码分析"><a href="#HashMap源码分析" class="headerlink" title="HashMap源码分析"></a>HashMap源码分析</h2><pre><code class="java">public class HashMap&#123;
+<h2 id="HashMap源码结构"><a href="#HashMap源码结构" class="headerlink" title="HashMap源码结构"></a>HashMap源码结构</h2><h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><pre><code class="java">public class HashMap&#123;
     // 默认数组初始容量
     static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4; // aka 16
     // map能容纳的最大元素量
@@ -204,7 +204,7 @@
     static final int UNTREEIFY_THRESHOLD = 6;
     // 树化的最小元素总量 
     static final int MIN_TREEIFY_CAPACITY = 64;
-    // 位桶数组
+    // 位桶数组 也叫 哈希表(hash table) 根据key的hash值进行数据访问
     transient Node&lt;K,V&gt;[] table;
     // ？
     transient Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet;
@@ -214,6 +214,10 @@
     transient int modCount;
 &#125;
 </code></pre>
+<blockquote>
+<p><code>hash table</code></p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240222214749988.png" alt="image-20240222214748874"></p>
+</blockquote>
 <blockquote>
 <p>补充一下 <code>fail-fast</code> 和 <code>fail-safe</code></p>
 <ul>
@@ -226,7 +230,7 @@
 </li>
 </ul>
 </blockquote>
-<h2 id="Node-哈希桶数组"><a href="#Node-哈希桶数组" class="headerlink" title="Node[]哈希桶数组"></a>Node[]哈希桶数组</h2><p><code>Node[] table</code>由 Node 节点组成</p>
+<h3 id="元素节点Node"><a href="#元素节点Node" class="headerlink" title="元素节点Node"></a>元素节点Node</h3><p>哈希桶<code>Node[] table</code>由 Node 节点组成</p>
 <pre><code class="java">static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;
     final int hash;//用来定位数组索引位置
     final K key;
@@ -234,6 +238,163 @@
     Node&lt;K,V&gt; next;//链表的下一个Node节点
 &#125;
 </code></pre>
+<hr>
+<h2 id="建立一个哈希表需要考虑的问题"><a href="#建立一个哈希表需要考虑的问题" class="headerlink" title="建立一个哈希表需要考虑的问题"></a>建立一个哈希表需要考虑的问题</h2><ol>
+<li>构造一个合适的哈希函数，使得key均匀的分布在哈希桶数组中。</li>
+<li>如何处理哈希冲突。</li>
+</ol>
+<h3 id="hashmap中的哈希函数"><a href="#hashmap中的哈希函数" class="headerlink" title="hashmap中的哈希函数"></a>hashmap中的哈希函数</h3><pre><code class="java">// 看不懂一点： ^ 相同为1 不同为0， &gt;&gt;&gt; 无符号右移 高位补0
+static final int hash(Object key) &#123;
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);
+&#125;
+</code></pre>
+<p>通过高16位异或低16位使得<code>hashCode</code>的高16位也参与运算，使得高16位的信息也被保存了下来，同时因为掺杂的元素多了，<code>hashCode</code>的随机性也变强了。</p>
+<p>计算key的下标：</p>
+<pre><code class="java">// n = tab.length 而数组的长度总是2的n次方（意味着n-1的末尾全是1）
+// 这样在&amp;运算的过程中就能保存下更多的1（减少hash碰撞）
+// 假设数组长度不为2的n次方 假设为17 那么（17 - 1）的二进制位0000 0000 0001 0000（这样做与运算的话会导致更多的位被0屏蔽）
+tab[(n - 1) &amp; hash]) 
+</code></pre>
+<p>流程图解：这图中的h高16位可能不全为1（现在是特殊情况）， 图中n位16（默认大小），如果扩容过一次相应的n-1就是(32 -1)0..1 1111</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240222231935512.png" alt="image-20240222231935512"></p>
+<h3 id="hashmap解决哈希冲突"><a href="#hashmap解决哈希冲突" class="headerlink" title="hashmap解决哈希冲突"></a>hashmap解决哈希冲突</h3><p>常见的解决hash冲突的方式：</p>
+<ul>
+<li><em><strong>链地址法</strong></em>： hashmap就是采用这种方法，冲突时将冲突元素放到冲突位置的链表中~（适用于经常增删的情况）</li>
+<li><em><strong>再哈希法</strong></em>： 提供多个不同的hash函数，当一个hash函数发生冲突时，选择另一个哈希函数计算hashCode，直到不发生哈希冲突为止，再哈希法增加了计算时间</li>
+<li><em><strong>开放定址法（再散列法）</strong></em>： P&#x3D;hash(key)发生冲突时，再调用hash函数对P进行哈希，直到不发生哈希冲突为止。因此哈希表的长度要大于元素个数，同时因为需要再次hash，不能删除节点（只能标记）</li>
+<li><em><strong>建立公共溢出区</strong></em>： 当发生哈希冲突时，将数据同一放到溢出区。</li>
+</ul>
+<p>JDK 1.8：</p>
+<p>当数组长度不大于64，所有链表长度不大于8时，Hashmap的数据结构为 数组 + 链表</p>
+<p>当数组长度大于64， 链表长度大于8时，会将链表转换为红黑树，原因是：</p>
+<ul>
+<li>当链表元素较少时，链表就已经能满足搜索需要；而红黑树需要旋转、变色保持平衡，在性能上并没有优势</li>
+<li>当链表元素较多时，红黑树的搜索时间复杂度为O(log②n)，链表的搜索效率为O(n)，这个时候红黑树就有效率优势了</li>
+</ul>
+<h2 id="Put方法"><a href="#Put方法" class="headerlink" title="Put方法"></a>Put方法</h2><blockquote>
+<p>源码只能说 抽象！！！！ 摆~ 知道个流程差不多得了</p>
+</blockquote>
+<pre><code class="java">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) &#123;
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+    // 如果数组为空则调用resize初始化
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    // 如果 key 对应的下标i中没有元素 则新建一个Node存到 table[i]
+    if ((p = tab[i = (n - 1) &amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    // 如果发生哈希冲突
+    else &#123;
+        Node&lt;K,V&gt; e; K k;
+        // 判断是否为同一 key 是则覆盖
+        if (p.hash == hash &amp;&amp;
+            ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+            e = p;
+        // 不是同一 key 则放入树/链表
+        else if (p instanceof TreeNode)
+            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+        else &#123;
+            for (int binCount = 0; ; ++binCount) &#123;
+                if ((e = p.next) == null) &#123;
+                    p.next = newNode(hash, key, value, null);
+                    if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        treeifyBin(tab, hash);
+                    break;
+                &#125;
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    break;
+                p = e;
+            &#125;
+        &#125;
+        if (e != null) &#123; // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
+        &#125;
+    &#125;
+    ++modCount;
+    if (++size &gt; threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
+&#125;
+
+/** 太抽象了 摆烂 */
+final TreeNode&lt;K,V&gt; putTreeVal(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab,
+                                       int h, K k, V v) &#123;
+    Class&lt;?&gt; kc = null;
+    boolean searched = false;
+    TreeNode&lt;K,V&gt; root = (parent != null) ? root() : this;
+    for (TreeNode&lt;K,V&gt; p = root;;) &#123;
+        int dir, ph; K pk;
+        if ((ph = p.hash) &gt; h)
+            dir = -1;
+        else if (ph &lt; h)
+            dir = 1;
+        else if ((pk = p.key) == k || (pk != null &amp;&amp; k.equals(pk)))
+            return p;
+        else if ((kc == null &amp;&amp;
+                  (kc = comparableClassFor(k)) == null) ||
+                 (dir = compareComparables(kc, k, pk)) == 0) &#123;
+            if (!searched) &#123;
+                TreeNode&lt;K,V&gt; q, ch;
+                searched = true;
+                if (((ch = p.left) != null &amp;&amp;
+                     (q = ch.find(h, k, kc)) != null) ||
+                    ((ch = p.right) != null &amp;&amp;
+                     (q = ch.find(h, k, kc)) != null))
+                    return q;
+            &#125;
+            dir = tieBreakOrder(k, pk);
+        &#125;
+
+        TreeNode&lt;K,V&gt; xp = p;
+        if ((p = (dir &lt;= 0) ? p.left : p.right) == null) &#123;
+            Node&lt;K,V&gt; xpn = xp.next;
+            TreeNode&lt;K,V&gt; x = map.newTreeNode(h, k, v, xpn);
+            if (dir &lt;= 0)
+                xp.left = x;
+            else
+                xp.right = x;
+            xp.next = x;
+            x.parent = x.prev = xp;
+            if (xpn != null)
+                ((TreeNode&lt;K,V&gt;)xpn).prev = x;
+            moveRootToFront(tab, balanceInsertion(root, x));
+            return null;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h2><pre><code class="java">final Node&lt;K,V&gt; getNode(int hash, Object key) &#123;
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;
+    if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;
+        (first = tab[(n - 1) &amp; hash]) != null) &#123;
+        if (first.hash == hash &amp;&amp; // always check first node
+            ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))
+            return first;
+        if ((e = first.next) != null) &#123;
+            if (first instanceof TreeNode)
+                return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);
+            do &#123;
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    return e;
+            &#125; while ((e = e.next) != null);
+        &#125;
+    &#125;
+    return null;
+&#125;
+</code></pre>
+<hr>
+<blockquote>
+<p> 参考文献:</p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041297886">HashMap的实现原理(看这篇就够了）</a></p>
+</blockquote>
 </div>
         
 </div>
