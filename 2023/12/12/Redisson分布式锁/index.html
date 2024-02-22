@@ -153,7 +153,7 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">为什么要用分布式锁</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="toc-number"></span> <span class="toc-text">Redis实现分布式锁的两种方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redisson%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number"></span> <span class="toc-text">Redisson源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock-%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">Lock()方法的实现（部分）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TryAcquire"><span class="toc-number">2.</span> <span class="toc-text">TryAcquire</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tryLockInnerAsync"><span class="toc-number">3.</span> <span class="toc-text">tryLockInnerAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scheduleExpirationRenewal"><span class="toc-number">4.</span> <span class="toc-text">scheduleExpirationRenewal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#renewExpirationAsync"><span class="toc-number">5.</span> <span class="toc-text">renewExpirationAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unLock"><span class="toc-number">6.</span> <span class="toc-text">unLock</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E7%9A%84%E5%9B%A0%E7%B4%A0"><span class="toc-number">1.</span> <span class="toc-text">设计分布式锁需要考虑的因素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">Redis实现分布式锁的两种方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redisson%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">Redisson源码分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lock-%E6%96%B9%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0%EF%BC%88%E9%83%A8%E5%88%86%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">Lock()方法的实现（部分）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TryAcquire"><span class="toc-number">5.</span> <span class="toc-text">TryAcquire</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tryLockInnerAsync"><span class="toc-number">6.</span> <span class="toc-text">tryLockInnerAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#scheduleExpirationRenewal"><span class="toc-number">7.</span> <span class="toc-text">scheduleExpirationRenewal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#renewExpirationAsync"><span class="toc-number">8.</span> <span class="toc-text">renewExpirationAsync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unLock"><span class="toc-number">9.</span> <span class="toc-text">unLock</span></a></li></ol>
     </div>
   </aside>
   <div>
@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Redis/" style="color: #00a596"
+        <a href="/tags/Redis/" style="color: #03a9f4"
           >Redis</a
         >
       </span>
@@ -183,10 +183,19 @@
     
   </div>
   
-  <div class="content" v-pre><p>Redisson分布式锁</p>
+  <div class="content" v-pre><p>Java的锁通常是基于JVM的线程同步机制设计的，无法跨越多个JVM实例或服务器进行同步。在分布式系统中，不同的服务实例可能运行在不同的机器上，它们之间无法直接共享内存或者同步状态。此时就需要使用分布式锁</p>
 <span id="more"></span>
 
-<h2 id="为什么要用分布式锁"><a href="#为什么要用分布式锁" class="headerlink" title="为什么要用分布式锁"></a>为什么要用分布式锁</h2><h1 id="Redis实现分布式锁的两种方案"><a href="#Redis实现分布式锁的两种方案" class="headerlink" title="Redis实现分布式锁的两种方案"></a>Redis实现分布式锁的两种方案</h1><pre><code class="java">@SpringBootTest
+<h2 id="设计分布式锁需要考虑的因素"><a href="#设计分布式锁需要考虑的因素" class="headerlink" title="设计分布式锁需要考虑的因素"></a>设计分布式锁需要考虑的因素</h2><ul>
+<li><em><strong>一致性</strong></em>：分布式锁也需要满足不同节点对同一资源的访问是互斥的，同一时间只有一个线程能够获取锁。</li>
+<li><em><strong>可靠性</strong></em>： 分布式锁需要保持高可靠性，在网络分区、节点故障或其他特殊情况下也能正常工作，不会导致死锁或数据不一致。</li>
+<li><em><strong>性能</strong></em>： 分布式锁需要尽量减少对系统性能的影响，避免成为系统瓶颈。</li>
+<li><em><strong>超时处理</strong></em>：需要考虑锁的超时机制，避免客户端获取锁后发生故障或长时间不释放锁导致资源无法继续使用。</li>
+<li><em><strong>可重入性</strong></em>：分布式锁需要支持客户端可以重复获取同一把锁。</li>
+<li><em><strong>阻塞与非阻塞</strong></em>：支持阻塞和非阻塞两种方式获取锁，以满足不同情况下的要求。</li>
+<li><em><strong>容错性</strong></em>：能在节点故障或网络分区情况下能正确的处理异常情况。</li>
+</ul>
+<h2 id="Redis实现分布式锁的两种方案"><a href="#Redis实现分布式锁的两种方案" class="headerlink" title="Redis实现分布式锁的两种方案"></a>Redis实现分布式锁的两种方案</h2><pre><code class="java">@SpringBootTest
 @Slf4j
 public class RedisLockTest &#123;
     @Autowired
@@ -268,7 +277,7 @@ end;
 <li>lua脚本实现分布式锁，也可以保证原子性，lua脚本的复用性也好，但问题也还是出现在锁续期上</li>
 </ul>
 <p>二者还有可重入没有实现，可重入的话可以考虑将数据结构换为hash，hash的key为锁对象，hash的field为线程id，field对应的value为重入次数，第一次成功进入为1，每次重入次数累加。线程来解锁时，判断有无线程id的field，有则重入次数减一，若重入次数为0则删除这把锁。</p>
-<h1 id="Redisson源码分析"><a href="#Redisson源码分析" class="headerlink" title="Redisson源码分析"></a>Redisson源码分析</h1><p>Redisson分布式锁加锁流程如下：</p>
+<h2 id="Redisson源码分析"><a href="#Redisson源码分析" class="headerlink" title="Redisson源码分析"></a>Redisson源码分析</h2><p>Redisson分布式锁加锁流程如下：</p>
 <p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20231212154551867.png" alt="image-20231212154551867"></p>
 <ol>
 <li><h2 id="Lock-方法的实现（部分）"><a href="#Lock-方法的实现（部分）" class="headerlink" title="Lock()方法的实现（部分）"></a><strong>Lock()方法的实现（部分）</strong></h2></li>
