@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>InnoDB的MVCC | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFMVVC"><span class="toc-number">1.</span> <span class="toc-text">什么是MVVC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E8%AF%BB"><span class="toc-number">1.1.</span> <span class="toc-text">当前读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E7%85%A7%E8%AF%BB"><span class="toc-number">1.2.</span> <span class="toc-text">快照读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MVCC%E5%92%8C%E5%BF%AB%E7%85%A7%E8%AF%BB%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">1.3.</span> <span class="toc-text">MVCC和快照读的关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVVC%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">MVVC的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF"><span class="toc-number">2.1.</span> <span class="toc-text">三种并发场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MVVC%E7%9A%84%E4%BD%9C%E7%94%A8-1"><span class="toc-number">2.2.</span> <span class="toc-text">MVVC的作用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVVC%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">MVVC的实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%BC%8F%E5%AD%97%E6%AE%B5"><span class="toc-number">3.1.</span> <span class="toc-text">隐式字段</span></a></li></ol></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>InnoDB的MVCC</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/2/23
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/Mysql/" style="color: #00bdc4"
+          >Mysql</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91%E5%88%86%E5%B8%83%E5%BC%8F/" style="color: #03a9f4"
+          >高并发分布式</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p>Mysql的InnoDB通过<em><strong>MVVC+锁</strong></em>实现了事务。其中MVVC解决隔离性问题，具体而言，MVVC就是为了实现读写并发冲突不加锁。这个读指的是快照读（副本），而非当前读。</p>
+<span id="more"></span>
+
+<h2 id="什么是MVVC"><a href="#什么是MVVC" class="headerlink" title="什么是MVVC"></a>什么是MVVC</h2><p>MVVC（Multi version Concurrency Control）即多版本并发控制，用于提高数据库的并发性能，用更好的方式处理读-写冲突。使得在读写冲突时，能做到不加锁，非阻塞并发读。</p>
+<h3 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h3><p>像 <code>select ... lock in share mode</code>(乐观锁)、<code>select ... for update</code>(悲观锁)、<code>update</code>、<code>insert</code>、<code>delete</code>这些操作都是当前读，这些操作读取的都是记录的最新版本，同时会对记录加锁，保证其他并发事务不能修改当前记录。</p>
+<h3 id="快照读"><a href="#快照读" class="headerlink" title="快照读"></a>快照读</h3><p>不加锁的<code>select</code>操作就是快照读，即不加锁的非阻塞读（事务级别不能是串行化）。快照读的实现基于MVVC（可以认为MVVC是行锁的变种），但它在很多情况下避免了加锁操作，降低了加锁开销。但是因为它读到的可能不是最新版本。（快照读会读取事务开始时数据库中的数据版本，而不受其他事务的影响）</p>
+<h3 id="MVCC和快照读的关系"><a href="#MVCC和快照读的关系" class="headerlink" title="MVCC和快照读的关系"></a>MVCC和快照读的关系</h3><ul>
+<li>MVVC实际是 “保持数据的多个版本来避免读写冲突”（根据隔离级别判断读取那个版本的数据）</li>
+<li>快照读会读取事务开始时数据库中的数据版本，这就是MVCC的一种应用（实现在高并发环境下提供一致性视图的读取操作）</li>
+</ul>
+<h2 id="MVVC的作用"><a href="#MVVC的作用" class="headerlink" title="MVVC的作用"></a>MVVC的作用</h2><h3 id="三种并发场景"><a href="#三种并发场景" class="headerlink" title="三种并发场景"></a>三种并发场景</h3><ul>
+<li>读并发：不存在线程安全问题</li>
+<li>读写并发： 可能遇到脏读、幻读、不可重复读等问题</li>
+<li>写并发：脏写、写倾斜（分析不了一点）</li>
+</ul>
+<h3 id="MVVC的作用-1"><a href="#MVVC的作用-1" class="headerlink" title="MVVC的作用"></a>MVVC的作用</h3><p>在并发读写数据库时，可以做到在读操作时不用阻塞写操作，写操作也不用阻塞读操作，提高了数据库并发读写的性能 同时还可以解决脏读，幻读，不可重复读等事务隔离问题，但不能解决更新丢失问题。</p>
+<ul>
+<li><strong>MVCC + 悲观锁</strong> MVCC解决读写冲突，悲观锁解决写写冲突</li>
+<li><strong>MVCC + 乐观锁</strong> MVCC解决读写冲突，乐观锁解决写写冲突</li>
+</ul>
+<p>这种组合的方式就可以最大程度的提高数据库并发性能，并解决读写冲突，和写写冲突导致的问题</p>
+<h2 id="MVVC的实现原理"><a href="#MVVC的实现原理" class="headerlink" title="MVVC的实现原理"></a>MVVC的实现原理</h2><p>MVVC的实现主要通过记录中的***四个隐式字段、undo log、redo view(读视图)***来实现的。</p>
+<h3 id="隐式字段"><a href="#隐式字段" class="headerlink" title="隐式字段"></a>隐式字段</h3><ul>
+<li><strong>DB_ROW_ID</strong> 6byte, 隐含的自增ID（隐藏主键），如果数据表没有主键，InnoDB会自动以DB_ROW_ID产生一个聚簇索引</li>
+<li><strong>DB_TRX_ID</strong> 6byte, 最近修改(修改&#x2F;插入)事务ID：记录创建这条记录&#x2F;最后一次修改该记录的事务ID</li>
+<li><strong>DB_ROLL_PTR</strong> 7byte, 回滚指针，指向这条记录的上一个版本（存储于rollback segment里）（配合undo log）</li>
+<li><strong>DELETED_BIT</strong> 1byte, 记录被更新或删除并不代表真的删除，而是删除flag变了</li>
+</ul>
+<blockquote>
+<p>关于隐式字段拓展： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/trunks2008/p/15213918.html">眼见为实，看看MySQL中的隐藏列！</a> （为什么一定要创建主键）</p>
+</blockquote>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<p>undo~</p>
+<blockquote>
+<p>在MySQL中，Read View（读视图）是用于实现多版本并发控制（MVCC）的关键组件之一。Read View主要用于确定在给定事务开始时应该看到哪些数据版本，以确保事务读取到一致的数据视图。</p>
+<p>当一个事务开始时，它会创建一个Read View，其中包含一个系统版本号（system version number）。这个系统版本号是一个递增的全局计数器，每次有事务修改数据时就会递增。</p>
+<p>当一个事务需要读取数据时，它会使用当前系统版本号来确定应该读取哪个数据版本。具体步骤如下：</p>
+<p>事务开始时，获取当前系统版本号作为Read View的版本号。<br>当事务需要读取数据时，会检查数据行的DB_TRX_ID（事务ID）和DB_ROLL_PTR（回滚指针）。<br>通过DB_TRX_ID和DB_ROLL_PTR可以找到对应数据行的最新版本，然后检查该版本的事务ID是否小于等于Read View的版本号。<br>如果是，则表示该数据版本是可见的，事务可以读取该数据；如果不是，则表示该数据版本对当前事务不可见，需要忽略。<br>通过这种方式，Read View可以根据事务开始时的系统版本号和数据行的事务ID来确定对事务可见的数据版本，从而实现了一致性读取。</p>
+</blockquote>
+<blockquote>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://pdai.tech/md/db/sql-mysql/sql-mysql-mvcc.html">MySQL - MySQL InnoDB的MVCC实现机制</a></p>
+<p> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/trunks2008/p/15213918.html">眼见为实，看看MySQL中的隐藏列！</a> </p>
+</blockquote>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
