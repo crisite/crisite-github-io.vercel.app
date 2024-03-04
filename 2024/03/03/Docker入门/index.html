@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Arch安装Rebloom | Crisite の博客</title>
+    <title>Docker入门 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%89%A7%E8%A1%8C%E6%8A%A5%E9%94%99"><span class="toc-number">1.</span> <span class="toc-text">1.启动文件setup执行报错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6setup%E6%8A%A5%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">2.执行启动文件setup报错</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E7%9A%84%E4%B8%89%E4%B8%AA%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">Docker的三个概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E9%95%9C%E5%83%8F%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">2.</span> <span class="toc-text">Docker镜像生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E5%92%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">Docker和虚拟机的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4"><span class="toc-number">4.</span> <span class="toc-text">Docker基本命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">镜像管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-number">4.2.</span> <span class="toc-text">容器管理</span></a></li></ol></li></ol>
     </div>
   </aside>
   <div>
-    <h1>Arch安装Rebloom</h1>
+    <h1>Docker入门</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2023/10/4
+      2024/3/3
     </span>
      
     <span class="tags">
@@ -174,15 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/linux/" style="color: #00a596"
-          >linux</a
-        >
-      </span>
-      
-      <span class="tag">
-        
-        <a href="/tags/Redis/" style="color: #03a9f4"
-          >Redis</a
+        <a href="/tags/Docker/" style="color: #00bdc4"
+          >Docker</a
         >
       </span>
       
@@ -190,78 +183,120 @@
     
   </div>
   
-  <div class="content" v-pre><p>曲折的Rebloom安装之路</p>
+  <div class="content" v-pre><p>Docker相关知识入门</p>
+<p>Docker的目标 “Build, Ship and Run any App, any where” 构建，运输，处处运行</p>
 <span id="more"></span>
 
-<ul>
-<li>前往github获取源码(<a target="_blank" rel="noopener" href="https://github.com/RedisBloom/RedisBloom">https://github.com/RedisBloom/RedisBloom</a>)</li>
+<h2 id="Docker的三个概念"><a href="#Docker的三个概念" class="headerlink" title="Docker的三个概念"></a>Docker的三个概念</h2><ul>
+<li>镜像（image）：镜像是一个包含有文件系统的面向Docker引擎的只读模版。任何应用程序运行都需要环境，而镜像就是用来提供这种环境的。例如一个Ubuntu镜像就是一个包含Ubuntu操作系统环境的模版</li>
+<li>容器（container）：一个轻量级的沙盒，可以将其看做一个极简的Linux系统环境（包括root权限、进程空间、用户空间和网络空间等）以及运行在其中的应用程序。Docker引擎利用容器来运行、隔离各个应用。容器是镜像创建的应用实例，可以创建、启动、停止、删除容器。各个容器之间时相互隔离的，互不影响。（镜像本身是只读的，容器从镜像上启动时，Docker在镜像层的上层创建一个可写层，镜像本身不变）</li>
+<li>仓库（Repository）：镜像仓库是Docker用来存放镜像文件的地方。仓库和注册服务器（registry）的区别是：注册服务器是存放仓库的地方，注册服务器可以存放多个仓库；而仓库是存放在镜像的地方，一般每个仓库存放一类镜像，每个镜像利用tag进行区分，比如Ubuntu仓库存放多个版本的Ubuntu镜像</li>
 </ul>
-<pre><code class="bash">git clone --recursive https://github.com/RedisBloom/RedisBloom.git
-cd RedisBloom
-./sbin/setup
-bash -l
-make
-</code></pre>
-<h3 id="1-启动文件setup执行报错"><a href="#1-启动文件setup执行报错" class="headerlink" title="1.启动文件setup执行报错"></a>1.启动文件setup执行报错</h3><pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent, catastrophic damage to your system.
-</code></pre>
-<blockquote>
-<p>参考链接：</p>
-<p><a target="_blank" rel="noopener" href="https://www.yaolong.net/article/pip-externally-managed-environment/">pip(3) install，完美解决 externally-managed-environment</a></p>
-</blockquote>
-<p>选择解决方式：</p>
+<p>其他~</p>
 <ul>
-<li>方案一、(粗暴) 去掉这个提示</li>
+<li>主机（Host）：一个物理或虚拟机用于执行 Docker 守护进程和容器</li>
+<li>注册服务器（register）：Docker Hub(<a target="_blank" rel="noopener" href="https://hub.docker.com/">https://hub.docker.com</a>) 提供了庞大的镜像集合供使用。</li>
 </ul>
-<p>强制删除此警告，回归到熟悉的操作。</p>
-<p>将 “x” 替换为实际版本。</p>
+<h2 id="Docker镜像生命周期"><a href="#Docker镜像生命周期" class="headerlink" title="Docker镜像生命周期"></a>Docker镜像生命周期</h2><p>如下~</p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240303230631888.png" alt="image-20240303230630395"></p>
+<h2 id="Docker和虚拟机的区别"><a href="#Docker和虚拟机的区别" class="headerlink" title="Docker和虚拟机的区别"></a>Docker和虚拟机的区别</h2><p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240304030745156.png" alt="image-20240304030745156"></p>
+<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240304030758384.png" alt="image-20240304030758384"></p>
+<p>虚拟机是在操作系统上再运行一个新的操作系统，再新的系统上再运行所需应用进程；而<code>Docker Engine</code>只包含应用程序和所需依赖，它作为主机操作系统上用户空间中的隔离进程运行，与其他容器共享内核。因此，容器化更具有可移植性和效率</p>
+<h2 id="Docker基本命令"><a href="#Docker基本命令" class="headerlink" title="Docker基本命令"></a>Docker基本命令</h2><h3 id="镜像管理"><a href="#镜像管理" class="headerlink" title="镜像管理"></a>镜像管理</h3><pre><code class="sh"># 首先 搜索镜像
+docker search 镜像名
+# 拉取镜像 如果没有指定版本号则默认lastest版本
+docker pull 镜像名/版本号
+# 导出镜像
+docker image save centos &gt; docker-centos.tar.gz
+# 删除镜像
+docker image rm centos
+# 导入镜像
+docker image load -i docker-centos.tar.gz
+# 查看镜像信息
+docker image inspect centos
+</code></pre>
+<h3 id="容器管理"><a href="#容器管理" class="headerlink" title="容器管理"></a>容器管理</h3><pre><code class="sh"># 运行一个容器 docker run实际上执行了两个api：/containers/create、/containers/(id)/start
+docker run --name xxl-job-admin -p 8080:8080 -d xuxueli/xxl-job-admin
+</code></pre>
+<p>docker run常用参数：</p>
 <table>
 <thead>
 <tr>
-<th><code>1 </code></th>
-<th><code>sudo mv /usr/lib/python3.x/EXTERNALLY-MANAGED /usr/lib/python3.x/EXTERNALLY-MANAGED.bk </code></th>
+<th>option</th>
+<th>作用</th>
 </tr>
 </thead>
 <tbody><tr>
-<td></td>
-<td></td>
+<td>-i</td>
+<td>以交互模式运行容器，通常与 -t 同时使用</td>
+</tr>
+<tr>
+<td>-t</td>
+<td>启动容器后，为容器分配一个命令行，通常与 -i 同时使用</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>目录映射，容器目录挂载到宿主机目录，格式： &lt;host目录&gt;:&lt;容器目录&gt;</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>守护进程，后台运行该容器</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>指定端口映射，格式：主机(宿主)端口:容器端口</td>
+</tr>
+<tr>
+<td>-P</td>
+<td>随机端口映射，容器内部端口随机映射到主机的端口（49153起始 49153到65535）</td>
+</tr>
+<tr>
+<td>-u</td>
+<td>以什么用户身份创建容器</td>
+</tr>
+<tr>
+<td>–name</td>
+<td>“nginx-lb” 容器名字</td>
+</tr>
+<tr>
+<td>-m,–memory bytes</td>
+<td>设置容器使用内存最大值</td>
+</tr>
+<tr>
+<td>-h, –hostname string</td>
+<td>指定容器的 host name</td>
+</tr>
+<tr>
+<td>–dns 8.8.8.8</td>
+<td>指定容器 dns 服务器</td>
+</tr>
+<tr>
+<td>-e username&#x3D;“crisite”</td>
+<td>设置环境变量</td>
+</tr>
+<tr>
+<td>–restart Docker</td>
+<td>重启后，容器是否自动重启</td>
+</tr>
+<tr>
+<td>–privileged</td>
+<td>容器内是否使用真正的 root 权限</td>
 </tr>
 </tbody></table>
-<p>和之前一样，现在您可以直接运行 <code>pip(3) install package_name</code> 命令来安装python模块。</p>
-<h3 id="2-执行启动文件setup报错"><a href="#2-执行启动文件setup报错" class="headerlink" title="2.执行启动文件setup报错"></a>2.执行启动文件setup报错</h3><pre><code class="bash">FileNotFoundError: Failed to find yay or trizen, for aur package installation.
+<pre><code class="sh"># 查看正在运行的容器
+docker container ls
+docker ps
+# 查看容器详细信息
+docker container inspect 容器名称/id
+# 查看所有容器
+docker ps -a
 </code></pre>
-<ul>
-<li><p>尝试1：</p>
-<p>下载terizen</p>
-<p>出现新的报错</p>
-<pre><code class="bash">ERROR: Running makepkg as root is not allowed as it can cause permanent,
-catastrophic damage to your system.
-</code></pre>
-<p>tarizen无法使用管理员权限进行下载软件，于是找到system-setup.py文件</p>
-<pre><code class="PYTHON">    def common_last(self):
-        if self.dist == &quot;arch&quot;:
-            # self.install(&quot;lcov-git&quot;, aur=True)
-            eprint(&quot;yes&quot;)
-        else:
-</code></pre>
-<p>将其中的<code>self.install(&quot;lcov-git&quot;, aur=True)</code>注释掉，然后手动执行<code>trizen --noconfirm -S lcov-git  </code></p>
-<p>之后再继续执行启动文件.&#x2F;sbin&#x2F;setup即可</p>
-</li>
-</ul>
 <blockquote>
-<p>安装RedisBloom模块最好是先配置redis.conf文件，然后动态加载RedisBoom模块。因为只动态加载，在Redis重启后就失效了，但是只在redis.conf中配置，又没办法动态生效，必须重启。</p>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/683051939">深入理解 Docker Run 命令：从入门到精通</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/23599229">只要一小时，零基础入门Docker</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1885678">史上讲解最好的 Docker 教程，从入门到精通（建议收藏的教程）</a></p>
 </blockquote>
-<p>安装成功后通过<code>module list</code>进行查看是否配置成功</p>
-<pre><code class="bash">127.0.0.1:6379&gt; module list
-1) 1) &quot;name&quot;
-   2) &quot;bf&quot;
-   3) &quot;ver&quot;
-   4) (integer) 999999
-   5) &quot;path&quot;
-   6) &quot;/etc/redis/RedisBloom/bin/linux-x64-release/redisbloom.so&quot;
-   7) &quot;args&quot;
-   8) (empty array)
-</code></pre>
-<p>至此，RedisBloom模块安装完成</p>
 </div>
         
 </div>
