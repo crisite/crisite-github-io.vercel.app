@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Docker/" style="color: #00bdc4"
+        <a href="/tags/Docker/" style="color: #ff7d73"
           >Docker</a
         >
       </span>
@@ -188,7 +188,7 @@
 <span id="more"></span>
 
 <h2 id="Docker的三个概念"><a href="#Docker的三个概念" class="headerlink" title="Docker的三个概念"></a>Docker的三个概念</h2><ul>
-<li>镜像（image）：镜像是一个包含有文件系统的面向Docker引擎的只读模版。任何应用程序运行都需要环境，而镜像就是用来提供这种环境的。例如一个Ubuntu镜像就是一个包含Ubuntu操作系统环境的模版</li>
+<li>镜像（image）：镜为了向后兼容，在注释 （） 和 指令（如像是一个包含有文件系统的面向Docker引擎的只读模版。任何应用程序运行都需要环境，而镜像就是用来提供这种环境的。例如一个Ubuntu镜像就是一个包含Ubuntu操作系统环境的模版</li>
 <li>容器（container）：一个轻量级的沙盒，可以将其看做一个极简的Linux系统环境（包括root权限、进程空间、用户空间和网络空间等）以及运行在其中的应用程序。Docker引擎利用容器来运行、隔离各个应用。容器是镜像创建的应用实例，可以创建、启动、停止、删除容器。各个容器之间时相互隔离的，互不影响。（镜像本身是只读的，容器从镜像上启动时，Docker在镜像层的上层创建一个可写层，镜像本身不变）</li>
 <li>仓库（Repository）：镜像仓库是Docker用来存放镜像文件的地方。仓库和注册服务器（registry）的区别是：注册服务器是存放仓库的地方，注册服务器可以存放多个仓库；而仓库是存放在镜像的地方，一般每个仓库存放一类镜像，每个镜像利用tag进行区分，比如Ubuntu仓库存放多个版本的Ubuntu镜像</li>
 </ul>
