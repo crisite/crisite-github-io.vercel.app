@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/Docker/" style="color: #ff7d73"
+        <a href="/tags/Docker/" style="color: #03a9f4"
           >Docker</a
         >
       </span>
@@ -291,6 +291,18 @@ docker container inspect 容器名称/id
 # 查看所有容器
 docker ps -a
 </code></pre>
+<blockquote>
+<p>普通用户权限运行docker</p>
+<pre><code class="sh">// 添加docker组
+sudo groupadd docker
+// 将xx用户添加到docker用户组
+sudo usermod -aG docker $user
+// 更新并激活组权限
+newgrp docker
+// 查看group
+groups
+</code></pre>
+</blockquote>
 <h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><blockquote>
 <p>undo~</p>
 </blockquote>
