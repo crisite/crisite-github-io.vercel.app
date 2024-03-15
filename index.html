@@ -184,23 +184,7 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <span id="more"></span>
-
-<h3 id="XXL-Job的核心组件是什么"><a href="#XXL-Job的核心组件是什么" class="headerlink" title="XXL-Job的核心组件是什么"></a>XXL-Job的核心组件是什么</h3><ul>
-<li>Admin：任务管理后台，用于配置和管理任务</li>
-<li>Executor：任务执行器，用于执行任务。通过多个Executor节点来完成任务的分布式执行</li>
-<li>JobCore：任务核心配置：任务执行时间、执行器、调度策略等</li>
-<li>JobHandler：任务处理器，实际执行任务的逻辑</li>
-</ul>
-<h3 id="XXL-Job的任务调度原理是什么"><a href="#XXL-Job的任务调度原理是什么" class="headerlink" title="XXL-Job的任务调度原理是什么"></a>XXL-Job的任务调度原理是什么</h3><p>xxl-job的原理是 <code>一个任务调度中心和多个任务执行器实现任务的分布式调度和执行</code></p>
-<ol>
-<li>任务调度中心Admin通过任务注册接口将任务信息注册到注册中心</li>
-<li>任务执行器Executor从注册中心获取任务中心，并在指定的时间执行任务</li>
-<li>任务执行器执行任务后，将执行的结果上报给任务调度中心</li>
-<li>任务调度中心根据执行结果进行任务状态的统计和管理</li>
-</ol>
-<h3 id="XXL-Job的quartz有什么区别"><a href="#XXL-Job的quartz有什么区别" class="headerlink" title="XXL-Job的quartz有什么区别"></a>XXL-Job的quartz有什么区别</h3><p>xxl-job是在quartz基础上进行的封装和拓展，拥有更简单的任务调度方式、更灵活的任务管理和更强大的任务监控功能。xxl-job提供了分布式任务调动和分片任务等支持，同时具备分布式任务协调和高可用调度中心的能力</p>
-<h3 id="XXL-Job的任务监控和报警如何实现"><a href="#XXL-Job的任务监控和报警如何实现" class="headerlink" title="XXL-Job的任务监控和报警如何实现"></a>XXL-Job的任务监控和报警如何实现</h3><h3 id="XXL-Job支持哪些任务执行方式"><a href="#XXL-Job支持哪些任务执行方式" class="headerlink" title="XXL-Job支持哪些任务执行方式"></a>XXL-Job支持哪些任务执行方式</h3><h3 id="XXL-Job的定时任务和周期性任务有何区别"><a href="#XXL-Job的定时任务和周期性任务有何区别" class="headerlink" title="XXL-Job的定时任务和周期性任务有何区别"></a>XXL-Job的定时任务和周期性任务有何区别</h3><h3 id="XXL-Job如何保证任务的高可用性"><a href="#XXL-Job如何保证任务的高可用性" class="headerlink" title="XXL-Job如何保证任务的高可用性"></a>XXL-Job如何保证任务的高可用性</h3><h3 id="XXL-Job的安全性如何保障"><a href="#XXL-Job的安全性如何保障" class="headerlink" title="XXL-Job的安全性如何保障"></a>XXL-Job的安全性如何保障</h3><h3 id="XXL-Job的扩展性如何"><a href="#XXL-Job的扩展性如何" class="headerlink" title="XXL-Job的扩展性如何"></a>XXL-Job的扩展性如何</h3><h3 id="XXL-Job的任务执行失败了，如何排查和处理"><a href="#XXL-Job的任务执行失败了，如何排查和处理" class="headerlink" title="XXL-Job的任务执行失败了，如何排查和处理"></a>XXL-Job的任务执行失败了，如何排查和处理</h3><h3 id="XXL-Job如何处理分片任务的失败和重试"><a href="#XXL-Job如何处理分片任务的失败和重试" class="headerlink" title="XXL-Job如何处理分片任务的失败和重试"></a>XXL-Job如何处理分片任务的失败和重试</h3><h3 id="XXL-Job是否支持任务依赖关系"><a href="#XXL-Job是否支持任务依赖关系" class="headerlink" title="XXL-Job是否支持任务依赖关系"></a>XXL-Job是否支持任务依赖关系</h3><h3 id="XXL-Job如何实现任务的动态调度"><a href="#XXL-Job如何实现任务的动态调度" class="headerlink" title="XXL-Job如何实现任务的动态调度"></a>XXL-Job如何实现任务的动态调度</h3><h3 id="XXL-Job的任务调度器是如何实现的"><a href="#XXL-Job的任务调度器是如何实现的" class="headerlink" title="XXL-Job的任务调度器是如何实现的"></a>XXL-Job的任务调度器是如何实现的</h3><h3 id="XXL-Job的任务分片是如何实现的"><a href="#XXL-Job的任务分片是如何实现的" class="headerlink" title="XXL-Job的任务分片是如何实现的"></a>XXL-Job的任务分片是如何实现的</h3><h3 id="XXL-Job-支持分布式任务调度吗？如果支持，它是如何实现的"><a href="#XXL-Job-支持分布式任务调度吗？如果支持，它是如何实现的" class="headerlink" title="XXL-Job 支持分布式任务调度吗？如果支持，它是如何实现的"></a>XXL-Job 支持分布式任务调度吗？如果支持，它是如何实现的</h3><h3 id="XXL-Job-是否支持任务的并行执行？如何配置任务的并行度"><a href="#XXL-Job-是否支持任务的并行执行？如何配置任务的并行度" class="headerlink" title="XXL-Job 是否支持任务的并行执行？如何配置任务的并行度"></a>XXL-Job 是否支持任务的并行执行？如何配置任务的并行度</h3><h3 id="XXL-Job-的任务分片策略有哪些？如何选择合适的任务分片策略"><a href="#XXL-Job-的任务分片策略有哪些？如何选择合适的任务分片策略" class="headerlink" title="XXL-Job 的任务分片策略有哪些？如何选择合适的任务分片策略"></a>XXL-Job 的任务分片策略有哪些？如何选择合适的任务分片策略</h3>
+            <p>xxl-job的几个面试题</p>
             
         </div>
     </div>
@@ -250,7 +234,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #ff7d73">项目</a>
+            <a href="/tags/%E9%A1%B9%E7%9B%AE/" style="color: #00a596">项目</a>
         </span>
         
         <span class="tag">
@@ -339,7 +323,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ff7d73">设计模式</a>
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ffa2c4">设计模式</a>
         </span>
         
     </div>
@@ -378,7 +362,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ff7d73">设计模式</a>
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596">设计模式</a>
         </span>
         
     </div>
@@ -417,7 +401,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00bdc4">设计模式</a>
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ff7d73">设计模式</a>
         </span>
         
     </div>
@@ -456,7 +440,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596">设计模式</a>
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00bdc4">设计模式</a>
         </span>
         
     </div>
@@ -499,7 +483,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596">设计模式</a>
+            <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ffa2c4">设计模式</a>
         </span>
         
     </div>
@@ -578,7 +562,7 @@
         
         <span class="tag">
             
-            <a href="/tags/Docker/" style="color: #ff7d73">Docker</a>
+            <a href="/tags/Docker/" style="color: #00bdc4">Docker</a>
         </span>
         
     </div>
