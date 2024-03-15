@@ -174,7 +174,7 @@
        
       <span class="tag">
         
-        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ffa2c4"
+        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596"
           >设计模式</a
         >
       </span>
@@ -186,6 +186,17 @@
   <div class="content" v-pre><p>门面（外观）模式旨在通过一个门面类（<code>Faceade.java</code>）提供一个统一的接口，以隐藏系统的复杂性并提供更方便的访问方式。客户端只需要与门面类交互，而不需要直接与子系统中的个各类进行交互</p>
 <span id="more"></span>
 
+<p>比较简单感觉没什么能讲的~</p>
+<p>系统中有如下几个接口</p>
+<ul>
+<li>图片搜索</li>
+<li>文章搜索</li>
+<li>视频搜索</li>
+<li>网页搜索</li>
+<li>…….</li>
+</ul>
+<p>系统提供了多个接口，其他系统想要调用时，需要手动写入多个api，当接口变多时，代码将非常 <strong>不优雅</strong></p>
+<p>因此可以创建一个 <code>Faceadce,java</code> 同时 api 调用的请求参数 request 添加一个 type字段，根据不同 type 去调用不同的接口，其他系统不需要关心本系统有多少个api，只需要关注自己需要选择什么类型的 type 即可</p>
 </div>
         
 </div>
