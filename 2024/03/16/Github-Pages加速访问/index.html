@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>UML 类图关系 | Crisite の博客</title>
+    <title>Github-Pages加速访问 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%9B%E5%8C%96%E5%85%B3%E7%B3%BB"><span class="toc-number">1.</span> <span class="toc-text">泛化关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB"><span class="toc-number">2.</span> <span class="toc-text">实现关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="toc-number">3.</span> <span class="toc-text">依赖关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E8%81%94%E5%85%B3%E7%B3%BB"><span class="toc-number">4.</span> <span class="toc-text">关联关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E5%85%B3%E7%B3%BB"><span class="toc-number">5.</span> <span class="toc-text">聚合关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E5%85%B3%E7%B3%BB"><span class="toc-number">6.</span> <span class="toc-text">组合关系</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Vercel"><span class="toc-number">1.</span> <span class="toc-text">Vercel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Netlify"><span class="toc-number">2.</span> <span class="toc-text">Netlify</span></a></li></ol>
     </div>
   </aside>
   <div>
-    <h1>UML 类图关系</h1>
+    <h1>Github-Pages加速访问</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2024/2/10
+      2024/3/16
     </span>
      
     <span class="tags">
@@ -174,8 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ff7d73"
-          >设计模式</a
+        <a href="/tags/Git/" style="color: #00a596"
+          >Git</a
         >
       </span>
       
@@ -183,42 +183,20 @@
     
   </div>
   
-  <div class="content" v-pre><p>简单总结一下 o.O?</p>
+  <div class="content" v-pre><p>Vercel 或 Netlify 加速访问</p>
 <span id="more"></span>
 
-<h3 id="泛化关系"><a href="#泛化关系" class="headerlink" title="泛化关系"></a>泛化关系</h3><p>在Java中就是类的继承。</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210211836861.png" alt="image-20240210211836861"></p>
-<h3 id="实现关系"><a href="#实现关系" class="headerlink" title="实现关系"></a>实现关系</h3><p>在Java中就是类实现接口</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210211925153.png" alt="image-20240210211925153"></p>
-<h3 id="依赖关系"><a href="#依赖关系" class="headerlink" title="依赖关系"></a>依赖关系</h3><p>依赖关系表示<code>一个类依赖于另一个类的定义</code>。一般而言，依赖关系在Java语言中体现为<code>成员变量、局域变量、方法的形参、方法返回值</code>，或者对<code>静态方法的调用</code>。</p>
-<pre><code class="java">public class BClass&#123;
-&#125;
-
-public class AClass&#123;
-    private BClass b1; // 依赖关系情况1:成员变量. 这也是关联关系
-    public void doWork(BClass b2)&#123; // 依赖关系情况2: 方法参数
-    &#125;
-    public void doWork()&#123;
-        BClass b3; // 依赖关系情况3: 方法内的局部变量
-    &#125;
-&#125;
-</code></pre>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210212107267.png" alt="image-20240210212107267"></p>
-<h3 id="关联关系"><a href="#关联关系" class="headerlink" title="关联关系"></a>关联关系</h3><p>关联关系表示 一个类将另一个类声明为自己的成员变量 （特殊的依赖关系）。（包括声明以类B为元素的数组（一对多））</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210212456599.png" alt="image-20240210212456599"></p>
-<h3 id="聚合关系"><a href="#聚合关系" class="headerlink" title="聚合关系"></a>聚合关系</h3><p>聚合关系体现的是整体与部分，即<code>has-a</code>的关系（特殊的关联关系）。如 汽车与引擎，手机与芯片。</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210212806573.png" alt="image-20240210212806573"></p>
-<h3 id="组合关系"><a href="#组合关系" class="headerlink" title="组合关系"></a>组合关系</h3><p>组合关系体现的是一种<code>contains-a</code>的关系（特殊的关联关系）。如订单类和订单的Item</p>
-<pre><code class="java">public class OrderBill &#123;
-    private List&lt;OrderBillItem&gt; list;
-&#125;
-public class OrderBillItem &#123;
-&#125;
-</code></pre>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240210213107790.png" alt="image-20240210213107790"></p>
+<h2 id="Vercel"><a href="#Vercel" class="headerlink" title="Vercel"></a>Vercel</h2><p>先注册一个 <a target="_blank" rel="noopener" href="https://vercel.com/signup">Vercel</a> 帐号，通过 GitHub 注册。</p>
+<p>注册成功后跳转到你的首页，点击 New project，跳转后在 Import Git Repository 中选择你的 Hexo 博客，跳转后点击 Deploy 上传到 Vercel。</p>
+<p>上传完成点击 Goto Dashboard 来到项目主页，选择顶部的 Settings，在 Project Name 中更改你网站的名称。</p>
+<h2 id="Netlify"><a href="#Netlify" class="headerlink" title="Netlify"></a>Netlify</h2><p>先注册一个 <a target="_blank" rel="noopener" href="https://app.netlify.com/signup">Netlify</a> 帐号，通过 GitHub 注册。</p>
+<p>注册成功后跳转到你的首页，点击 Add new site 中的 Import an existing project，点击 GitHub，与 GitHub 关联。</p>
+<p>关联 GitHub 后在下面会出现你 GitHub 中的仓库，点击你创建的 Hexo 博客，再点击 Deploy site 上传。</p>
+<p>上传完成会跳转到项目主页，选择 Site settings，跳转后往下滑，点击 Change site name 更改你网站的名称。</p>
+<hr>
 <blockquote>
-<p>参考资料：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_37989980/article/details/104470064">UML一一 类图关系 (泛化、实现、依赖、关联、聚合、组合)</a></p>
+<p>抄袭来源：</p>
+<p><a target="_blank" rel="noopener" href="https://argvchs.github.io/2022/04/17/hexo-blog-4/">Hexo 博客搭建教程 IV</a></p>
 </blockquote>
 </div>
         
