@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>设计模式之单例模式 | Crisite の博客</title>
+    <meta name="author" content="Crisite" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/avatar.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.4/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CRISITE の博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CRISITE の博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+  <!-- Table of Contents -->
+  <aside>
+    <div id="toc" class="toc-article">
+      <strong class="toc-title">文章目录</strong>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A5%BF%E6%B1%89%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">饿汉式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%87%92%E6%B1%89%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">懒汉式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E9%87%8D%E6%A3%80%E6%B5%8B%E9%94%81"><span class="toc-number">3.</span> <span class="toc-text">双重检测锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE"><span class="toc-number">4.</span> <span class="toc-text">枚举</span></a></li></ol>
+    </div>
+  </aside>
+  <div>
+    <h1>设计模式之单例模式</h1>
+  </div>
+  <div class="info">
+    <span class="date">
+      <span class="icon">
+        <i class="fa-solid fa-calendar fa-fw"></i>
+      </span>
+      2024/3/8
+    </span>
+     
+    <span class="tags">
+      <span class="icon">
+        <i class="fa-solid fa-tags fa-fw"></i>
+      </span>
+       
+      <span class="tag">
+        
+        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ffa2c4"
+          >设计模式</a
+        >
+      </span>
+      
+    </span>
+    
+  </div>
+  
+  <div class="content" v-pre><p>几种单例模式的实现：</p>
+<ul>
+<li>饿汉式</li>
+<li>懒汉式</li>
+<li>双重锁检测</li>
+<li>枚举类</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h3><p>饿汉式单例就是在类加载的时候就创建实例</p>
+<pre><code class="java">class HungrySingleton &#123;
+    private static HungrySingleton instance = new HungrySingleton();
+    private HungrySingleton() &#123;&#125;
+
+    public static HungrySingleton getInstance() &#123;
+        return instance;
+    &#125;
+&#125;
+</code></pre>
+<hr>
+<h3 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h3><p>懒汉式单例就是在被需要的时候才创建</p>
+<pre><code class="java">class LazySingleton &#123;
+    private static LazySingleton instance = null;
+    private LazySingleton() &#123;&#125;
+
+    public LazySingleton getInstance() &#123;
+        if (instance == null) &#123;
+            instance = new LazySingleton();
+        &#125;
+        return instance;
+    &#125;
+&#125;
+</code></pre>
+<hr>
+<h3 id="双重检测锁"><a href="#双重检测锁" class="headerlink" title="双重检测锁"></a>双重检测锁</h3><p>懒汉式的并发场景用得到</p>
+<pre><code class="java">class DoubleLockSingleton &#123;
+    private static DoubleLockSingleton instance = null;
+    private DoubleLockSingleton() &#123;&#125;
+
+    public static DoubleLockSingleton getInstance() &#123;
+        if (instance == null) &#123;
+            synchronized (DoubleLockSingleton.class) &#123;
+                instance = new DoubleLockSingleton();
+            &#125;
+        &#125;
+        return instance;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>枚举是一种安全的单例模式实现方式，同时也能防止通过反射和反序列化的方式来破坏单例模式</p>
+<pre><code class="java">public enum Singleton &#123;
+    INSTANCE;
+
+    public void doSomething() &#123;
+        // 单例逻辑
+    &#125;
+&#125;
+</code></pre>
+</div>
+        
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Crisite の博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Crisite
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
