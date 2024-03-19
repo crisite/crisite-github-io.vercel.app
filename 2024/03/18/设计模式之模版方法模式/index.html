@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>canal+rabbitmq实现mysql与redis的数据同步 | Crisite の博客</title>
+    <title>设计模式之模版方法模式 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Canal%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">Canal配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RabbitMQ%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">RabbitMQ配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">客户端代码</span></a></li></ol>
+      
     </div>
   </aside>
   <div>
-    <h1>canal+rabbitmq实现mysql与redis的数据同步</h1>
+    <h1>设计模式之模版方法模式</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2024/1/26
+      2024/3/18
     </span>
      
     <span class="tags">
@@ -174,8 +174,8 @@
        
       <span class="tag">
         
-        <a href="/tags/Rabbitmq/" style="color: #00a596"
-          >Rabbitmq</a
+        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #ff7d73"
+          >-设计模式</a
         >
       </span>
       
@@ -183,106 +183,68 @@
     
   </div>
   
-  <div class="content" v-pre><p>数据同步过程~</p>
+  <div class="content" v-pre><p>目前的观点就是 模版方法就是发生在抽象类和其子类之间。</p>
+<p>抽象类定义算法骨架，将一些待定的操作延迟到子类中，使得子类可以在不改变算法结构的前提下重写算法的某些步骤</p>
 <span id="more"></span>
 
-<h1 id="Canal配置"><a href="#Canal配置" class="headerlink" title="Canal配置"></a>Canal配置</h1><pre><code class="bash">cd /usr/lcoal/mysql
-vim my.cnf
-
-# 开启mysql的binlog
-[mysqld]
-log-bin=mysql-bin # 开启 binlog
-binlog-format=ROW # 选择 ROW 模式
-server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId 重复
-
-# 配置canal 进入canal/conf 只列出一些关键属性
-canal.port = 11111 # 端口号，tcp连接的时候用到，rabbitmq模式用不到
-# 指定模式 tcp, kafka, rocketMQ, rabbitMQ
-canal.serverMode = rabbitMQ
-# 数据库用户名密码，此处我创建了一个canal的用户并授予了权限
-canal.instance.tsdb.dbUsername = canal
-canal.instance.tsdb.dbPassword = canal
-# 指定实例 多个实例之间,分割
-canal.destinations = example
-# mq配置
-rabbitmq.host = 127.0.0.1
-rabbitmq.virtual.host = /
-rabbitmq.exchange = canal.exchange
-# 在rabbitmq中的用户，此处我也是创建了一个canal用户并授权了
-rabbitmq.username = canal
-rabbitmq.password = canal
-
-# 配置canal实例，在canal/conf/example/instace.properties 如需新增实例只需复制example并且配置就行
-canal.instance.master.address=127.0.0.1:3306
-canal.instance.dbUsername=canal
-canal.instance.dbPassword=canal
-# canal.instance.filter.regex=.*\\..* 指定数据库及表 .*\\..*表示所有库所有表
-canal.instance.filter.regex=bkms.books
-</code></pre>
-<p><code>canal</code>配置就这么多，配置完成之后通过<code>canal/bin/start.sh</code>启动<code>canal</code>即可，然后查看<code>canal/log</code>下的日志文件，出现下列信息即表示成功</p>
-<pre><code class="bash">2024-01-26 16:35:43.587 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## set default uncaught exception handler
-2024-01-26 16:35:43.617 [main] INFO  com.alibaba.otter.canal.deployer.CanalLauncher - ## load canal configurations
-2024-01-26 16:35:43.737 [main] INFO  com.alibaba.otter.canal.deployer.CanalStarter - ## start the canal server.
-2024-01-26 16:35:43.771 [main] INFO  com.alibaba.otter.canal.deployer.CanalController - ## start the canal server[172.17.0.1(172.17.0.1):11111]
-2024-01-26 16:35:45.181 [main] INFO  com.alibaba.otter.canal.deployer.CanalStarter - ## the canal server is running now ......
-</code></pre>
-<h1 id="RabbitMQ配置"><a href="#RabbitMQ配置" class="headerlink" title="RabbitMQ配置"></a>RabbitMQ配置</h1><p>好像也没啥配置，下载安装之后能正常访问<code>localhost:15672</code>即可成功</p>
-<p>在<code>canal</code>启动后能在connection中看到runing状态即可(exchanges和quene都需要自己创建)</p>
-<p><img src="https://crisite-img.oss-cn-hangzhou.aliyuncs.com/img/image-20240126163852101.png" alt="image-20240126163852101"></p>
-<p>可以测试一下<code>rabbitmq</code>能否接收到<code>canal</code>的数据库修改信息，修改数据库后查看绑定的queue（需要现创建）</p>
-<p><img src="/home/crisite/.config/Typora/typora-user-images/image-20240126164345877.png" alt="image-20240126164345877"></p>
-<p>在修改数据库后点击<code>Get Message</code> 如果能得到数据的话就说明成功得到了<code>canal</code>生产的消息</p>
-<h1 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h1><p>添加依赖</p>
-<pre><code class="xml">&lt;!--rabbitMq--&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-</code></pre>
-<p>配置<code>config</code>创建交换机和队列</p>
-<pre><code class="java">@Configuration
-public class RabbitMQConfig &#123;
-
-    /**
-     * canal通知队列
-     */
-    @Bean
-    public Queue canalQueue() &#123;
-        return new Queue(MQPrefixConst.CANAL_QUEUE, true);
+<p>模版方法模式比较简单，其实就是 抽象类和子类</p>
+<p>such as:  比如说 <code>AbstractQueuedSynchronized</code>、<code>AbstractList</code>、<code>AbstractAuthenticationProcessingFilter</code>….</p>
+<pre><code class="java">public abstract class AbstractSetting &#123;
+    public final String getSetting(String key) &#123;
+        // 先从缓存中读取
+        String value = lookupCache(key);
+        if (value == null) &#123;
+            // 缓存不存在则从数据库中读取
+            value = readFromDatabase(key);
+            putIntoCache(key, value);
+        &#125;
+        return value;
     &#125;
 
-    /**
-     * canal交换机
-     */
-    @Bean
-    public FanoutExchange canalExchange() &#123;
-        return new FanoutExchange(MQPrefixConst.CANAL_EXCHANGE, true, false);
+    protected abstract String lookupCache(String key);
+
+    protected abstract void putIntoCache(String key, String value);
+&#125;
+</code></pre>
+<p>定义了一个数据读取的框架，先读取缓存，缓存中不存在则读取数据库。</p>
+<ul>
+<li>为了防止子类修改父类的骨架方法，骨架方法用<code>final</code>修饰</li>
+<li>需要子类实现的方法用<code>protected abstract</code>，子类需要实现，对外部进行隐藏</li>
+<li>若抽象类中需要用到实现类提供的值，需要在抽象类中的骨架方法中做个非空校验（此处示例允许为空所以就算了）</li>
+</ul>
+<p>比如说我们需要redis的实现</p>
+<pre><code class="java">public class RedisSetting extends AbstractSetting &#123;
+    private RedisClient client = RedisClient.create(&quot;redis://localhost:6379&quot;);
+
+    protected String lookupCache(String key) &#123;
+        try (StatefulRedisConnection&lt;String, String&gt; connection = client.connect()) &#123;
+            RedisCommands&lt;String, String&gt; commands = connection.sync();
+            return commands.get(key);
+        &#125;
     &#125;
 
-    /**
-     * 绑定canal交换机和队列
-     */
-    @Bean
-    public Binding bindingCanalDirect() &#123;
-        return BindingBuilder.bind(canalQueue()).to(canalExchange());
+    protected void putIntoCache(String key, String value) &#123;
+        try (StatefulRedisConnection&lt;String, String&gt; connection = client.connect()) &#123;
+            RedisCommands&lt;String, String&gt; commands = connection.sync();
+            commands.set(key, value);
+        &#125;
     &#125;
 &#125;
 </code></pre>
-<p>创建消费者：</p>
-<pre><code class="java">@Slf4j
-@Component
-@RabbitListener(queues = MQPrefixConst.CANAL_QUEUE)
-public class CanalToRedisConsumer &#123;
+<p>比如说我们需要在本地以map的方式缓存</p>
+<pre><code class="java">public class LocalSetting extends AbstractSetting &#123;
+    private Map&lt;String, String&gt; cache = new HashMap&lt;&gt;();
 
-    // 接受到的message是一个byte[]数组，接收到之后自己做类型转换吧
-    @RabbitHandler
-    public void syncToRedis(byte[] message) &#123;
-        String messageString = new String(message, StandardCharsets.UTF_8);
-        log.info(&quot;Canal 监听发生变化；明细：&#123;&#125;&quot;, messageString);
-        // 处理消息逻辑....
+    protected String lookupCache(String key) &#123;
+        return cache.get(key);
+    &#125;
+
+    protected void putIntoCache(String key, String value) &#123;
+        cache.put(key, value);
     &#125;
 &#125;
 </code></pre>
+<p>如此，我们需要通过那种方式去做缓存只需要实例化哪一个子类就可以了</p>
 </div>
         
 </div>
