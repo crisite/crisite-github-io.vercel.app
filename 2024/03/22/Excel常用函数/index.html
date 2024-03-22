@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>设计模式之注册器模式 | Crisite の博客</title>
+    <title>Excel常用函数 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -157,33 +157,145 @@
     </div>
   </aside>
   <div>
-    <h1>设计模式之注册器模式</h1>
+    <h1>Excel常用函数</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2024/3/8
+      2024/3/22
     </span>
      
-    <span class="tags">
-      <span class="icon">
-        <i class="fa-solid fa-tags fa-fw"></i>
-      </span>
-       
-      <span class="tag">
-        
-        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596"
-          >设计模式</a
-        >
-      </span>
-      
-    </span>
-    
   </div>
   
-  <div class="content" v-pre></div>
+  <div class="content" v-pre><p>列举一下常用函数，要用的时候有个印象再查询就行了</p>
+<span id="more"></span>
+
+<pre><code>If(测试条件,真值，假值)
+
+// 查找一个范围内最大的数
+Max(number1,[number2],...)
+
+// 查找一个范围内最小的数
+Min(number1,[number2],...)
+
+// 满足哪个条件就返回哪个值
+Ifs(测试条件一,真值一，测试条件二，真值二......)
+
+Sum(number1,[number2]....)
+
+// 将求和区域内 符合条件的 区域值累加    条件如 &gt;10  需要用&quot;&quot;包裹
+SumIf(区域，条件，[求和区域])
+
+// 求和区域内，区域n内满足条件n的都加到 sum
+SumIfs(求和区域，区域一，条件一.....)
+
+// 计算range范围内 单元格的数量
+count(range)
+
+// 可以计算出满足多个条件的 range范围内的单元格数量
+countIfs(range,criteria...)
+
+// 返回选定文本的长度
+Len(文本)
+
+// 删除选定文本的空格
+Trim(文本)
+
+// 返回从左侧开始 知道遇见第一个target_char 的字符串长度
+Left(text,target_char)
+
+Right(text,target_char)
+
+// 将选定字符串中的 old_text 替换成 new_text     替换序号是什么我也没看
+Substitute(选定字符串，需要被替换的字符串，新的字符串，[替换序号])
+
+// 将多个字符串合并成一个字符串
+Concatenate(text1....)
+
+// 返回日期天数差
+Days(end_date, start_date)
+
+// 返回两个日期间的工作日数量总和
+Networkdays(strat_day,end_day,[holiday])
+</code></pre>
+<pre><code>// 只保留不存在重复项的元素
+Unique(range)
+
+// 近似匹配查找
+Lookup(查找值,查找集，结果集)
+</code></pre>
+<p>当使用LOOKUP函数时，假设我们有以下数据：</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100</td>
+<td>Apple</td>
+</tr>
+<tr>
+<td>200</td>
+<td>Banana</td>
+</tr>
+<tr>
+<td>300</td>
+<td>Cherry</td>
+</tr>
+</tbody></table>
+<p>如果我们使用LOOKUP函数查找值为 250，向上查找，则公式为：<code>=LOOKUP(250, A1:A3, B1:B3)</code>，结果将是 “Banana”，因为250大于200（Banana对应的值），但小于300（Cherry对应的值）</p>
+<pre><code>// 目标集包含了查找集和结果集，结果序列号就是结果集在目标集中的序列号
+// 查询模式 False-精确查询 True-模糊查询
+VlookUp(查找值，目标集，结果序列号，查询模式)
+</code></pre>
+<p>当使用<code>VLOOKUP</code>函数时，假设我们有以下数据：</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100</td>
+<td>Apple</td>
+</tr>
+<tr>
+<td>200</td>
+<td>Banana</td>
+</tr>
+<tr>
+<td>300</td>
+<td>Cherry</td>
+</tr>
+</tbody></table>
+<p>如果我们使用<code>VLOOKUP</code>函数查找值为 200，则公式为：<code>=VLOOKUP(200, A1:B3, 2, FALSE)</code>，结果将是 “Banana”，因为200在第一列中找到，并返回与之对应的第二列的值。</p>
+<pre><code class="match">Match(查找值，查询集，[查询模式])
+</code></pre>
+<ul>
+<li>lookup_value：要查找的值。</li>
+<li>lookup_array：要在其中查找 lookup_value 的单元格范围。</li>
+<li>match_type：可选参数，指定查找的方式。有三种类型：<ul>
+<li>0（完全匹配）：仅当查找值等于范围中的某个值时才返回结果。</li>
+<li>1（大于或等于）：返回小于或等于查找值的最大值。</li>
+<li>-1（小于或等于）：返回大于或等于查找值的最小值。</li>
+</ul>
+</li>
+</ul>
+<p>MATCH函数的返回值是查找值在查找数组中的相对位置，如果未找到匹配项，则返回错误值。</p>
+<p>如果想实现类似判断是否存在的效果，可以结合<code>Iserror()</code>函数来完成</p>
+<pre><code>// 如果value为错误值，就返回false，反之返回true
+Iserror(value)
+</code></pre>
+<hr>
+<blockquote>
+<p> 目前就这些，后续用到哪些再补充吧</p>
+</blockquote>
+</div>
         
 </div>
 

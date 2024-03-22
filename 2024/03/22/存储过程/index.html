@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>设计模式之注册器模式 | Crisite の博客</title>
+    <title>存储过程 | Crisite の博客</title>
     <meta name="author" content="Crisite" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -153,18 +153,18 @@
   <aside>
     <div id="toc" class="toc-article">
       <strong class="toc-title">文章目录</strong>
-      
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">存储过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SqlServer%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">SqlServer中使用存储过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql%E4%B8%AD%E7%9A%84%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">Mysql中的存储过程</span></a></li></ol></li></ol>
     </div>
   </aside>
   <div>
-    <h1>设计模式之注册器模式</h1>
+    <h1>存储过程</h1>
   </div>
   <div class="info">
     <span class="date">
       <span class="icon">
         <i class="fa-solid fa-calendar fa-fw"></i>
       </span>
-      2024/3/8
+      2024/3/22
     </span>
      
     <span class="tags">
@@ -174,8 +174,15 @@
        
       <span class="tag">
         
-        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="color: #00a596"
-          >设计模式</a
+        <a href="/tags/Mysql/" style="color: #00bdc4"
+          >Mysql</a
+        >
+      </span>
+      
+      <span class="tag">
+        
+        <a href="/tags/SqlServer/" style="color: #00a596"
+          >SqlServer</a
         >
       </span>
       
@@ -183,7 +190,85 @@
     
   </div>
   
-  <div class="content" v-pre></div>
+  <div class="content" v-pre><p>主要了解一下存储过程的概念、优缺点、怎么用，这方面就不深入了</p>
+<span id="more"></span>
+
+<h2 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>允许组件化编程，可以复用sql。（mybatis的xml也可以做到复用sql）</li>
+<li>较快的执行速度，存储过程是预编译的，在初次使用时会分析优化并存在系统的存储计划中。而T-sql语句每次执行都需要分析优化</li>
+<li>减少网络流量，因为存储过程是创建后保存在数据库的，因此我们客户端在调用的时候就不需要传递大量的sql语句，而是传递一个调用存储过程的指令+所需参数即可</li>
+<li>安全性，调用这只需要知道如何调用存储过程即可，而无需关心具体实现</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>编写复杂，调试困难</li>
+<li>学习成本，存储过程过多会增加开发人员的学习成本</li>
+<li>依赖性，存储过程与特定的数据库系统关联，在数据迁移或的时候可能出现问题</li>
+</ul>
+<h3 id="SqlServer中使用存储过程"><a href="#SqlServer中使用存储过程" class="headerlink" title="SqlServer中使用存储过程"></a>SqlServer中使用存储过程</h3><p>创建：</p>
+<pre><code class="sql">create proc | procedure 存储名(
+  [&#123;@参数 数据类型&#125; [=默认值] [out|output],
+   &#123;@参数 数据类型&#125; [=默认值] [out|output],
+  ....]
+)
+as
+begin
+   SQL_statements
+end
+</code></pre>
+<p>以创建有参存储过程为例</p>
+<pre><code class="sql">create procedure proc_name
+(@var int=0)
+as 
+begin
+  SELECT test_column from test_table where test_column=@var;
+end
+go
+</code></pre>
+<p>调用存储过程</p>
+<pre><code class="sql">EXEC 存储过程名称 参数
+EXEC proc_name 2
+</code></pre>
+<p>SqlServer常用的系统存储过程</p>
+<pre><code class="sql">exec sp_databases; --查看数据库
+exec sp_tables;        --查看表
+exec sp_columns student;--查看列
+exec sp_helpIndex student;--查看索引
+exec sp_helpConstraint student;--约束
+exec sp_stored_procedures;
+exec sp_helptext &#39;sp_stored_procedures&#39;;--查看存储过程创建、定义语句
+exec sp_rename student, stuInfo;--修改表、索引、列的名称
+exec sp_renamedb myTempDB, myDB;--更改数据库名称
+exec sp_defaultdb &#39;master&#39;, &#39;myDB&#39;;--更改登录名的默认数据库
+exec sp_helpdb;--数据库帮助，查询数据库信息
+exec sp_helpdb master;
+</code></pre>
+<h3 id="Mysql中的存储过程"><a href="#Mysql中的存储过程" class="headerlink" title="Mysql中的存储过程"></a>Mysql中的存储过程</h3><p>Mysql5.0以后才支持存储过程</p>
+<pre><code class="sql">-- 创建一个 myproc 存储过程
+DELIMITER //           -- 把 // 定义为执行语法     （其实没有这个话也可以的）
+  CREATE PROCEDURE myproc(OUT s int)
+    BEGIN
+      SELECT COUNT(*) INTO s FROM students;
+    END
+    //
+DELIMITER ;
+</code></pre>
+<blockquote>
+<p>MySQL默认以”;”为分隔符，如果没有声明分割符，则编译器会把存储过程当成SQL语句进行处理，因此编译过程会报错，所以要事先用“DELIMITER &#x2F;&#x2F;”声明当前段分隔符，让编译器把两个”&#x2F;&#x2F;“之间的内容当做存储过程的代码，不会执行这些代码；“DELIMITER ;”的意为把分隔符还原。</p>
+</blockquote>
+<p>调用：</p>
+<pre><code class="sql">SET @s=1;
+CALL myproc(@s);
+SELECT @S;
+</code></pre>
+<hr>
+<blockquote>
+<p>参考文献：</p>
+<p>[sql的存储过程使用详解–基本语法 ](<a target="_blank" rel="noopener" href="https://www.cnblogs.com/lemon-flm/p/7646277.html">sql的存储过程使用详解–基本语法 - 低调人生 - 博客园 (cnblogs.com)</a>)</p>
+<p>[SqlServer存储过程](<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/sqlserver/sqlserver-hw2328n6.html">SQL Server存储过程_w3cschool</a>)</p>
+<p>[存储过程-SqlServer](<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2288347?areaId=106001">存储过程—-sqlserver-腾讯云开发者社区-腾讯云 (tencent.com)</a>)</p>
+<p>[详解什么是存储过程](<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2353980">详细讲解什么是存储过程-腾讯云开发者社区-腾讯云 (tencent.com)</a>)</p>
+</blockquote>
+</div>
         
 </div>
 
